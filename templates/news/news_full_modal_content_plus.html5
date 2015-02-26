@@ -1,0 +1,70 @@
+
+<div class="modal-content">
+	<div class="modal-header">
+	    <!-- indexer::stop -->
+	    <a class="prev" data-event="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-03-15" title="Betrunken Radfahren ist verboten - Neue Promillegrenzen nicht notwendig">Vorherige</a>
+	    &nbsp;⁄&nbsp;&nbsp;
+        <a class="next" data-event="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-05-15" title="Spannungsfeld Verkehrssicherheit und moderne Kommunikation - keine Lösung durch neue Vorschriften">Nächste</a>
+
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+		<div class="pdf_link">
+            <a href="#" class="ei ei-printer" rel="nofollow" title="Diese Seite drucken" onclick="window.print();return false"></a>
+            <a href="<?php echo $this->link; ?>?pdf=14" class="ei ei-download" rel="nofollow" title="Nachricht als PDF drucken"></a>
+            <a href="#" class="ei ei-mail_alt" rel="nofollow" title="Diese Seite weiterempfehlen" onclick="window.print();return false"></a>
+        </div>
+        <!-- indexer::continue -->
+	</div>
+	<div class="modal-body">
+		<div class="layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="{{link_url::9}}">
+			<h4><?php echo $this->archive->title; ?></h4>
+
+			<h2><?php echo $this->headline; ?></h2>
+
+			<div class="row">
+				<?php if ($this->text): ?>
+					<?php echo $this->text; ?>
+				<?php else: ?>
+					<div class="ce_text block">
+						<?php echo $this->teaser; ?>
+					</div>
+				<?php endif; ?>
+
+				<?php // @todo in Template Funktion auslagern
+                    $type = explode(' ',trim($this->archive->title));
+                ?>
+
+                <p class="info">
+                <?php if ($this->hasMetaFields): ?>
+                    <span><?php echo $type[0]; ?> vom <time datetime="<?php echo $this->datetime; ?>"><?php echo $this->date; ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></span>
+                <?php endif; ?>
+
+				<?php if ($this->hasSubHeadline): ?>
+                    <br /><span class="sub"><?php echo $this->subHeadline; ?></span>
+                <?php endif; ?>
+                </p>
+
+                <div class="tags"><div>Mehr zu </div>
+                    {{tags_used}}
+                    <ul class="tag-chain">
+                        <li class="tag-chain-item first Landstraße"><a href="nachrichtenarchiv/tag/Landstraße">Landstraße</a></li>
+                        <li class="tag-chain-item Rumpelstreifen"><a href="nachrichtenarchiv/tag/Rumpelstreifen">Rumpelstreifen</a></li>
+                        <li class="tag-chain-item Unfall"><a href="nachrichtenarchiv/tag/Unfall">Unfall</a></li>
+                        <li class="tag-chain-item Verkehrsrecht"><a href="nachrichtenarchiv/tag/Verkehrsrecht">Verkehrsrecht</a></li>
+                        <li class="tag-chain-item last Verkehrssicherheit"><a href="nachrichtenarchiv/tag/Verkehrssicherheit">Verkehrssicherheit</a></li>
+                    </ul>
+                </div>
+
+				<?php if ($this->enclosure): ?>
+					<div class="enclosure">
+						<?php foreach ($this->enclosure as $enclosure): ?>
+							<p><img src="<?php echo $enclosure['icon']; ?>" width="18" height="18" alt="<?php echo $enclosure['mime']; ?>" class="mime_icon"> <a href="<?php echo $enclosure['href']; ?>" title="<?php echo $enclosure['title']; ?>"><?php echo $enclosure['link']; ?> <span class="size">(<?php echo $enclosure['filesize']; ?>)</span></a></p>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+
+	<?php //echo $this->showTemplateVars(); ?>
+</div>

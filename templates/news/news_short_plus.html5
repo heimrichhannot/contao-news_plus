@@ -1,0 +1,41 @@
+
+<div class="news box col-sm-4 col-md-3 layout_short arc_<?php echo $this->archive->id; ?> block<?php echo $this->class; ?>">
+ <a href="{{news_url}}<?php echo $this->link; ?>" class="inside">
+      <?php // @todo in Template Funktion auslagern
+        $type = explode(' ',trim($this->archive->title));
+        // print_r($type);
+        $subject = explode(' - ',trim($this->archive->title));
+      ?>
+      <h3 class="<?php echo strtolower($type[0]); ?> <?php echo strtolower($subject[1]); ?>">
+        <?php echo $type[0]; ?>
+        <?php echo $subject[1]; ?>
+      </h3>
+
+      <?php if ($this->hasMetaFields): ?>
+        <p class="info"><time datetime="<?php echo $this->datetime; ?>"><?php echo $this->date; ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></p>
+      <?php endif; ?>
+
+
+
+      <h2><?php echo $this->headline; ?></h2>
+
+      <?php // @todo in Template Funktion auslagern
+        //$teaser = wordwrap($this->teaser, 200, "\0");
+        // worte
+        //$teaser = preg_replace("/[^ ]*$/", '', substr($this->teaser, 0, 200));
+        // Sätze
+        $teaser = preg_replace("/[^\.]*$/", '', substr($this->teaser, 0, 250));
+      ?>
+
+
+      <div class="teaser">
+        <?php echo $teaser; ?>
+        <?php // echo $this->teaser; ?>
+      </div>
+
+      <?php if ($this->text || $this->teaser): ?>
+        <p class="more"><?php echo $this->more; ?></p>
+      <?php endif; ?>
+        <?php //echo $this->showTemplateVars(); ?>
+  </a>
+</div>

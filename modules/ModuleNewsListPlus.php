@@ -38,7 +38,7 @@ class ModuleNewsListPlus extends \ModuleNewsList
             return '';
         }
 
-        $GLOBALS['TL_CSS']['999'] = 'system/modules/news_plus/assets/news-plus.css';
+        $GLOBALS['TL_CSS']['news_plus'] = 'system/modules/news_plus/assets/news-plus.less';
 
         return parent::generate();
     }

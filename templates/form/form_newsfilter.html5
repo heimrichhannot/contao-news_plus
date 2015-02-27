@@ -1,55 +1,49 @@
-<div class="row">
-    <div class="fields-container">
-        <div class="form-group newscategories">
+<div class="fields-container">
+	<div class="form-group newscategories">
 
-            <label for="ctrl_newscategories" class="select control-label">Filter</label>
-            <select name="newscategories" id="ctrl_newscategories" class="select control-label form-control" style="width: 853px; display: none;">
-                <option value="">Veranstaltungsart</option>
-                <option value="7">Assessorexamen</option>
-                <option value="8">Fachanwaltslehrgang</option>
-                <option value="6">Fachtagung</option>
-                <option value="5">Intensivkurs</option>
-                <option value="10">Mediationsausbildung</option>
-                <option value="3">Mitarbeiterseminar</option>
-                <option value="4">Notarakademie</option>
-                <option value="2">Online-Seminar</option>
-                <option value="1">Seminar</option>
-                <option value="9">Sonstige</option>
-            </select>
-        </div>
+		<label for="ctrl_newscategories" class="select control-label">Filter</label>
+		<select name="newscategories" id="ctrl_newscategories" class="select control-label form-control" style="width: 853px; display: none;">
+			<option value="">Veranstaltungsart</option>
+			<option value="7">Assessorexamen</option>
+			<option value="8">Fachanwaltslehrgang</option>
+			<option value="6">Fachtagung</option>
+			<option value="5">Intensivkurs</option>
+			<option value="10">Mediationsausbildung</option>
+			<option value="3">Mitarbeiterseminar</option>
+			<option value="4">Notarakademie</option>
+			<option value="2">Online-Seminar</option>
+			<option value="1">Seminar</option>
+			<option value="9">Sonstige</option>
+		</select>
+	</div>
 
-        <div class="form-group startDate">
-            <label for="ctrl_startDate" class="control-label">Startdatum</label>
-            <div class="input-group datepicker">
-                <input type="text" name="startDate" id="ctrl_startDate" class="text control-label form-control" value="26.02.2015" placeholder="von" autocomplete="off" data-format="DD.MM.YYYY" data-linked="#ctrl_endDate">
-                <span class="input-group-addon"><i class="ei ei-calendar"></i></span>
-            </div>
-        </div>
+	<div class="form-group startDate">
+		<label for="ctrl_startDate" class="control-label">Startdatum</label>
+		<div class="input-group datepicker">
+			<input type="text" name="startDate" id="ctrl_startDate" class="text control-label form-control" value="26.02.2015" placeholder="von" autocomplete="off" data-format="DD.MM.YYYY" data-linked="#ctrl_endDate">
+			<span class="input-group-addon"><i class="ei ei-calendar"></i></span>
+		</div>
+	</div>
 
-        <div class="form-group endDate">
-            <label for="ctrl_endDate" class="control-label">Enddatum</label>
-            <div class="input-group datepicker">
-                <input type="text" name="endDate" id="ctrl_endDate" class="text control-label form-control" value="" placeholder="bis" autocomplete="off" data-format="DD.MM.YYYY">
-                <span class="input-group-addon"><i class="ei ei-calendar"></i></span>
-            </div>
-        </div>
+	<div class="form-group endDate">
+		<label for="ctrl_endDate" class="control-label">Enddatum</label>
+		<div class="input-group datepicker">
+			<input type="text" name="endDate" id="ctrl_endDate" class="text control-label form-control" value="" placeholder="bis" autocomplete="off" data-format="DD.MM.YYYY">
+			<span class="input-group-addon"><i class="ei ei-calendar"></i></span>
+		</div>
+	</div>
 
-        <div class="mod_search block">
-            <form action="de/suche" method="get" class="form-horizontal">
-                <div class="formbody">
-                    <div class="row">
-                        <div class="col-lg-offset-1 col-lg-11">
-                            <div class="input-group">
-                                <label for="ctrl_keywords_4" class="sr-only"><i class="fa fa-search"></i><span class="invisible">Suchbegriffe</span></label>
-                                <input type="search" name="keywords" id="ctrl_keywords_4" class="input-lg text form-control" value="" placeholder="Suchbegriffe">
-                                 <span class="input-group-btn">
-                                <button type="submit" id="ctrl_submit_4" class="btn btn-default btn-lg submit"><i class="fa fa-search"></i><span class="sr-only">Suchen</span></button>
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="mod_search block">
+		<form action="de/suche" method="get" class="form-horizontal">
+			<div class="formbody">
+				<div class="input-group">
+					<label for="ctrl_keywords_4" class="sr-only"><i class="fa fa-search"></i><span class="invisible">Suchbegriffe</span></label>
+					<input type="search" name="keywords" id="ctrl_keywords_4" class="input-lg text form-control" value="" placeholder="Suchbegriffe">
+					 <span class="input-group-btn">
+						<button type="submit" id="ctrl_submit_4" class="btn btn-default btn-lg submit"><i class="fa fa-search"></i><span class="sr-only">Suchen</span></button>
+					</span>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>

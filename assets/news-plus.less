@@ -43,6 +43,7 @@
 
     .news .inside {
       background-color: @white;
+	  text-decoration: none;
     }
   }
 
@@ -175,38 +176,55 @@
 }
 
 .mod_newsfilter .fields-container {
-  margin: 0 15px;
+  .make-row();
+  .filter-row();
 
   > * {
-    float: left;
-    width: 25%;
-    background-color: @light-grey;
     margin-bottom: 30px;
   }
 
   .cat-wrapper {
-    width: 23%;
-
+	.make-lg-column(3);
+	.filter-column();
   }
 
   .date-wrapper {
-    width: 16.5%;
-    margin: 0 1%;
-    .form-group {
-      width: 49.75%;
-      float: left;
-    }
+	.make-lg-column(3);
+	.filter-column();
 
-    .form-group:first-child {
-        border-right: 0.5% solid @white;
-    }
+	> *{
+	  float: left;
+	}
+
+	.form-group-label{
+	  width: 30%;
+	}
+
+	.form-group{
+	  width: 50%;
+	}
+
+	.label-input{
+	  display: block;
+	  margin-right: 2px;
+	}
+
+	.input-group{
+	  margin-right: 2px;
+	}
+
+	.endDate{
+	  .input-group{
+		margin-right: 0;
+	  }
+	}
   }
 
   .search-wrapper {
-    width: 58.5%;
+    .make-lg-column(6);
+	.filter-column();
 
     .btn {
-      padding: 3px 12px 5px 12px;
       color: @grey;
     }
   }

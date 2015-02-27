@@ -24,8 +24,7 @@
         // worte
         //$teaser = preg_replace("/[^ ]*$/", '', substr($this->teaser, 0, 200));
         // Sätze
-        $teaser = preg_replace("/[^\.]*$/", '', substr($this->teaser, 0, 250));
-      ?>
+        $teaser = \String::substr($this->teaser, 180); ?>
 
 
       <div class="teaser">
@@ -33,9 +32,6 @@
         <?php // echo $this->teaser; ?>
       </div>
 
-      <?php if ($this->text || $this->teaser): ?>
-        <p class="more"><?php echo $this->more; ?></p>
-      <?php endif; ?>
         <?php //echo $this->showTemplateVars(); ?>
   </a>
 </div>

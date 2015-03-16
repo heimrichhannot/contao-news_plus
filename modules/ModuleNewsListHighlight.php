@@ -66,6 +66,9 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
         $objResult = $this->Database->prepare($strSql)->execute();
 
         $GLOBALS['NEWS_LIST_EXCLUDE_RELATED'] = true;
+
+
+
         $this->Template->articles = $this->parseArticles($objResult);
     }
 }

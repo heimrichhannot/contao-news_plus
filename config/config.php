@@ -28,6 +28,6 @@ $GLOBALS['TL_MODELS']['tl_news']     = 'HeimrichHannot\NewsPlus\NewsPlusModel';
  * Javascript
  */
 if (TL_MODE == 'FE') {
-    $GLOBALS['TL_JAVASCRIPT']['calendarplus'] = '/system/modules/news_plus/assets/js/jquery.newsplus.js';
+    $GLOBALS['TL_JAVASCRIPT']['newsplus'] = '/system/modules/news_plus/assets/js/jquery.newsplus.js';
 //	$GLOBALS['TL_JAVASCRIPT']['newsplus'] = '/system/modules/news_plus/assets/js/isotope.js';
 }

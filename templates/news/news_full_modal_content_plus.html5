@@ -2,9 +2,9 @@
 <div class="modal-content">
 	<div class="modal-header">
 	    <!-- indexer::stop -->
-	    <a class="prev" data-event="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-03-15" title="Betrunken Radfahren ist verboten - Neue Promillegrenzen nicht notwendig">Vorherige</a>
+	    <a class="prev" data-news="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-03-15" title="Betrunken Radfahren ist verboten - Neue Promillegrenzen nicht notwendig">Vorherige</a>
 	    &nbsp;⁄&nbsp;&nbsp;
-        <a class="next" data-event="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-05-15" title="Spannungsfeld Verkehrssicherheit und moderne Kommunikation - keine Lösung durch neue Vorschriften">Nächste</a>
+        <a class="next" data-news="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-05-15" title="Spannungsfeld Verkehrssicherheit und moderne Kommunikation - keine Lösung durch neue Vorschriften">Nächste</a>
 
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 

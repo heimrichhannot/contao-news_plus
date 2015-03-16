@@ -33,6 +33,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
         // set news categories from filter
         if(isset($_GET['newscategories'])) $this->news_archives = explode(',', \Input::get('newscategories'));
+
         $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
 
         // Return if there are no archives

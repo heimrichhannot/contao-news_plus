@@ -85,12 +85,21 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		$objTemplate->linkHeadline = $this->generateLink($objArticle->headline, $objArticle, $blnAddArchive);
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
 		$objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
-		if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objTemplate->archive = $objArticle->getRelated('pid');
-        $objTemplate->archive = ModuleNewsListPlus::findArchiveByPid($objArticle->pid);
-        $objTemplate->archive->title = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title);
+
+		$objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
+		$objTemplate->archive = $objArchive;
+
+        $objTemplate->archive->title = $objTemplate->archive->displayTitle ? $objTemplate->archive->displayTitle : $objTemplate->archive->title;
         $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
 		$objTemplate->count = $intCount; // see #5708
 		$objTemplate->text = '';
+
+		// Modal
+		if($this->news_showInModal && $this->news_readerModule)
+		{
+			$objTemplate->modal = true;
+			$objTemplate->modalTarget = '#' . EventsPlusHelper::getCSSModalID($this->news_readerModule);
+		}
 
 		// Clean the RTE output
 		if ($objArticle->teaser != '')

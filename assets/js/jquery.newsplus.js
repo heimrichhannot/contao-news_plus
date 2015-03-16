@@ -5,11 +5,9 @@
             this.showNewsInModal();
             this.closeNewsModal();
             this.changeUrl();
-
-            console.log("TEST");
         },
         showNewsInModal: function () {
-            $('body').on('click', '[data-event="modal"]', function (e) {
+            $('body').on('click', '[data-news="modal"]', function (e) {
                 e.preventDefault();
                 var $this = $(this),
                     $modal = $($this.data('target')),

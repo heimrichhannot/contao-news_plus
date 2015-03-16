@@ -60,13 +60,18 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
                       AND featured = 1 ORDER BY date DESC
                       LIMIT 4";
 
-        $strSql = "select * from tl_news where tstamp = (select min(tstamp) from tl_news as f where f.pid = tl_news.pid and featured = '1')".
+        $strSql = "select id from tl_news where tstamp = (select min(tstamp) from tl_news as f where f.pid = tl_news.pid and featured = '1')".
                     "ORDER BY date LIMIT 4;";
 
         $objResult = $this->Database->prepare($strSql)->execute();
 
-        $GLOBALS['NEWS_LIST_EXCLUDE_RELATED'] = true;
+        $arrResult = $objResult->fetchAllAssoc();
 
-        $this->Template->articles = $this->parseArticles($objResult);
+        foreach ($arrResult as $rs) {
+            $arr[] = $rs['id'];
+        }
+
+        $objArticles = NewsPlusModel::findPublishedByIds($arr);
+        $this->Template->articles = $this->parseArticles($objArticles);
     }
 }

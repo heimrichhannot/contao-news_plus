@@ -28,6 +28,8 @@ class ModuleNewsFilter extends \Module
 
     protected function compile()
     {
+        global $objPage;
+
         // Set the flags
         $GLOBALS['NEWS_FILTER_SHOW_SEARCH'] = $this->news_filterShowSearch ? true : false; // filter news by search
         $GLOBALS['NEWS_FILTER_USE_SEARCH_INDEX'] = $this->news_filterUseSearchIndex ? true : false; // filter news by search index or tl_news table
@@ -52,19 +54,19 @@ class ModuleNewsFilter extends \Module
             return '';
         }
 
-        global $objPage;
         $objTemplate = new \FrontendTemplate($this->searchTpl ?: $this->strCategoryTemplate);
+        $objTemplate->filterName = $GLOBALS['TL_LANG']['news_plus']['filterLabel'];
 
         if($this->strCategoryTemplate == 'filter_cat_multilevel') {
             $strCategories = trim(\Input::get('newscategories'));
-            $objTemplate->filterName = $GLOBALS['TL_LANG']['news_plus']['filterLabel'];
-            if ($strCategories != '') {
-                $objTemplate->pageLink = $objPage->alias;
-                $filterName = ModuleNewsListPlus::findArchiveTitleByPid($strCategories);
-                $objTemplate->filterResetName = $GLOBALS['TL_LANG']['news_plus']['resetFilterLabel'];
-                $objTemplate->filterName = self::getShortCategoryTitle($filterName);
-            }
 
+            if ($strCategories) {
+                $filterName = ModuleNewsListPlus::findArchiveTitleByPid($strCategories);
+                $objTemplate->filterName = self::getShortCategoryTitle($filterName);
+                $objTemplate->filterResetName = $GLOBALS['TL_LANG']['news_plus']['resetFilterLabel'];
+                $objTemplate->pageLink = $objPage->alias;
+                $objTemplate->hiddenField = $strCategories;
+            }
             $objTemplate->categories = self::groupCategoriesByArchivesTitle($arrResult);
         } else {
             $objTemplate->optionValues = self::getCategoriesFromArchiveTitle($arrResult);
@@ -143,6 +145,7 @@ class ModuleNewsFilter extends \Module
     protected function getPageLink()
     {
         global $objPage;
+
         $arrPageLinkParam = array();
         if($this->Template->searchKeywords) $arrPageLinkParam[] = 'searchKeywords='.$this->Template->searchKeywords;
 

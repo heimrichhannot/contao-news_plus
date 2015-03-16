@@ -84,7 +84,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		$objTemplate->hasSubHeadline = $objArticle->subheadline ? true : false;
 		$objTemplate->linkHeadline = $this->generateLink($objArticle->headline, $objArticle, $blnAddArchive);
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
-		$objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
+        $objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
 
 		$objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
 		$objTemplate->archive = $objArchive;
@@ -93,13 +93,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
 		$objTemplate->count = $intCount; // see #5708
 		$objTemplate->text = '';
-
-		// Modal
-		if($this->news_showInModal && $this->news_readerModule)
-		{
-			$objTemplate->modal = true;
-			$objTemplate->modalTarget = '#' . EventsPlusHelper::getCSSModalID($this->news_readerModule);
-		}
 
 		// Clean the RTE output
 		if ($objArticle->teaser != '')
@@ -294,7 +287,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	 */
 	protected function generateNewsUrl($objItem, $blnAddArchive=false)
 	{
-		$strCacheKey = 'id_' . $objItem->id;
+        $strCacheKey = 'id_' . $objItem->id;
 
 		// Load the URL from cache
 		if (isset(self::$arrUrlCache[$strCacheKey]))
@@ -356,7 +349,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 				self::$arrUrlCache[$strCacheKey] .= (\Config::get('disableAlias') ? '&amp;' : '?') . 'month=' . \Input::get('month');
 			}
 		}
-
 		return self::$arrUrlCache[$strCacheKey];
 	}
 

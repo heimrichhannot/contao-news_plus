@@ -31,7 +31,7 @@ $dc['palettes']['newslist_plus']    = '
 $dc['palettes']['newslist_highlight']    = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,numberOfItems,news_featured,perPage,skipFirst;
-                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule;
                                     {image_legend:hide},imgSize;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';

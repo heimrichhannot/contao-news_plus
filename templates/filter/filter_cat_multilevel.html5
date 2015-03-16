@@ -10,4 +10,5 @@
         <li><a href="<?php echo $this->pageLink; ?>"><?php echo $this->filterResetName; ?></a></li>
         <?php endif; ?>
     </ul>
+    <input type="hidden" name="newscategories" value="<?php echo $this->hiddenField; ?>">
 </div>

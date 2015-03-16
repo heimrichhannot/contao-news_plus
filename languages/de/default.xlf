@@ -1,0 +1,14 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/news_plus/languages/en/default.php" source-language="en">
+    <body>
+      <trans-unit id="news_plus.filterLabel">
+        <source>Filter</source>
+        <target>Filter</target>
+      </trans-unit>
+      <trans-unit id="news_plus.resetFilterLabel">
+        <source>Reset filter </source>
+        <target>Filter zurücksetzen</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

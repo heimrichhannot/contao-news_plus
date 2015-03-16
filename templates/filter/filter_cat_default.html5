@@ -1,0 +1,5 @@
+
+<select name="newscategories" id="ctrl_newscategories" class="select control-label form-control">
+    <option>Filter</option>
+    <?php echo $this->optionValues; ?>
+</select>

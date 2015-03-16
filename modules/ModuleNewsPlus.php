@@ -2,7 +2,10 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-abstract class ModuleNewsPlus extends \NewsPlus
+use HeimrichHannot\CalendarPlus\EventsPlusHelper;
+use HeimrichHannot\CalendarPlus\ModuleEventListPlus;
+
+abstract class ModuleNewsPlus extends \ModuleNews
 {
 
 	/**
@@ -11,6 +14,11 @@ abstract class ModuleNewsPlus extends \NewsPlus
 	 */
 	private static $arrUrlCache = array();
 
+    /**
+     * News
+     * @var string
+     */
+    protected $news;
 
 	/**
 	 * Sort out protected archives
@@ -67,18 +75,20 @@ abstract class ModuleNewsPlus extends \NewsPlus
 	{
 		global $objPage;
 
-		$objTemplate = new \FrontendTemplate($this->news_template);
+        $objTemplate = new \FrontendTemplate($this->news_template);
 		$objTemplate->setData($objArticle->row());
-        print_r($objArticle);
 		$objTemplate->class = (($objArticle->cssClass != '') ? ' ' . $objArticle->cssClass : '') . $strClass;
-        $objTemplate->archiveTitle = $this->getArchiveTitle($objArticle->title);
+        // $objTemplate->archiveTitle = $this->getArchiveTitle($objArticle->title);
 		$objTemplate->newsHeadline = $objArticle->headline;
 		$objTemplate->subHeadline = $objArticle->subheadline;
 		$objTemplate->hasSubHeadline = $objArticle->subheadline ? true : false;
 		$objTemplate->linkHeadline = $this->generateLink($objArticle->headline, $objArticle, $blnAddArchive);
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
 		$objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
-		$objTemplate->archive = $objArticle->getRelated('pid');
+		if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objTemplate->archive = $objArticle->getRelated('pid');
+        $objTemplate->archive = ModuleNewsListPlus::findArchiveByPid($objArticle->pid);
+        $objTemplate->archive->title = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title);
+        $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
 		$objTemplate->count = $intCount; // see #5708
 		$objTemplate->text = '';
 
@@ -170,6 +180,13 @@ abstract class ModuleNewsPlus extends \NewsPlus
 		{
 			$this->addEnclosuresToTemplate($objTemplate, $objArticle->row());
 		}
+
+        // Modal
+        if($this->news_showInModal && $objArticle->source == 'default' && $this->news_readerModule)
+        {
+            $objTemplate->modal = true;
+            $objTemplate->modalTarget = '#' . EventsPlusHelper::getCSSModalID($this->news_readerModule);
+        }
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['parseArticles']) && is_array($GLOBALS['TL_HOOKS']['parseArticles']))
@@ -313,7 +330,7 @@ abstract class ModuleNewsPlus extends \NewsPlus
 		// Link to the default page
 		if (self::$arrUrlCache[$strCacheKey] === null)
 		{
-			$objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+            if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
 
 			if ($objPage === null)
 			{

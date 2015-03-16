@@ -1,37 +1,20 @@
 
 <div class="news box col-sm-4 col-md-3 layout_short arc_<?php echo $this->archive->id; ?> block<?php echo $this->class; ?>">
- <a href="{{news_url}}<?php echo $this->link; ?>" class="inside">
-      <?php // @todo in Template Funktion auslagern
-        $type = explode(' ',trim($this->archive->title));
-        // print_r($type);
-        $subject = explode(' - ',trim($this->archive->title));
-      ?>
-      <h3 class="<?php echo strtolower($type[0]); ?> <?php echo strtolower($subject[1]); ?>">
-        <?php echo $type[0]; ?>
-        <?php echo $subject[1]; ?>
+    <a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->link; ?>" title="<?php echo $this->title; ?>"<?php echo $this->target; ?> class="inside">
+      <h3 class="<?php echo $this->archive->class; ?>">
+        <?php echo $this->archive->title; ?>
       </h3>
 
       <?php if ($this->hasMetaFields): ?>
         <p class="info"><time datetime="<?php echo $this->datetime; ?>"><?php echo $this->date; ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></p>
-      <?php endif; ?>
-
-
+      <?php endif?>
 
       <h2><?php echo $this->headline; ?></h2>
 
-      <?php // @todo in Template Funktion auslagern
-        //$teaser = wordwrap($this->teaser, 200, "\0");
-        // worte
-        //$teaser = preg_replace("/[^ ]*$/", '', substr($this->teaser, 0, 200));
-        // Sätze
-        $teaser = \String::substr($this->teaser, 180); ?>
-
-
       <div class="teaser">
-        <?php echo $teaser; ?>
-        <?php // echo $this->teaser; ?>
+        <?php echo \String::substr($this->teaser, 180); ?>
       </div>
-
-        <?php //echo $this->showTemplateVars(); ?>
   </a>
 </div>
+
+<?php //echo $this->showTemplateVars(); ?>

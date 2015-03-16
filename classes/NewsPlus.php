@@ -9,11 +9,9 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-namespace HeimrichHannot;
+namespace HeimrichHannot\NewsPlus;
 
-abstract class NewsPlus extends \News
+abstract class NewsPlus extends ModuleNewsPlus
 {
-
-
 
 }

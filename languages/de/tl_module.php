@@ -11,11 +11,13 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Erweiterte Newsliste', 'Listet alle Events eines bestimmten Zeitraums auf mit erweiterten Konfigurationsmöglichkeiten.');
-$GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Eventfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Newsliste manipuliert.');
+$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Erweiterte Newsliste', 'Listet alle News eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Erweiterter Newsleser', 'Stellt eine einzelne News dar mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Newsfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Newsliste manipuliert.');
 
 /**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'] = array('Filtertemplate', 'Legen Sie das Template des Newsfilters fest.');
 $GLOBALS['TL_LANG']['tl_module']['news_showSearch'] = array('Suche anzeigen', 'Soll die Suchfunktion im Filter aktiviert werden?');
+$GLOBALS['TL_LANG']['tl_module']['news_showInModal'] = array('Newsdetails im Modalfesnter anzeigen', '<b>Achtung:</b> Der Newsleser muß entsprechend angegeben werden.');

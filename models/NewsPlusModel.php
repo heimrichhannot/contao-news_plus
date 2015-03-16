@@ -11,7 +11,6 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-
 class NewsPlusModel extends \NewsModel
 {
 
@@ -88,6 +87,9 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
+        // Filter by search
+        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+
 		if (!isset($arrOptions['order']))
 		{
 			$arrOptions['order']  = "$t.date DESC";
@@ -96,11 +98,11 @@ class NewsPlusModel extends \NewsModel
 		$arrOptions['limit']  = $intLimit;
 		$arrOptions['offset'] = $intOffset;
 
-
+        //echo "Debug: <br><pre>"; print_r($arrOptions); echo "</pre>";
+        //echo "<br><pre>"; print_r($arrColumns); echo "</pre>";
 
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
-
 
 	/**
 	 * Count published news items by their parent ID
@@ -135,6 +137,9 @@ class NewsPlusModel extends \NewsModel
 			$time = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
+
+        // Filter by search
+        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
 		return static::countBy($arrColumns, null, $arrOptions);
 	}
@@ -266,4 +271,85 @@ class NewsPlusModel extends \NewsModel
 
 		return static::countBy($arrColumns, array($intFrom, $intTo), $arrOptions);
 	}
+
+    /**
+     * Find published news in search index
+     * @param array
+     * @return array
+     */
+    public static function findPublishedInSearchIndexByString($keywords, $limit = '', $offset = 0)
+    {
+        // $objSearch = \Search::searchFor($strKeywords, ($strQueryType == 'or'), $arrPages, 0, 0, $blnFuzzy);
+
+
+        $t          = static::$strTable;
+        // $arrColumns = array("($t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+
+        if (!BE_USER_LOGGED_IN) {
+            $time         = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        $objSearch = \Search::searchFor($keywords, 'or','',$limit,$offset,true);
+        $arrIds = static::getIdsOfNewsItemsFromSearchObject($objSearch);
+        // $arrIds = array('vgt-03-15');
+        return static::findBy('alias', $arrIds);
+
+        $objArticles = static::findPublishedNewsByIds($arrIds);
+        return $objArticles;
+    }
+
+    protected static function getIdsOfNewsItemsFromSearchObject($objSearch){
+
+        foreach($objSearch->fetchAllAssoc() as $news) {
+            $news['archive_title'] = ModuleNewsListPlus::findArchiveTitleByPid($news['pid']);
+            $arrNews[] = $news;
+        }
+        return $arrNews;
+    }
+
+    /**
+     * Filter the news by headline or teaser
+     * @param array
+     * @return array
+     */
+    protected static function findPublishedByHeadlineOrTeaser($arrColumns)
+    {
+        $t = static::$strTable;
+
+        // Try to find by given keywords
+        if ($GLOBALS['NEWS_FILTER_SHOW_SEARCH'] && \Input::get('searchKeywords')) {
+
+            $arrKeywords = explode(" ", trim(\Input::get('searchKeywords')));
+            $arrClauses = array();
+            foreach($arrKeywords as $keyword) {
+                $arrClauses[] = "$t.headline LIKE '%".$keyword."%'";
+                $arrClauses[] = "$t.teaser LIKE '%".$keyword."%'";
+            }
+            $arrColumns[]=implode(' OR ' ,$arrClauses);
+        }
+        return $arrColumns;
+    }
+
+
+    /**
+     * Find published news by ids
+     *
+     * @param mixed $varId The numeric ID or alias name
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model|null The model or null if there is no event
+     */
+    public static function findPublishedNewsByIds($arrIds, array $arrOptions = array())
+    {
+        $t          = static::$strTable;
+        $arrColumns = array("($t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+
+        if (!BE_USER_LOGGED_IN) {
+            $time         = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        return static::findBy('alias', $arrIds);
+    }
 }

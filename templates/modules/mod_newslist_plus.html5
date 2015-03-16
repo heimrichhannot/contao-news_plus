@@ -1,7 +1,6 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-
   <?php if (empty($this->articles)): ?>
     <p class="empty"><?php echo $this->empty; ?></p>
   <?php else: ?>
@@ -10,3 +9,5 @@
   <?php endif; ?>
 
 <?php $this->endblock(); ?>
+
+<?php echo '<pre>' . $this->showTemplateVars() . '</pre>'; ?>

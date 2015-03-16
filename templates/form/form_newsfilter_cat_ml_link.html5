@@ -1,0 +1,2 @@
+
+    <li><a href="<?php echo $this->pageLink; ?><?php echo $this->categoryParam; ?>"><?php echo $this->value; ?></a></li>

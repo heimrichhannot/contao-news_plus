@@ -1,0 +1,13 @@
+
+<div class="dropdown">
+    <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary text-left" data-target="#" href="/page.html">
+        <?php echo $this->filterName; ?> <span class="caret pull-right"></span>
+    </a>
+    <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+        <?php echo $this->categories; ?>
+        <?php if($this->filterResetName): ?>
+        <li class="divider"></li>
+        <li><a href="<?php echo $this->pageLink; ?>"><?php echo $this->filterResetName; ?></a></li>
+        <?php endif; ?>
+    </ul>
+</div>

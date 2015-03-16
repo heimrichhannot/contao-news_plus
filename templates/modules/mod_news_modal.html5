@@ -1,0 +1,7 @@
+<?php $this->extend('block_modal_news'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php echo $this->articles; ?>
+
+<?php $this->endblock(); ?>

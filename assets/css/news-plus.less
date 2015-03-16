@@ -158,7 +158,7 @@
         margin-top: 0;
       }
 
-      h3.pressemitteilungen {
+      h3.pressemitteilung {
         background-color: @cat-press;
       }
 
@@ -186,62 +186,81 @@
 }
 
 .mod_newsfilter .fields-container {
-  margin: 0 15px;
+  .make-row();
+  .filter-row();
 
   > * {
-    float: left;
-    width: 25%;
-    background-color: @light-grey;
-    margin-bottom: 30px;
+	margin-bottom: 30px;
   }
 
   .cat-wrapper {
-    width: 23%;
+	.make-lg-column(3);
+	.filter-column();
   }
 
   .date-wrapper {
-    width: 16.5%;
-    margin: 0 1%;
-    .form-group {
-      width: 49.75%;
-      float: left;
-    }
+	.make-lg-column(3);
+	.filter-column();
 
-    .form-group:first-child {
-        border-right: 0.5% solid @white;
-    }
+	> *{
+	  float: left;
+	}
+
+	.form-group-label{
+	  width: 30%;
+	}
+
+	.form-group{
+	  width: 50%;
+	}
+
+	.label-input{
+	  display: block;
+	  margin-right: 2px;
+	}
+
+	.input-group{
+	  margin-right: 2px;
+	}
+
+	.endDate{
+	  .input-group{
+		margin-right: 0;
+	  }
+	}
   }
 
   .search-wrapper {
-    width: 58.5%;
+	.make-lg-column(6);
+	.filter-column();
 
-    .btn {
-      padding: 3px 12px 5px 12px;
-      color: @grey;
-    }
+	.btn {
+	  color: @grey;
+	}
   }
 
   .btn-select {
-    background-color: @light-grey;
+	background-color: @light-grey;
   }
 
   .input-group-addon {
-    border: 0;
+	border: 0;
   }
 
   .form-group {
-    margin-bottom: 0;
+	margin-bottom: 0;
   }
 
   .form-control {
-    background-color: @light-grey;
-    border: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+	background-color: @light-grey;
+	border: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
   }
 
 }
+
 .mod_newsfilter .form-group {
 
 }

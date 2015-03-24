@@ -11,6 +11,11 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+
+/**
+ * Class NewsPlusModel
+ * @package HeimrichHannot\NewsPlus
+ */
 class NewsPlusModel extends \NewsModel
 {
 
@@ -61,7 +66,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
+	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -81,7 +86,13 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "$t.featured=''";
 		}
 
-		// Never return unpublished elements in the back end, so they don't end up in the RSS feed
+        // filter by date
+        if($startDate != null)
+            $arrColumns[] = "$t.date>=$startDate";
+        if($endDate != null)
+            $arrColumns[] = "$t.date<=$endDate";
+
+        // Never return unpublished elements in the back end, so they don't end up in the RSS feed
 		if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
 		{
 			$time = time();
@@ -98,9 +109,6 @@ class NewsPlusModel extends \NewsModel
 
 		$arrOptions['limit']  = $intLimit;
 		$arrOptions['offset'] = $intOffset;
-
-        //echo "Debug: <br><pre>"; print_r($arrOptions); echo "</pre>";
-        //echo "<br><pre>"; print_r($arrColumns); echo "</pre>";
 
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
@@ -340,7 +348,7 @@ class NewsPlusModel extends \NewsModel
         $objSearch = \Search::searchFor($keywords, 'or','',$limit,$offset,true);
         $arrIds = static::getIdsOfNewsItemsFromSearchObject($objSearch);
         // $arrIds = array('vgt-03-15');
-        return static::findBy('alias', $arrIds);
+        //return static::findBy('alias', $arrIds);
 
         $objArticles = static::findPublishedNewsByIds($arrIds);
         return $objArticles;
@@ -356,7 +364,7 @@ class NewsPlusModel extends \NewsModel
     }
 
     /**
-     * Filter the news by headline or teaser
+     * Filter the news by headline or
      * @param array
      * @return array
      */
@@ -398,5 +406,46 @@ class NewsPlusModel extends \NewsModel
         }
 
         return static::findBy('alias', $arrIds);
+    }
+
+    public function getAllNewsByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+
+        if ($blnFeatured === true)
+        {
+            $arrColumns[] = "$t.featured=1";
+        }
+        elseif ($blnFeatured === false)
+        {
+            $arrColumns[] = "$t.featured=''";
+        }
+
+        // Never return unpublished elements in the back end, so they don't end up in the RSS feed
+        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        {
+            $time = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        // Filter by search
+        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order']  = "$t.date DESC";
+        }
+
+        $arrOptions['limit']  = $intLimit;
+        $arrOptions['offset'] = $intOffset;
+
+        return static::findBy($arrColumns, null, $arrOptions);
     }
 }

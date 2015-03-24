@@ -21,3 +21,4 @@ $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Newsfilter', 'Zeigt einen Filt
 $GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'] = array('Filtertemplate', 'Legen Sie das Template des Newsfilters fest.');
 $GLOBALS['TL_LANG']['tl_module']['news_showSearch'] = array('Suche anzeigen', 'Soll die Suchfunktion im Filter aktiviert werden?');
 $GLOBALS['TL_LANG']['tl_module']['news_showInModal'] = array('Newsdetails im Modalfesnter anzeigen', '<b>Achtung:</b> Der Newsleser muß entsprechend angegeben werden.');
+$GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'] = array('PDF-Seite', 'Wählen Sie hier die Seite, die zur Ausgabe der PRINT-TO-PDF-Funktion verwendet werden soll.');

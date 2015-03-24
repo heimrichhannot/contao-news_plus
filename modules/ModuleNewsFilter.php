@@ -10,7 +10,6 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-
 class ModuleNewsFilter extends \Module
 {
 
@@ -45,9 +44,18 @@ class ModuleNewsFilter extends \Module
         // Set Fields
         $this->Template->searchKeywords = trim(\Input::get('searchKeywords'));
 
+        $this->news_archives = deserialize($this->news_archives);
+
+        // Return if there are no archives
+        if (!is_array($this->news_archives) || empty($this->news_archives))
+        {
+            return '';
+        }
+
+        $sql = "SELECT * FROM tl_news_archive WHERE tl_news_archive.id IN(" . implode(',', array_map('intval', $this->news_archives)) . ") ORDER BY title";
 
         /** @var \Contao\Database\Result $rs */
-        $rs = \Database::getInstance()->query('SELECT * FROM tl_news_archive ORDER BY title');
+        $rs = \Database::getInstance()->query($sql);
         $arrResult = $rs->fetchAllAssoc();
 
         if(empty($arrResult)) {
@@ -56,6 +64,7 @@ class ModuleNewsFilter extends \Module
 
         $objTemplate = new \FrontendTemplate($this->searchTpl ?: $this->strCategoryTemplate);
         $objTemplate->filterName = $GLOBALS['TL_LANG']['news_plus']['filterLabel'];
+        $objTemplate->rootPageLink = \Controller::generateFrontendUrl($objPage->row());
 
         if($this->strCategoryTemplate == 'filter_cat_multilevel') {
             $strCategories = trim(\Input::get('newscategories'));
@@ -124,8 +133,9 @@ class ModuleNewsFilter extends \Module
                 $strCat .= self::getCategoryLink($arrArchive);
             else
                 $strCat .= self::getCategorySubmenu($arrArchives[$key], $key);
-
+            $categories[] = $arrArchive['id'];
         }
+        $objTemplate->groupPageLink = self::getPageLink($categories).'&newscategories='.implode(",", $categories);
         $objTemplate->values = $strCat;
         return $objTemplate->parse();
     }
@@ -142,13 +152,13 @@ class ModuleNewsFilter extends \Module
         return $strCat;
     }
 
-    protected function getPageLink()
+    protected function getPageLink($categories = array())
     {
         global $objPage;
 
         $arrPageLinkParam = array();
-        if($this->Template->searchKeywords) $arrPageLinkParam[] = 'searchKeywords='.$this->Template->searchKeywords;
-
+        if($this->Template->searchKeywords)
+            $arrPageLinkParam[] = 'searchKeywords='.$this->Template->searchKeywords;
         return $objPage->alias.'?'.implode("&", $arrPageLinkParam);
     }
 

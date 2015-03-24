@@ -17,6 +17,7 @@ ClassLoader::addClasses(array
 (
     // Classes
     'HeimrichHannot\NewsPlus\NewsPlus'                  => 'system/modules/news_plus/classes/NewsPlus.php',
+    'HeimrichHannot\NewsPlus\NewsPlusTagHelper'         => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',
     // Modules
     'HeimrichHannot\NewsPlus\ModuleNewsPlus'            => 'system/modules/news_plus/modules/ModuleNewsPlus.php',
     'HeimrichHannot\NewsPlus\ModuleNewsListPlus'        => 'system/modules/news_plus/modules/ModuleNewsListPlus.php',
@@ -46,6 +47,7 @@ TemplateLoader::addFiles(array
     'mod_newslist_highlight'                => 'system/modules/news_plus/templates/modules',
     'mod_newsreader_plus'                   => 'system/modules/news_plus/templates/modules',
     'mod_newsfilter'                        => 'system/modules/news_plus/templates/modules',
+    'navigation_arrows'                     => 'system/modules/news_plus/templates/navigation',
     'news_short_plus'                       => 'system/modules/news_plus/templates/news',
     'news_full_modal_plus'                  => 'system/modules/news_plus/templates/news',
     'news_full_modal_content_plus'          => 'system/modules/news_plus/templates/news',

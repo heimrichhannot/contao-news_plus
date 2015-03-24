@@ -47,6 +47,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             return $this->getFrontendModule($this->news_readerModule, $this->strColumn);
         }
 
+        // date filter
+        $this->startDate = strtotime (\Input::get('startDate'));
+        $this->endDate = strtotime (\Input::get('endDate'));
+
         $blnFuzzy = $GLOBALS['NEWS_FILTER_FUZZY_SEARCH'];
         $strQueryType = $GLOBALS['NEWS_FILTER_SEARCH_QUERY_TYPE'];
         $strKeywords = trim(\Input::get('searchKeywords'));
@@ -80,7 +84,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         } else {
             $blnFeatured = null;
         }
-
 
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
@@ -131,12 +134,38 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
 
-        // Get the items
-        if (isset($limit)) {
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, $limit, $offset);
+        // get items by tag tid
+        $arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
+
+        // Get the items normal or by tag
+        if(count($arrTagIds) > 0) {
+            $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
+        } elseif (isset($limit) && !isset($objArticles)) {
+            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
         } else {
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, 0, $offset);
+            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
         }
+
+        // store all events ids in session
+        $arrUrlParam = array();
+        if(\Input::get("newscategories")) $arrUrlParam[] = 'newscategories=' . \Input::get("newscategories");
+        if(\Input::get("searchKeywords")) $arrUrlParam[] = 'searchKeywords=' . \Input::get("searchKeywords");
+        if(\Input::get("startDate"))      $arrUrlParam[] = 'startDate=' . \Input::get("startDate");
+        if(\Input::get("endDate"))        $arrUrlParam[] = 'endDate=' . \Input::get("endDate");
+        $strUrlParam = implode("&", $arrUrlParam);
+
+        $arrIds = NewsPlus::getAllPublishedNews($this->news_archives);
+
+        // show only news by tag
+        if(\Input::get("tag")) $arrUrlParam[] = 'tag=' . \Input::get("tag");
+
+        if(count($arrTagIds)) $arrIds = array_intersect($arrIds, $arrTagIds);
+
+        $session = \Session::getInstance()->getData();
+        $session[NEWSPLUS_SESSION_NEWS_IDS] = array();
+        $session[NEWSPLUS_SESSION_NEWS_IDS] = $arrIds;
+        // $session[NEWSPLUS_SESSION_URL_PARAM] = $strUrlParam;
+        \Session::getInstance()->setData($session);
 
         // Add the articles
         if ($objArticles !== null) {
@@ -328,7 +357,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         return \NewsArchiveModel::findByPk($pid);
     }
 
-    protected function getArchiveClassFromTitle($title, $strToLower = false)
+    static function getArchiveClassFromTitle($title, $strToLower = false)
     {
         $type = explode(' ',trim($title));
         $subject = explode(' - ',trim($title));

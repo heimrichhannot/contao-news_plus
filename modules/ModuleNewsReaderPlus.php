@@ -10,6 +10,7 @@
  */
 
 namespace HeimrichHannot\NewsPlus;
+use Contao\NewsArchiveModel;
 use HeimrichHannot\CalendarPlus\EventsPlusHelper;
 
 
@@ -21,7 +22,7 @@ use HeimrichHannot\CalendarPlus\EventsPlusHelper;
  * @author     Leo Feyer <https://contao.org>
  * @package    News
  */
-class ModuleNewsReaderPlus extends \ModuleNews
+class ModuleNewsReaderPlus extends ModuleNewsPlus
 {
 
     /**
@@ -93,13 +94,10 @@ class ModuleNewsReaderPlus extends \ModuleNews
 
     protected function checkConditions()
     {
-        // echo "Debug:<br><pre>"; print_r($_GET); echo "</pre>";
-
         // Set the item from the auto_item parameter
         if (!isset($_GET['items']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
         {
             \Input::setGet('items', \Input::get('auto_item'));
-            $this->news = true;
         }
 
         // Do not index or cache the page if no news item has been specified

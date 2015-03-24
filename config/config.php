@@ -22,7 +22,11 @@ array_insert($GLOBALS['FE_MOD']['news'], 2, array
  */
 $GLOBALS['TL_MODELS']['tl_news']     = 'HeimrichHannot\NewsPlus\NewsPlusModel';
 
-
+/**
+ * Constants
+ */
+define('NEWSPLUS_SESSION_NEWS_IDS', 'NEWS_PLUS_NEWS_IDS');
+// define('NEWSPLUS_SESSION_URL_PARAM', 'NEWS_PLUS_URL_PARAM');
 
 /**
  * Javascript

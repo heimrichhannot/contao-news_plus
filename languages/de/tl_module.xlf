@@ -93,6 +93,14 @@
         <source><b>Note:</b> The news reader must be specified.</source>
         <target><b>Achtung:</b> Der Nachrichtenleser muß entsprechend angegeben werden.</target>
       </trans-unit>
+      <trans-unit id="tl_module.news_pdfJumpTo.0">
+        <source>Select print ro pdf page</source>
+        <target>Seite für den PDF-Druck</target>
+      </trans-unit>
+      <trans-unit id="tl_module.news_pdfJumpTo.1">
+        <source>Please select the page for print to pdf output.</source>
+        <target>Wählen Sie hier die Seite, die zur Ausgabe der PRINT-TO-PDF-Funktion verwendet werden soll.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

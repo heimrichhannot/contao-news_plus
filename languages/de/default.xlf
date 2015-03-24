@@ -6,8 +6,16 @@
         <target>Filter</target>
       </trans-unit>
       <trans-unit id="news_plus.resetFilterLabel">
-        <source>Reset filter </source>
+        <source>Filter zurücksetzen</source>
         <target>Filter zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="news_plus.prevLink">
+        <source>previous</source>
+        <target>Vorheriger</target>
+      </trans-unit>
+      <trans-unit id="news_plus.nextLink">
+        <source>next</source>
+        <target>Nächster</target>
       </trans-unit>
     </body>
   </file>

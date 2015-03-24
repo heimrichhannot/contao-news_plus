@@ -2,15 +2,13 @@
 <div class="modal-content">
 	<div class="modal-header">
 	    <!-- indexer::stop -->
-	    <a class="prev" data-news="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-03-15" title="Betrunken Radfahren ist verboten - Neue Promillegrenzen nicht notwendig">Vorherige</a>
-	    &nbsp;⁄&nbsp;&nbsp;
-        <a class="next" data-news="modal" data-target="#modal_reader_15" href="de/newsroom/vgt-05-15" title="Spannungsfeld Verkehrssicherheit und moderne Kommunikation - keine Lösung durch neue Vorschriften">Nächste</a>
+        <?php echo $this->nav; ?>
 
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
 		<div class="pdf_link">
             <a href="#" class="ei ei-printer" rel="nofollow" title="Diese Seite drucken" onclick="window.print();return false"></a>
-            <a href="<?php echo $this->link; ?>?pdf=14" class="ei ei-download" rel="nofollow" title="Nachricht als PDF drucken"></a>
+            <?php if($this->showPdfButton): ?><a href="<?php echo $this->pdfJumpTo; ?>/<?php echo $this->alias; ?>?pdf=<?php echo $this->pdfArticleId; ?>" class="ei ei-download" rel="nofollow" target="_blank" title="Nachricht als PDF drucken"></a><?php endif; ?>
             <a href="#" class="ei ei-mail_alt" rel="nofollow" title="Diese Seite weiterempfehlen" onclick="window.print();return false"></a>
         </div>
         <!-- indexer::continue -->
@@ -50,19 +48,18 @@
 					<?php endforeach; ?>
 				<?php endif; ?>
 
+                <?php if(count($this->tags)): ?>
                 <div class="tags"><div>Mehr zu </div>
-                    {{tags_used}}
                     <ul class="tag-chain">
-                        <li class="tag-chain-item first Landstraße"><a href="nachrichtenarchiv/tag/Landstraße">Landstraße</a></li>
-                        <li class="tag-chain-item Rumpelstreifen"><a href="nachrichtenarchiv/tag/Rumpelstreifen">Rumpelstreifen</a></li>
-                        <li class="tag-chain-item Unfall"><a href="nachrichtenarchiv/tag/Unfall">Unfall</a></li>
-                        <li class="tag-chain-item Verkehrsrecht"><a href="nachrichtenarchiv/tag/Verkehrsrecht">Verkehrsrecht</a></li>
-                        <li class="tag-chain-item last Verkehrssicherheit"><a href="nachrichtenarchiv/tag/Verkehrssicherheit">Verkehrssicherheit</a></li>
+                        <?php $counter = 0; foreach ($this->tags as $tag): ?>
+                            <li><?php echo $tag; ?></li>
+                        <?php $counter++; endforeach; ?>
                     </ul>
                 </div>
+                <?php endif; ?>
 			</div>
 		</div>
 	</div>
 
-	<?php //echo $this->showTemplateVars(); ?>
+	<?php // echo $this->showTemplateVars(); ?>
 </div>

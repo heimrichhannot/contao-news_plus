@@ -1,4 +1,7 @@
 
+////////////////////////////////
+///WIRD NICHT MEHR GENUTZT!!!///
+////////////////////////////////
 <div class="modal fade in" id="modal" tabindex="-1" role="dialog" aria-hidden="false" data-history-delete="<?php echo $this->alias; ?>">
 	<div class="modal-dialog modal-lg">
 		<?php include_once \Contao\Controller::getTemplate('news_full_modal_content_plus'); ?>

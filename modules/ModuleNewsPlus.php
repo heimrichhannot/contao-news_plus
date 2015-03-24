@@ -3,7 +3,6 @@
 namespace HeimrichHannot\NewsPlus;
 
 use HeimrichHannot\CalendarPlus\EventsPlusHelper;
-use HeimrichHannot\CalendarPlus\ModuleEventListPlus;
 
 abstract class ModuleNewsPlus extends \ModuleNews
 {
@@ -62,7 +61,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		return $arrArchives;
 	}
 
-
 	/**
 	 * Parse an item and return it as string
 	 * @param object
@@ -86,6 +84,20 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
         $objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
 
+        // print pdf
+        if($this->news_pdfJumpTo) {
+            $objTemplate->showPdfButton = true;
+            $pdfPage = \PageModel::findByPk($this->news_pdfJumpTo);
+            $pdfArticle = \ArticleModel::findPublishedByPidAndColumn($this->news_pdfJumpTo, 'main');
+
+            $options = deserialize($pdfArticle->printable);
+            if(in_array('pdf', $options))
+                $objTemplate->pdfArticleId = $pdfArticle->id;
+
+            $strUrl = \Controller::generateFrontendUrl($pdfPage->row());
+            $objTemplate->pdfJumpTo = $strUrl;
+        }
+
 		$objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
 		$objTemplate->archive = $objArchive;
 
@@ -93,6 +105,30 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
 		$objTemplate->count = $intCount; // see #5708
 		$objTemplate->text = '';
+
+        // add tags
+        $objTemplate->showTags = $this->news_showtags;
+        if ($this->news_showtags && $this->news_template_modal && $this->Environment->isAjaxRequest)
+        {
+            $helper = new NewsPlusTagHelper();
+            $tagsandlist = $helper->getTagsAndTaglistForIdAndTable($objArticle->id, 'tl_news', $this->tag_jumpTo);
+            $tags = $tagsandlist['tags'];
+            $taglist = $tagsandlist['taglist'];
+            $objTemplate->showTagClass = $this->tag_named_class;
+            $objTemplate->tags = $tags;
+            $objTemplate->taglist = $taglist;
+            $objTemplate->news = 'IN';
+        }
+
+        // nav
+        $strUrl = '';
+        $objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
+        if ($objArchive !== null && $objArchive->jumpTo && ($objTarget = $objArchive->getRelated('jumpTo')) !== null)
+        {
+            $strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/news/%s'));
+        }
+        $objTemplate->nav = static::generateArrowNavigation($objArticle, $strUrl, $this->news_readerModule);
+
 
 		// Clean the RTE output
 		if ($objArticle->teaser != '')
@@ -394,4 +430,114 @@ abstract class ModuleNewsPlus extends \ModuleNews
 						($objArticle->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
 						$strLink);
 	}
+
+    /**
+     * Parse the template
+     * @return string
+     */
+    public function generate()
+    {
+        if ($this->arrData['space'][0] != '')
+        {
+            $this->arrStyle[] = 'margin-top:'.$this->arrData['space'][0].'px;';
+        }
+
+        if ($this->arrData['space'][1] != '')
+        {
+            $this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
+        }
+
+        $this->Template = new \FrontendTemplate($this->strTemplate);
+        $this->Template->setData($this->arrData);
+
+        $this->compile();
+
+        // print to pdf
+        $this->Template->pdfJumpTo = $this->news_pdfJumpTo;
+
+        // Do not change this order (see #6191)
+        $this->Template->style = !empty($this->arrStyle) ? implode(' ', $this->arrStyle) : '';
+        $this->Template->class = trim('mod_' . $this->type . ' ' . $this->cssID[1]);
+        $this->Template->cssID = ($this->cssID[0] != '') ? ' id="' . $this->cssID[0] . '"' : '';
+
+        $this->Template->inColumn = $this->strColumn;
+
+        if ($this->Template->headline == '')
+        {
+            $this->Template->headline = $this->headline;
+        }
+
+        if ($this->Template->hl == '')
+        {
+            $this->Template->hl = $this->hl;
+        }
+
+        if (!empty($this->objModel->classes) && is_array($this->objModel->classes))
+        {
+            $this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
+        }
+
+        return $this->Template->parse();
+    }
+
+
+    protected static function generateArrowNavigation($objCurrentArchive, $strUrl, $modalId)
+    {
+        $objT = new \FrontendTemplate('navigation_arrows');
+
+        // get ids from NewsPlus::getAllNews
+        $session = \Session::getInstance()->getData();
+        $arrIds = $session[NEWSPLUS_SESSION_NEWS_IDS];
+
+        if(count($arrIds) < 1) return '';
+
+        $prevID = null;
+        $nextID = null;
+
+        $currentIndex = array_search($objCurrentArchive->id, $arrIds);
+
+        // prev only of not first item
+        if(isset($arrIds[$currentIndex - 1]))
+        {
+            $prevID = $arrIds[$currentIndex - 1];
+
+            $objNews = NewsPlusModel::findByPk($prevID, array());
+            if($objNews !== null)
+            {
+                $objT->prev = static::getNewsDetails($objNews, $strUrl, $modalId);
+                $objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
+            }
+        }
+
+        // next only of not last item
+        if(isset($arrIds[$currentIndex + 1]))
+        {
+            $nextID = $arrIds[$currentIndex + 1];
+            $objNews = NewsPlusModel::findByPk($nextID, array());
+
+            if($objNews !== null)
+            {
+                $objT->next = static::getNewsDetails($objNews, $strUrl, $modalId);
+                $objT->nextLink = $GLOBALS['TL_LANG']['news_plus']['nextLink'];
+            }
+        }
+
+        return $objT->parse();
+    }
+
+    protected static function getNewsDetails($objNews, $strUrl, $modalId)
+    {
+        $arrNews['modal'] = true;
+        $arrNews['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($modalId);
+        $arrNews['title'] = specialchars($objNews->headline, true);
+
+        //$session = \Session::getInstance()->getData();
+        //if($session[NEWSPLUS_SESSION_URL_PARAM]) $strUrlParam = '&'.$session[NEWSPLUS_SESSION_URL_PARAM];
+
+        $arrNews['href'] = ampersand(sprintf($strUrl, ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id))) . $strUrlParam;
+        $arrEvent['link'] = $objNews->title;
+        $arrEvent['target'] = '';
+
+        return $arrNews;
+    }
 }

@@ -16,7 +16,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 
 $dc['palettes']['newsfilter'] = '
 									{title_legend},name,headline,type;
-									{template_legend},news_filterTemplate,news_filterCategoryTemplate,news_filterShowSearch,news_filterShowCategories;
+									{template_legend},news_archives,news_filterTemplate,news_filterCategoryTemplate,news_filterShowSearch,news_filterShowCategories;
 									{filter_legend},news_filterUseSearchIndex,news_filterFuzzySearch,news_filterSearchQueryType;
 									{expert_legend:hide},guests,cssID,space';
 
@@ -39,7 +39,8 @@ $dc['palettes']['newslist_highlight']    = '
 $dc['palettes']['newsreader_plus']  = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives;
-                                    {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl;
+                                    {showtags_legend},tag_filter,tag_ignore,news_showtags;
+                                    {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl,news_pdfJumpTo;
                                     {image_legend:hide},imgSize;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
@@ -135,6 +136,16 @@ $arrFields = array
         'inputType' => 'checkbox',
         'eval'		=> array('tl_class' => 'w50 m12'),
         'sql'       => "char(1) NOT NULL default ''",
+    ),
+    'news_pdfJumpTo' => array
+    (
+        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'],
+        'exclude'                 => true,
+        'inputType'               => 'pageTree',
+        'foreignKey'              => 'tl_page.title',
+        'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'w50 clr'),
+        'sql'                     => "int(10) unsigned NOT NULL default '0'",
+        'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
     )
 );
 

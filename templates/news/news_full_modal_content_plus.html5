@@ -48,7 +48,7 @@
 					<?php endforeach; ?>
 				<?php endif; ?>
 
-                <?php if(count($this->tags)): ?>
+                <?php if(is_array($this->tags) && !empty($this->tags)): ?>
                 <div class="tags"><div>Mehr zu </div>
                     <ul class="tag-chain">
                         <?php $counter = 0; foreach ($this->tags as $tag): ?>

@@ -9,7 +9,7 @@
         <p class="info"><time datetime="<?php echo $this->datetime; ?>"><?php echo \Date::parse(\Config::get('dateFormat'), $this->timestamp); ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></p>
       <?php endif?>
 
-      <h2><?php echo $this->headline; ?></h2>
+      <h2><?php echo \String::substr($this->headline, 68); ?></h2>
 
       <div class="teaser">
         <?php echo \String::substr($this->teaser, 180); ?>

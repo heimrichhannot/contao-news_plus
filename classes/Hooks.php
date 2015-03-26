@@ -36,17 +36,14 @@ class Hooks extends \Controller
 			}
 			elseif (is_file(TL_ROOT . '/' . $objModel->path))
 			{
-				// Do not override the field now that we have a model registry (see #6303)
-				$arrArticle = $arrArticle;
-
 				// Override the default image size
-				if ($this->imgSize != '')
+				if ($objModule->imgSize != '')
 				{
-					$size = deserialize($this->imgSize);
+					$size = deserialize($objModule->imgSize);
 
 					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
 					{
-						$arrArticle['size'] = $this->imgSize;
+						$arrArticle['size'] = $objModule->imgSize;
 					}
 				}
 

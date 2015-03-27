@@ -8,7 +8,7 @@
 
 		<div class="pdf_link">
             <a href="#" class="ei ei-printer" rel="nofollow" title="Diese Seite drucken" onclick="window.print();return false"></a>
-            <?php if($this->showPdfButton): ?><a href="<?php echo $this->pdfJumpTo; ?>/<?php echo $this->alias; ?>?pdf=<?php echo $this->pdfArticleId; ?>" class="ei ei-download" rel="nofollow" target="_blank" title="Nachricht als PDF drucken"></a><?php endif; ?>
+            <?php if($this->showPdfButton): ?><a href="<?php echo $this->pdfJumpTo; ?>/<?php echo $this->alias; ?>?pdf=<?php echo $this->pdfArticleId; ?>" class="ei ei-download" rel="nofollow" title="Nachricht als PDF drucken"></a><?php endif; ?>
             <a href="#" class="ei ei-mail_alt" rel="nofollow" title="Diese Seite weiterempfehlen" onclick="window.print();return false"></a>
         </div>
         <!-- indexer::continue -->

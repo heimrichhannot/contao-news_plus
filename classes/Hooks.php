@@ -51,6 +51,7 @@ class Hooks extends \Controller
 				$this->addImageToTemplate($objTemplate, $arrArticle);
 				$objTemplate->class .= ' dummy-image';
 				$objTemplate->addDummyImage = true;
+				$objTemplate->addImage = false;
 			}
 		}
 	}

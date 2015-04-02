@@ -1,0 +1,32 @@
+{
+    "name": "heimrichhannot/contao-news_plus",
+    "description":"A collection of enhancements for the contao news module.",
+    "keywords":["contao", "news", "filter", "modal"],
+    "type": "contao-module",
+    "homepage":"https://github.com/heimrichhannot/contao-news_plus",
+    "license":"LGPL-3.0+",
+    "authors":[
+        {
+            "name":"Heimrich & Hannot",
+            "email":"digitales@heimrich-hannot.de",
+            "homepage":"http://www.heimrich-hannot.de",
+            "role":"Developer"
+        }
+    ],
+    "support":{
+        "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
+    },
+    "require": {
+        "contao/core": ">=3.3,<4-dev"
+    },
+    "autoload": {
+        "classmap": [""]
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/news_plus"
+            }
+        }
+    }
+}

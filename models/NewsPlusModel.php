@@ -98,7 +98,7 @@ class NewsPlusModel extends \NewsModel
 			$time = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
-
+		
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 

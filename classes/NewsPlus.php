@@ -27,7 +27,7 @@ abstract class NewsPlus extends ModuleNewsPlus
 
         if ($intRoot > 0)
         {
-            $arrRoot = $this->Database->getChildRecords($intRoot, 'tl_page');
+            $arrRoot = \Database::getInstance()->getChildRecords($intRoot, 'tl_page');
         }
 
         $time = time();

@@ -1,2 +1,5 @@
 
-    <li><a href="<?php echo $this->pageLink; ?><?php echo $this->categoryParam; ?>"><?php echo $this->value; ?></a></li>
+    <li class="cat-link<?php if($this->active):?> active<?php endif; ?>">
+		<a class="cat-link<?php if($this->active):?> active<?php endif; ?>" href="<?php echo $this->pageLink; ?>"><?php echo $this->value; ?>
+		</a>
+	</li>

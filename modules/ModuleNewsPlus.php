@@ -83,6 +83,9 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		$objTemplate->linkHeadline = $this->generateLink($objArticle->headline, $objArticle, $blnAddArchive);
 		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
         $objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
+		$objTemplate->linkTarget = ($objArticle->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : '');
+		$objTemplate->linkTitle = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true);
+
 
         // print pdf
         if($this->news_pdfJumpTo) {
@@ -217,6 +220,12 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		if ($objArticle->addEnclosure)
 		{
 			$this->addEnclosuresToTemplate($objTemplate, $objArticle->row());
+		}
+
+		if(in_array('share',$this->Config->getActiveModules()))
+		{
+			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objArticle);
+			$objTemplate->share = $objShare->generate();
 		}
 
         // Modal

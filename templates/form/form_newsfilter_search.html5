@@ -4,7 +4,7 @@
 	    <label for="ctrl_keywords_4" class="sr-only"><i class="fa fa-search"></i><span class="invisible">Suchbegriffe</span></label>
         <input type="search" name="searchKeywords" id="ctrl_keywords_4" class="text form-control" value="<?php echo isset($this->searchKeywords) ? $this->searchKeywords : ''; ?>" placeholder="Suchbegriffe">
 		<span class="input-group-btn">
-		    <button type="submit" id="ctrl_submit_4" class="btn btn-default btn-lg submit"><i class="fa fa-search"></i><span class="sr-only">Suchen</span></button>
+		    <button type="submit" id="ctrl_submit_4" class="btn btn-default submit"><i class="fa fa-search"></i><span class="sr-only">Suchen</span></button>
 		</span>
 		</div>
     </div>

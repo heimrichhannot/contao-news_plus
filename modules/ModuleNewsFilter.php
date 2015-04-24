@@ -10,7 +10,7 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-class ModuleNewsFilter extends \Module
+class ModuleNewsFilter extends ModuleNewsPlus
 {
 
     /**
@@ -44,13 +44,16 @@ class ModuleNewsFilter extends \Module
         // Set Fields
         $this->Template->searchKeywords = trim(\Input::get('searchKeywords'));
 
-        $this->news_archives = deserialize($this->news_archives);
+        $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
 
         // Return if there are no archives
         if (!is_array($this->news_archives) || empty($this->news_archives))
         {
             return '';
         }
+
+		// news archive, with newscategories (news_categories module)
+		$this->news_filterNewsCategoryArchives = deserialize($this->news_filterNewsCategoryArchives, true);
 
         $sql = "SELECT * FROM tl_news_archive WHERE tl_news_archive.id IN(" . implode(',', array_map('intval', $this->news_archives)) . ") ORDER BY title";
 
@@ -67,14 +70,27 @@ class ModuleNewsFilter extends \Module
         $objTemplate->rootPageLink = \Controller::generateFrontendUrl($objPage->row());
 
         if($this->strCategoryTemplate == 'filter_cat_multilevel') {
-            $strCategories = trim(\Input::get('newscategories'));
+            $strNewsArchives = trim(\Input::get('newscategories'));
+			$strNewsCategories = trim(\Input::get('category'));
 
-            if ($strCategories) {
-                $filterName = ModuleNewsListPlus::findArchiveTitleByPid($strCategories);
+            if ($strNewsArchives || $strNewsCategories) {
+                $filterName = ModuleNewsListPlus::findArchiveTitleByPid($strNewsArchives);
+
+				// overwrite title with news_category
+				if($filterName && $strNewsCategories)
+				{
+					$objNewsCategory = \NewsCategories\NewsCategoryModel::findPublishedByIdOrAlias($strNewsCategories);
+
+					if($objNewsCategory !== null)
+					{
+						$filterName = $objNewsCategory->frontendTitle ? $objNewsCategory->frontendTitle : $objNewsCategory->title;
+					}
+				}
+				
                 $objTemplate->filterName = self::getShortCategoryTitle($filterName);
                 $objTemplate->filterResetName = $GLOBALS['TL_LANG']['news_plus']['resetFilterLabel'];
                 $objTemplate->pageLink = $objPage->alias;
-                $objTemplate->hiddenField = $strCategories;
+                $objTemplate->hiddenField = $strNewsArchives;
             }
             $objTemplate->categories = self::groupCategoriesByArchivesTitle($arrResult);
         } else {
@@ -102,40 +118,117 @@ class ModuleNewsFilter extends \Module
             } else
                 $arrCategories[] = $archive;
         }
+	
 
         foreach($arrCategories as $key=>$arrArchive) {
-            if (is_int($key)) {
-                $strCat .= self::getCategoryLink($arrArchive);
-            } else {
+	
+            if (is_int($key))
+			{
+				if(in_array($key, $this->news_filterNewsCategoryArchives))
+				{
+					$strCat .= self::getNewsCategoriesAsSubmenu($arrArchive);
+				}
+				else
+				{
+					$strCat .= self::getCategoryLink($arrArchive);
+				}
+            }
+			else
+			{
                 $strCat .= self::getCategorySubmenu($arrCategories[$key], $key);
             }
         }
-
+	
         return $strCat;
     }
 
-    protected function getCategoryLink($archive)
+    protected function getCategoryLink($arrArchive)
     {
         $objTemplate = new \FrontendTemplate($this->searchTpl ?: 'form_newsfilter_cat_ml_link');
-        $objTemplate->value = $archive['title'];
-        $objTemplate->pageLink = self::getPageLink();
-        $objTemplate->categoryParam = '&newscategories=' . $archive['id'];
+        $objTemplate->value = $arrArchive['title'];
+        $objTemplate->pageLink = self::getPageLink(null, array('newscategories' => $arrArchive['id']));
+		$objTemplate->active = in_array($arrArchive['id'], deserialize(\Input::get('newscategories'), true));
         return $objTemplate->parse();
     }
+
+	protected function getNewsCategoriesAsSubmenu($arrArchive)
+	{
+		$strCat = '';
+
+		$objCategories = \NewsCategories\NewsCategoryModel::findPublishedByParent($arrArchive);
+
+		if($objCategories === null)
+		{
+			return $strCat;
+		}
+
+		$arrCategories = array();
+
+		while($objCategories->next())
+		{
+			$strCat .= self::getNewsCategoryLink($objCategories->current(), $arrArchive);
+			$arrCategories[$objCategories->id] = $objCategories->row();
+		}
+		
+		$objTemplate = new \FrontendTemplate($this->searchTpl ?: 'form_newsfilter_cat_ml_submenu');
+		$objTemplate->title = $arrArchive['title'];
+		$objTemplate->active = in_array($arrArchive['id'], deserialize(\Input::get('newscategories'), true)) && \Input::get('category') == '';
+		$objTemplate->trail = in_array($arrArchive['id'], deserialize(\Input::get('newscategories'), true)) && \Input::get('category') != '';
+		$objTemplate->groupPageLink = self::getPageLink(array_keys($arrCategories), array('newscategories' =>$arrArchive['id'] ));
+		$objTemplate->values = $strCat;
+		return $objTemplate->parse();
+
+		return $strCat;
+	}
+
+	protected function getNewsCategoryLink($objCategory, $arrArchive)
+	{
+		$objTemplate = new \FrontendTemplate($this->searchTpl ?: 'form_newsfilter_cat_ml_link');
+		$objTemplate->value = $objCategory->title;
+		$objTemplate->pageLink = self::getPageLink(null, array('newscategories' => $arrArchive['id'], 'category' => $objCategory->id));;
+		$objTemplate->active = in_array($objCategory->id, deserialize(\Input::get('category'), true));
+		return $objTemplate->parse();
+	}
 
     protected function getCategorySubmenu($arrArchives, $strTitle = '')
     {
         $strCat = '';
         $objTemplate = new \FrontendTemplate($this->searchTpl ?: 'form_newsfilter_cat_ml_submenu');
         $objTemplate->title = $strTitle;
+		$categories = array();
+
+		$arrSelected = trimsplit(',', \Input::get('newscategories'));
+
         foreach($arrArchives as $key=>$arrArchive) {
-            if (is_int($key))
-                $strCat .= self::getCategoryLink($arrArchive);
+			$categories[] = $arrArchive['id'];
+
+            if (is_int($key)){
+				$strCat .= self::getCategoryLink($arrArchive);
+			}
             else
-                $strCat .= self::getCategorySubmenu($arrArchives[$key], $key);
-            $categories[] = $arrArchive['id'];
+			{
+				$strCat .= self::getCategorySubmenu($arrArchives[$key], $key);
+
+				$arrChildMenuCategories = array();
+
+				foreach($arrArchives[$key] as $subKey => $subArrArchive)
+				{
+					$arrChildMenuCategories[] = $subArrArchive['id'];
+				}
+			}
         }
-        $objTemplate->groupPageLink = self::getPageLink($categories).'&newscategories='.implode(",", $categories);
+
+		$isActive = count(array_intersect($arrSelected, $categories)) > 1;
+		$isTrail = count(array_intersect($arrSelected, $categories)) == 1;
+
+		if(!empty($arrChildMenuCategories))
+		{
+			$isTrail = count(array_intersect($arrSelected, $arrChildMenuCategories)) == 1;
+		}
+
+        $objTemplate->groupPageLink = self::getPageLink($categories, array('newscategories' => implode(",", array_filter($categories))));
+		$objTemplate->active = $isActive;
+		$objTemplate->trail = $isTrail;
         $objTemplate->values = $strCat;
         return $objTemplate->parse();
     }
@@ -152,14 +245,26 @@ class ModuleNewsFilter extends \Module
         return $strCat;
     }
 
-    protected function getPageLink($categories = array())
+    protected function getPageLink($categories = array(), $arrParams = array())
     {
         global $objPage;
 
         $arrPageLinkParam = array();
+
         if($this->Template->searchKeywords)
-            $arrPageLinkParam[] = 'searchKeywords='.$this->Template->searchKeywords;
-        return $objPage->alias.'?'.implode("&", $arrPageLinkParam);
+		{
+			$arrPageLinkParam[] = 'searchKeywords='.$this->Template->searchKeywords;
+		}
+
+		if(is_array($arrParams))
+		{
+			foreach($arrParams as $key => $value)
+			{
+				$arrPageLinkParam[] = "$key=$value";
+			}
+		}
+	
+        return $objPage->alias . '?' . implode("&", $arrPageLinkParam);
     }
 
     public static function getShortCategoryTitle($title)

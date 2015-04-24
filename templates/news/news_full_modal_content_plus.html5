@@ -5,13 +5,9 @@
         <?php echo $this->nav; ?>
 
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<!-- indexer::continue -->
 
-		<div class="pdf_link">
-            <a href="#" class="ei ei-printer" rel="nofollow" title="Diese Seite drucken" onclick="window.print();return false"></a>
-            <?php if($this->showPdfButton): ?><a href="<?php echo $this->pdfJumpTo; ?>/<?php echo $this->alias; ?>?pdf=<?php echo $this->pdfArticleId; ?>" class="ei ei-download" rel="nofollow" title="Nachricht als PDF drucken"></a><?php endif; ?>
-            <a href="#" class="ei ei-mail_alt hidden" rel="nofollow" title="Diese Seite weiterempfehlen" onclick="window.print();return false"></a>
-        </div>
-        <!-- indexer::continue -->
+		<?php echo $this->share; ?>
 	</div>
 	<div class="modal-body">
 		<div class="layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="{{link_url::9}}">

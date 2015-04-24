@@ -12,6 +12,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 	 */
 	protected $strTemplate = 'mod_newslist_plus';
 
+	protected $objFilter = null;
+
     /**
      * Display a wildcard in the back end
      * @return string
@@ -40,6 +42,21 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         {
             return '';
         }
+
+		$GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
+		$GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
+		$GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
+
+		if($this->news_filterModule)
+		{
+			$this->objFilter = \ModuleModel::findByPk($this->news_filterModule);
+		}
+
+
+
+		$this->news_categories = array();
+		// set news categories from filter
+		if(isset($_GET['categories']) && $_GET['categories'] != '') $this->news_categories = explode(',', \Input::get('categories'));
 
         // Show the event reader if an item has been selected
         if (!$this->news_showInModal && $this->news_readerModule > 0  && (isset($_GET['news']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
@@ -89,7 +106,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
         // Get the total number of items
-        $intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $blnFeatured);
+        $intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured);
 
         if ($intTotal < 1) {
             return;
@@ -141,9 +158,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(count($arrTagIds) > 0) {
             $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
         } elseif (isset($limit) && !isset($objArticles)) {
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
+            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
         } else {
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
+            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
         }
 
         // store all events ids in session
@@ -154,7 +171,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(\Input::get("endDate"))        $arrUrlParam[] = 'endDate=' . \Input::get("endDate");
         $strUrlParam = implode("&", $arrUrlParam);
 
-        $arrIds = NewsPlus::getAllPublishedNews($this->news_archives);
+        $arrIds = NewsPlus::getAllPublishedNews($this->news_archives, $this->news_categories);
 
         // show only news by tag
         if(\Input::get("tag")) $arrUrlParam[] = 'tag=' . \Input::get("tag");

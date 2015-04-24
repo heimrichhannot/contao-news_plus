@@ -25,6 +25,85 @@ class NewsPlusModel extends \NewsModel
 	 */
 	protected static $strTable = 'tl_news';
 
+	/**
+	 * Get the categories cache and return it as array
+	 * @return array
+	 */
+	public static function getCategoriesCache()
+	{
+		static $arrCache;
+		
+		if (!is_array($arrCache)) {
+			$arrCache = array();
+			$objCategories = \Database::getInstance()->execute("SELECT * FROM tl_news_categories");
+			$arrCategories = array();
+
+			while ($objCategories->next()) {
+				// Include the parent IDs of each category
+				if (!isset($arrCategories[$objCategories->category_id])) {
+					$arrCategories[$objCategories->category_id] = \Database::getInstance()->getParentRecords($objCategories->category_id, 'tl_news_category');
+				}
+
+				foreach ($arrCategories[$objCategories->category_id] as $intParentCategory) {
+					$arrCache[$intParentCategory][] = $objCategories->news_id;
+				}
+			}
+		}
+
+		return $arrCache;
+	}
+
+	/**
+	 * Filter the news by categories
+	 * @param array
+	 * @return array
+	 */
+	protected static function filterByCategories($arrColumns)
+	{
+		$t = static::$strTable;
+		
+		// Use the default filter
+		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT'])) {
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories)) {
+				$arrIds = array();
+
+				// Get the news IDs for particular categories
+				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category) {
+					if (isset($arrCategories[$category])) {
+						$arrIds = array_merge($arrCategories[$category], $arrIds);
+					}
+				}
+
+				$strKey = 'category';
+
+				// Preserve the default category
+				if ($GLOBALS['NEWS_FILTER_PRESERVE']) {
+					$strKey = 'category_default';
+				}
+
+				$arrColumns[$strKey] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
+			}
+		}
+
+		// Try to find by category
+		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category')) {
+			$strClass = \NewsCategories\NewsCategories::getModelClass();
+			$objCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
+
+
+			if ($objCategory === null) {
+				return null;
+			}
+
+			$arrCategories = static::getCategoriesCache();
+			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
+		}
+
+		return $arrColumns;
+	}
+
 
 	/**
 	 * Find published news items by their parent ID and ID or alias
@@ -66,7 +145,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function findPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -99,6 +178,9 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 		
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
+		
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
@@ -122,7 +204,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, $blnFeatured=null, array $arrOptions=array())
+	public static function countPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, array $arrOptions=array())
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -146,6 +228,9 @@ class NewsPlusModel extends \NewsModel
 			$time = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
+
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
 
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
@@ -378,8 +463,8 @@ class NewsPlusModel extends \NewsModel
             $arrKeywords = explode(" ", trim(\Input::get('searchKeywords')));
             $arrClauses = array();
             foreach($arrKeywords as $keyword) {
-                $arrClauses[] = "$t.headline LIKE '%".$keyword."%'";
-                $arrClauses[] = "$t.teaser LIKE '%".$keyword."%'";
+                $arrClauses[] = "$t.headline LIKE '%%".$keyword."%%'";
+                $arrClauses[] = "$t.teaser LIKE '%%".$keyword."%%'";
             }
             $arrColumns[]=implode(' OR ' ,$arrClauses);
         }
@@ -389,7 +474,7 @@ class NewsPlusModel extends \NewsModel
 
     /**
      * Find published news by ids
-     *
+     *D
      * @param mixed $varId The numeric ID or alias name
      * @param array $arrOptions An optional options array
      *

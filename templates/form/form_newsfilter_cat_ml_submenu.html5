@@ -1,7 +1,7 @@
 
-<li class="dropdown-submenu">
-    <a href="<?php echo $this->groupPageLink; ?>"><?php echo $this->title; ?></a>
-    <ul class="dropdown-menu">
+<li class="dropdown-submenu<?php if($this->active):?> active<?php endif; ?><?php if($this->trail):?> trail<?php endif; ?>">
+    <a class="cat-link<?php if($this->active):?> active<?php endif; ?><?php if($this->trail):?> trail<?php endif; ?>" href="<?php echo $this->groupPageLink; ?>"><?php echo $this->title; ?></a>
+    <ul class="dropdown-menu<?php if($this->active):?> active<?php endif; ?><?php if($this->trail):?> trail<?php endif; ?>">
         <?php echo $this->values; ?>
     </ul>
 </li>

@@ -27,7 +27,7 @@
                 <div class="date-wrapper">
                     <div class="form-group startDate">
                         <div class="input-group datepicker">
-                            <input type="text" name="startDate" id="ctrl_startDate" class="text control-label form-control" value="<?php echo \Input::get('startDate') ? \Input::get('startDate') : \Date::parse(\Config::get('dateFormat')); ?>" placeholder="von" autocomplete="off" data-format="DD.MM.YYYY" data-linked="#ctrl_endDate">
+                            <input type="text" name="startDate" id="ctrl_startDate" class="text control-label form-control" value="<?php echo \Input::get('startDate') ? \Input::get('startDate') : ''; ?>" placeholder="von" autocomplete="off" data-format="DD.MM.YYYY" data-linked="#ctrl_endDate">
                             <span class="input-group-addon"><i class="ei ei-calendar"></i></span>
                         </div>
                     </div>

@@ -48,127 +48,130 @@ $dc['palettes']['newsreader_plus']  = '
 /**
  * Fields
  */
-$arrFields = array
+$dc['fields'] = array_merge
 (
-    'news_filterTemplate'   => array
-    (
-        'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'],
-        'exclude'          => true,
-        'inputType'        => 'select',
-        'options_callback' => array('tl_module_news_plus', 'getFilterTemplates'),
-        'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
-        'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
-        'sql'              => "varchar(64) NOT NULL default ''"
-    ),
-    'news_filterCategoryTemplate'   => array
-    (
-        'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategoryTemplate'],
-        'exclude'          => true,
-        'inputType'        => 'select',
-        'options_callback' => array('tl_module_news_plus', 'getFilterCategoriesTemplates'),
-        'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
-        'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
-        'sql'              => "varchar(64) NOT NULL default ''"
-    ),
-    'news_filterShowSearch'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowSearch'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w50'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-    'news_filterUseSearchIndex'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterUseSearchIndex'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w50'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-    'news_filterFuzzySearch'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterFuzzySearch'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w50'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-    'news_filterSearchQueryType'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterSearchQueryType'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w100 clr'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-    'news_filterShowCategories'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowCategories'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w50'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-	'news_filterNewsCategoryArchives' => array
-	(
-		'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'],
-		'exclude'                 => true,
-		'inputType'               => 'checkbox',
-		'options_callback'        => array('tl_module_news', 'getNewsArchives'),
-		'eval'                    => array('multiple'=>true),
-		'sql'                     => "blob NULL"
+	array(
+		'news_filterTemplate'   => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getFilterTemplates'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+			'sql'              => "varchar(64) NOT NULL default ''"
+		),
+		'news_filterCategoryTemplate'   => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategoryTemplate'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getFilterCategoriesTemplates'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+			'sql'              => "varchar(64) NOT NULL default ''"
+		),
+		'news_filterShowSearch'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowSearch'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterUseSearchIndex'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterUseSearchIndex'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterFuzzySearch'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterFuzzySearch'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterSearchQueryType'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterSearchQueryType'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w100 clr'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterShowCategories'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowCategories'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterNewsCategoryArchives' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'options_callback'        => array('tl_module_news', 'getNewsArchives'),
+			'eval'                    => array('multiple'=>true),
+			'sql'                     => "blob NULL"
+		),
+		'news_readerModule' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_readerModule'],
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'options_callback'        => array('tl_module_news_plus', 'getReaderModules'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'news_template_modal' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_template_modal'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getNewsModalTemplates'),
+			'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
+			'sql'              => "varchar(64) NOT NULL default ''"
+		),
+		'news_showInModal'	=> array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_showInModal'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50 m12'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_pdfJumpTo' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'],
+			'exclude'                 => true,
+			'inputType'               => 'pageTree',
+			'foreignKey'              => 'tl_page.title',
+			'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'w50 clr'),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+		),
+		'news_filterModule' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterModule'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getFilterModules'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+			'sql'              => "int(10) unsigned NOT NULL default '0'"
+		)
 	),
-    'news_readerModule' => array
-    (
-        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_readerModule'],
-        'exclude'                 => true,
-        'inputType'               => 'select',
-        'options_callback'        => array('tl_module_news_plus', 'getReaderModules'),
-        'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
-        'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
-        'sql'                     => "int(10) unsigned NOT NULL default '0'"
-    ),
-	'news_template_modal' => array
-    (
-        'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_template_modal'],
-        'exclude'          => true,
-        'inputType'        => 'select',
-        'options_callback' => array('tl_module_news_plus', 'getNewsModalTemplates'),
-        'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
-        'sql'              => "varchar(64) NOT NULL default ''"
-    ),
-	'news_showInModal'	=> array
-    (
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_showInModal'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'		=> array('tl_class' => 'w50 m12'),
-        'sql'       => "char(1) NOT NULL default ''",
-    ),
-    'news_pdfJumpTo' => array
-    (
-        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'],
-        'exclude'                 => true,
-        'inputType'               => 'pageTree',
-        'foreignKey'              => 'tl_page.title',
-        'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'w50 clr'),
-        'sql'                     => "int(10) unsigned NOT NULL default '0'",
-        'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
-    ),
-	'news_filterModule' => array
-	(
-		'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterModule'],
-		'exclude'          => true,
-		'inputType'        => 'select',
-		'options_callback' => array('tl_module_news_plus', 'getFilterModules'),
-		'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
-		'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
-		'sql'              => "int(10) unsigned NOT NULL default '0'"
-	)
+ 	is_array($dc['fields']) ? $dc['fields'] : array()
 );
 
-$dc['fields'] = array_merge($dc['fields'], $arrFields);
+$dc['fields']['news_archives']['options_callback'] = array('tl_module_news_plus', 'getNewsArchives');
 
 /**
  * Class tl_module_news_plus
@@ -180,6 +183,17 @@ $dc['fields'] = array_merge($dc['fields'], $arrFields);
  */
 class tl_module_news_plus extends Backend
 {
+
+
+	/**
+	 * Import the back end user object
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->import('BackendUser', 'User');
+	}
+
 
 	/**
 	 * Get all news filter modules and return them as array
@@ -244,4 +258,37 @@ class tl_module_news_plus extends Backend
 
         return $arrModules;
     }
+
+	/**
+	 * Get all news archives with their root affiliation and return them as array
+	 * @return array
+	 */
+	public function getNewsArchives()
+	{
+
+		if (!$this->User->isAdmin && !is_array($this->User->news))
+		{
+			return array();
+		}
+
+		$arrArchives = array();
+		$objArchives = $this->Database->execute("SELECT id, title, root FROM tl_news_archive ORDER BY root, title");
+
+		while ($objArchives->next())
+		{
+			if ($this->User->hasAccess($objArchives->id, 'news'))
+			{
+				$strTitle = $objArchives->title;
+
+				if(($objRoot = \PageModel::findByPk($objArchives->root)) !== null)
+				{
+					$strTitle .= ' <strong> [' . $objRoot->title . '] </strong>';
+				}
+
+				$arrArchives[$objArchives->id] = $strTitle;
+			}
+		}
+		
+		return $arrArchives;
+	}
 }

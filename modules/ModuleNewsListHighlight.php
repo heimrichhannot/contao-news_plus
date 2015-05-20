@@ -10,6 +10,8 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
 	 */
 	protected $strTemplate = 'mod_newslist_plus';
 
+	protected $objArticles;
+
     /**
      * Display a wildcard in the back end
      * @return string
@@ -41,6 +43,25 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
         // unset search string for highlighted section
         \Input::setGet('searchKeywords', null);
 
+
+		$strSql = "select id from tl_news where pid IN (" . implode(',', $this->news_archives) . ") AND tstamp = (select min(tstamp) from tl_news as f where f.pid = tl_news.pid and featured = '1')".
+				  "ORDER BY date LIMIT 4";
+
+		$objResult = $this->Database->prepare($strSql)->execute();
+
+		$arrResult = $objResult->fetchAllAssoc();
+
+		foreach ($arrResult as $rs) {
+			$arr[] = $rs['id'];
+		}
+
+		$this->objArticles = NewsPlusModel::findPublishedByIds($arr);
+
+		if($this->objArticles === null)
+		{
+			return '';
+		}
+
         return parent::generate();
     }
 
@@ -50,28 +71,6 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
      */
     protected function compile()
     {
-        $this->import('Database');
-
-        $strSql = "select *
-                      from tl_news t1
-                      where (pid, date) in (select pid, max(date)
-                           from tl_news t2
-                           group by pid)
-                      AND featured = 1 ORDER BY date DESC
-                      LIMIT 4";
-
-        $strSql = "select id from tl_news where tstamp = (select min(tstamp) from tl_news as f where f.pid = tl_news.pid and featured = '1')".
-                    "ORDER BY date LIMIT 4;";
-
-        $objResult = $this->Database->prepare($strSql)->execute();
-
-        $arrResult = $objResult->fetchAllAssoc();
-
-        foreach ($arrResult as $rs) {
-            $arr[] = $rs['id'];
-        }
-
-        $objArticles = NewsPlusModel::findPublishedByIds($arr);
-        $this->Template->articles = $this->parseArticles($objArticles);
+        $this->Template->articles = $this->parseArticles($this->objArticles);
     }
 }

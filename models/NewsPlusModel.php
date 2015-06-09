@@ -155,7 +155,6 @@ class NewsPlusModel extends \NewsModel
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
 
-
 		if ($blnFeatured === true)
 		{
 			$arrColumns[] = "$t.featured=1";
@@ -177,10 +176,10 @@ class NewsPlusModel extends \NewsModel
 			$time = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
-		
+
 		// Filter by categories
 		$arrColumns = static::filterByCategories($arrColumns);
-		
+
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
@@ -281,8 +280,7 @@ class NewsPlusModel extends \NewsModel
         $t = static::$strTable;
         $arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrPids)) . ")");
 
-
-        if ($blnFeatured === true)
+        if($blnFeatured === true)
         {
             $arrColumns[] = "$t.featured=1";
         }
@@ -463,10 +461,9 @@ class NewsPlusModel extends \NewsModel
             $arrKeywords = explode(" ", trim(\Input::get('searchKeywords')));
             $arrClauses = array();
             foreach($arrKeywords as $keyword) {
-                $arrClauses[] = "$t.headline LIKE '%%".$keyword."%%'";
-                $arrClauses[] = "$t.teaser LIKE '%%".$keyword."%%'";
+				$arrClauses[] = "($t.headline LIKE '%%".$keyword."%%' OR $t.teaser LIKE '%%".$keyword."%%')";
             }
-            $arrColumns[]=implode(' OR ' ,$arrClauses);
+            $arrColumns[]= "(".implode(' OR ' ,$arrClauses).")";
         }
         return $arrColumns;
     }

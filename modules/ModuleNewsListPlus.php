@@ -14,6 +14,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 	protected $objFilter = null;
 
+	protected $strKeywords;
+
+	protected $t = "tl_news";
+
     /**
      * Display a wildcard in the back end
      * @return string
@@ -52,11 +56,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			$this->objFilter = \ModuleModel::findByPk($this->news_filterModule);
 		}
 
-
-
 		$this->news_categories = array();
 		// set news categories from filter
-		if(isset($_GET['categories']) && $_GET['categories'] != '') $this->news_categories = explode(',', \Input::get('categories'));
+		if(isset($_GET['categories']) && $_GET['categories'] != '')
+			$this->news_categories = explode(',', \Input::get('categories'));
 
         // Show the event reader if an item has been selected
         if (!$this->news_showInModal && $this->news_readerModule > 0  && (isset($_GET['news']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
@@ -64,20 +67,12 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             return $this->getFrontendModule($this->news_readerModule, $this->strColumn);
         }
 
-        // date filter
+        // filter
         $this->startDate = strtotime (\Input::get('startDate'));
         $this->endDate = strtotime (\Input::get('endDate'));
+		$this->strKeywords = trim(\Input::get('searchKeywords'));
 
-        $blnFuzzy = $GLOBALS['NEWS_FILTER_FUZZY_SEARCH'];
-        $strQueryType = $GLOBALS['NEWS_FILTER_SEARCH_QUERY_TYPE'];
-        $strKeywords = trim(\Input::get('searchKeywords'));
-
-        // Get news from search index if there are keywords
-        if ($GLOBALS['NEWS_FILTER_SHOW_SEARCH'] && $GLOBALS['NEWS_FILTER_USE_SEARCH_INDEX'] && \Input::get('searchKeywords') != '' && \Input::get('searchKeywords') != '*' && !$this->jumpTo) {
-            return self::findNewsInSearchIndex($strKeywords, $strQueryType, $blnFuzzy);
-        } else {
-            return parent::generate();
-        }
+        return parent::generate();
     }
 
     /**
@@ -158,7 +153,14 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(count($arrTagIds) > 0) {
             $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
         } elseif (isset($limit) && !isset($objArticles)) {
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
+			if( $this->strKeywords!=='' && $this->news_archives!=='' )
+			{
+				$objArticles = static::findNewsInSearchIndex($this->strKeywords, true, true);
+			}
+			else
+			{
+				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
+			}
         } else {
             $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
         }
@@ -196,7 +198,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         // Reference page
         if ($this->rootPage > 0)
         {
-            $intRootId = $this->rootPage;
             $arrPages = $this->Database->getChildRecords($this->rootPage, 'tl_page');
             array_unshift($arrPages, $this->rootPage);
         }
@@ -204,152 +205,46 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         else
         {
             global $objPage;
-            $intRootId = $objPage->rootId;
             $arrPages = $this->Database->getChildRecords($objPage->rootId, 'tl_page');
         }
 
-        $arrResult = null;
-        $strChecksum = md5($strKeywords . $strQueryType . $intRootId . $blnFuzzy);
-        $query_starttime = microtime(true);
-        $strCacheFile = 'system/cache/search/' . $strChecksum . '.json';
+		try
+		{
+            $objSearch = \Search::searchFor($this->strKeywords, $strQueryType, $arrPages, null, null, $blnFuzzy);
+			if($objSearch->numRows > 0)
+			{
+				$arrUrls = $objSearch->fetchEach('url');
+				$strKeyWordColumns = "";
+				$n = 0;
+				foreach($arrUrls as $i => $strAlias)
+				{
+					$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$this->t.alias = ?";
+					$arrValues[] = basename($strAlias);
+					$n++;
+				}
+				$arrColumns[] = "($strKeyWordColumns)";
+				$arrColumns[] = "($this->t.pid IN (" . implode(',', $this->news_archives) . "))";
+				if($this->startDate)
+					$arrColumns[] = "($this->t.date='' OR $this->t.date>$this->startDate)";
+				if($this->endDate)
+					$arrColumns[] = "($this->t.date='' OR $this->t.date<$this->endDate)";
 
-        // Load the cached result
-        if (file_exists(TL_ROOT . '/' . $strCacheFile))
-        {
-            $objFile = new \File($strCacheFile, true);
+				if (!BE_USER_LOGGED_IN)
+				{
+					$time         = time();
+					$arrColumns[] = "($this->t.start='' OR $this->t.start<$time) AND ($this->t.stop='' OR $this->t.stop>$time) AND $this->t.published=1";
+				}
 
-            if ($objFile->mtime > time() - 1800)
-            {
-                $arrResult = json_decode($objFile->getContent(), true);
-            }
-            else
-            {
-                $objFile->delete();
-            }
-        }
-
-        // Cache the result
-        if ($arrResult === null)
-        {
-            try
-            {
-                $objSearch = \Search::searchFor($strKeywords, $strQueryType, $arrPages, $limit, $offset, $blnFuzzy);
-                $arrResult = $objSearch->fetchAllAssoc();
-            }
-            catch (\Exception $e)
-            {
-                $this->log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
-                $arrResult = array();
-            }
-
-            \File::putContent($strCacheFile, json_encode($arrResult));
-        }
-
-        $query_endtime = microtime(true);
-
-        // Sort out protected pages
-        if (\Config::get('indexProtected') && !BE_USER_LOGGED_IN)
-        {
-            $this->import('FrontendUser', 'User');
-
-            foreach ($arrResult as $k=>$v)
-            {
-                if ($v['protected'])
-                {
-                    if (!FE_USER_LOGGED_IN)
-                    {
-                        unset($arrResult[$k]);
-                    }
-                    else
-                    {
-                        $groups = deserialize($v['groups']);
-
-                        if (!is_array($groups) || empty($groups) || !count(array_intersect($groups, $this->User->groups)))
-                        {
-                            unset($arrResult[$k]);
-                        }
-                    }
-                }
-            }
-
-            $arrResult = array_values($arrResult);
-        }
-
-        $count = count($arrResult);
-
-        // No results
-        if ($count < 1)
-        {
-            $this->Template->header = sprintf($GLOBALS['TL_LANG']['MSC']['sEmpty'], $strKeywords);
-            $this->Template->duration = substr($query_endtime-$query_starttime, 0, 6) . ' ' . $GLOBALS['TL_LANG']['MSC']['seconds'];
-            return;
-        }
-
-        $from = 1;
-        $to = $count;
-
-        // Pagination
-        if ($this->perPage > 0)
-        {
-            $id = 'page_s' . $this->id;
-            $page = \Input::get($id) ?: 1;
-            $per_page = \Input::get('per_page') ?: $this->perPage;
-
-            // Do not index or cache the page if the page number is outside the range
-            if ($page < 1 || $page > max(ceil($count/$per_page), 1))
-            {
-                global $objPage;
-                $objPage->noSearch = 1;
-                $objPage->cache = 0;
-
-                // Send a 404 header
-                header('HTTP/1.1 404 Not Found');
-                return;
-            }
-
-            $from = (($page - 1) * $per_page) + 1;
-            $to = (($from + $per_page) > $count) ? $count : ($from + $per_page - 1);
-
-            // Pagination menu
-            if ($to < $count || $from > 1)
-            {
-                $objPagination = new \Pagination($count, $per_page, \Config::get('maxPaginationLinks'), $id);
-                $this->Template->pagination = $objPagination->generate("\n  ");
-            }
-        }
-
-        // Get the results
-        for ($i=($from-1); $i<$to && $i<$count; $i++)
-        {
-            $objTemplate = new \FrontendTemplate($this->searchTpl ?: 'news_short_plus');
-            $objTemplate->headline = $arrResult[$i]['title'];
-            $objTemplate->teaser = $arrResult[$i]['text'];
-            $objTemplate->link = $arrResult[$i]['url'];
-            $objTemplate->hasMetaFields = true;
-            $objTemplate->date = date('d.m.Y', $arrResult[$i]['tstamp']);
-            $objTemplate->timestamp = $arrResult[$i]['tstamp'];
-            $objTemplate->datetime = date('Y-m-d\TH:i:sP', $arrResult[$i]['tstamp']);;
-
-            // archive data
-            $objArchive = self::findArchiveByPid($arrResult[$i]['pid']);
-            $objArchive->title = self::getArchiveClassFromTitle($objArchive->title);
-            $objArchive->class = self::getArchiveClassFromTitle($objArchive->title, true);
-            $objTemplate->archive = $objArchive;
-
-            // Modal
-            if($this->news_showInModal && $this->news_readerModule)
-            {
-                $objTemplate->modal = true;
-                $objTemplate->modalTarget = '#' . EventsPlusHelper::getCSSModalID($this->news_readerModule);
-            }
-
-            $arrNews[] = $objTemplate->parse();
-        }
-
-        $objTemplate = new \FrontendTemplate('mod_newslist_plus');
-        $objTemplate->class = "mod_newslist_plus row";
-        $objTemplate->articles = $arrNews;
-        return $objTemplate->parse();
+				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
+			}
+			else
+				return null;
+		}
+		catch (\Exception $e)
+		{
+			$this->log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
+			return null;
+		}
     }
 
     /**

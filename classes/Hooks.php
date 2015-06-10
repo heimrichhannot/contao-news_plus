@@ -82,6 +82,8 @@ class Hooks extends \Controller
         // get uuids of files in correct order
         $arrUuids = deserialize($arrArticle['orderEnclosureSRC']);
 
+        if (!is_array($arrUuids)) return;
+
         foreach( $arrUuids as $item)
         {
             $objFile = \FilesModel::findByUuid($item);

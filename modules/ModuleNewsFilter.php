@@ -136,12 +136,11 @@ class ModuleNewsFilter extends ModuleNewsPlus
                 $arrCategories[] = $archive;
         }
 	
-
         foreach($arrCategories as $key=>$arrArchive) {
 	
             if (is_int($key))
 			{
-				if(in_array($key, $this->news_filterNewsCategoryArchives))
+				if(in_array($arrArchive['id'], $this->news_filterNewsCategoryArchives))
 				{
 					$strCat .= self::getNewsCategoriesAsSubmenu($arrArchive);
 				}

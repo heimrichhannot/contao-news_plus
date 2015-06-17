@@ -25,6 +25,7 @@ $dc['palettes']['newslist_plus']    = '
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,numberOfItems,news_featured,perPage,skipFirst;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule;
                                     {image_legend:hide},imgSize;
+                                    {youtube_legend},youtube_template;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
@@ -42,6 +43,7 @@ $dc['palettes']['newsreader_plus']  = '
                                     {showtags_legend},tag_filter,tag_ignore,news_showtags;
                                     {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl,news_pdfJumpTo;
                                     {image_legend:hide},imgSize;
+                                    {youtube_legend},youtube_template;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 

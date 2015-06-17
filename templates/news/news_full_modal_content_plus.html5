@@ -19,6 +19,11 @@
 			<?php endif; ?>
 
 			<div class="row">
+
+				<?php if ($this->addYouTube): ?>
+					<?php echo $this->youtubeVideo; ?>
+				<?php endif; ?>
+
 				<?php if ($this->text): ?>
 					<?php echo $this->text; ?>
 				<?php else: ?>

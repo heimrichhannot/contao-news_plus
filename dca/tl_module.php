@@ -34,6 +34,7 @@ $dc['palettes']['newslist_highlight']    = '
                                     {config_legend},news_archives,numberOfItems,news_featured,perPage,skipFirst;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule;
                                     {image_legend:hide},imgSize;
+                                    {youtube_legend},youtube_template;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 

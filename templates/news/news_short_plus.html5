@@ -7,6 +7,8 @@
 
 		<?php if ($this->addYouTube): ?>
 			<?php echo $this->youtubeVideo; ?>
+		<?php elseif($this->addMedia): ?>
+			<?php echo $this->mediaPlayer; ?>
 		<?php endif; ?>
 
 		<?php if ($this->hasMetaFields): ?>

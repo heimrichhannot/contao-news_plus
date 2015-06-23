@@ -26,6 +26,7 @@ $dc['palettes']['newslist_plus']    = '
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
+                                    {media_legend},media_template,media_posterSRC;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
@@ -35,6 +36,7 @@ $dc['palettes']['newslist_highlight']    = '
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
+                                    {media_legend},media_template,media_posterSRC;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
@@ -45,6 +47,7 @@ $dc['palettes']['newsreader_plus']  = '
                                     {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl,news_pdfJumpTo;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
+                                    {media_legend},media_template,media_posterSRC;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 

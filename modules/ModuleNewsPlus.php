@@ -109,6 +109,9 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
         $objTemplate->archive->title = $objTemplate->archive->displayTitle ? $objTemplate->archive->displayTitle : $objTemplate->archive->title;
         $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
+		$objTemplate->archiveTitle = $objTemplate->archive->title;
+
+		$arrCategoryTitles = array();
 
 		if($this->news_archiveTitleAppendCategories && !empty($arrCategories))
 		{
@@ -117,8 +120,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			if(!empty($arrTitleCategories))
 			{
 				$objTitleCategories = NewsCategoryModel::findPublishedByIds($arrTitleCategories);
-
-				$arrCategoryTitles = array();
 
 				if($objTitleCategories !== null)
 				{
@@ -133,7 +134,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 						$arrCategoryTitles[$objTitleCategories->id] = $objTitleCategories->title;
 					}
 
-					$objTemplate->archive->title .= ' : ' . implode(' : ', $arrCategoryTitles);
+					$objTemplate->archiveTitle .= ' : ' . implode(' : ', $arrCategoryTitles);
 				}
 			}
 		}

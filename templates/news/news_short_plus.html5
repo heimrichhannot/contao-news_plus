@@ -2,7 +2,7 @@
 	<a<?php if ($this->modal): ?> data-news="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?>
 		href="<?php echo $this->link; ?>" title="<?php echo $this->linkTitle; ?>"<?php echo $this->linkTarget; ?> class="inside more-section">
 		<h4 class="<?php echo $this->archive->class; ?>">
-			<?php echo $this->archive->title; ?>
+			<?php echo $this->archiveTitle; ?>
 		</h4>
 
 		<?php if ($this->addYouTube): ?>

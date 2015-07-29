@@ -35,4 +35,5 @@ $GLOBALS['TL_LANG']['tl_module']['news_showInModal'] = array('Nachrichtendetails
 $GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'] = array('Seite für den PDF-Druck', 'Wählen Sie hier die Seite, die zur Ausgabe der PRINT-TO-PDF-Funktion verwendet werden soll.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'] = array('Nachrichtenarchive mit Kategorien', 'Bitte wählen Sie ein oder mehrere Nachrichtenarchive aus für die Kategorien im Filter angezeigt werden sollen.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterModule'] = array('Nachrichtenfilter', 'Bitte wählen Sie einen Nachrichtenfilter um die Filtereingrenzungen für die Liste bereitzustellen.');
-
+$GLOBALS['TL_LANG']['tl_module']['news_archiveTitleAppendCategories'] = array('Kategorien-Titel an Archiv-Titel anhängen', 'Fügt die Kategorien getrennt an den Archiv-Titel an.');
+$GLOBALS['TL_LANG']['tl_module']['news_archiveTitleCategories'] = array('Anzuhängende Kategorien', 'Bitte wählen Sie die Kategorien aus, die an den Titel Ihrer Nachrichtenarchive angehangen werden sollen.');

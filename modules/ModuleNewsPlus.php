@@ -3,6 +3,7 @@
 namespace HeimrichHannot\NewsPlus;
 
 use HeimrichHannot\CalendarPlus\EventsPlusHelper;
+use NewsCategories\NewsCategoryModel;
 
 abstract class ModuleNewsPlus extends \ModuleNews
 {
@@ -73,6 +74,8 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	{
 		global $objPage;
 
+		$arrCategories = deserialize($objArticle->categories, true);
+
         $objTemplate = new \FrontendTemplate($this->news_template);
 		$objTemplate->setData($objArticle->row());
 		$objTemplate->class = (($objArticle->cssClass != '') ? ' ' . $objArticle->cssClass : '') . $strClass;
@@ -106,6 +109,35 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
         $objTemplate->archive->title = $objTemplate->archive->displayTitle ? $objTemplate->archive->displayTitle : $objTemplate->archive->title;
         $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
+
+		if($this->news_archiveTitleAppendCategories && !empty($arrCategories))
+		{
+			$arrTitleCategories = array_intersect($arrCategories, deserialize($this->news_archiveTitleCategories, true));
+
+			if(!empty($arrTitleCategories))
+			{
+				$objTitleCategories = NewsCategoryModel::findPublishedByIds($arrTitleCategories);
+
+				$arrCategoryTitles = array();
+
+				if($objTitleCategories !== null)
+				{
+					while($objTitleCategories->next())
+					{
+						if($objTitleCategories->frontendTitle)
+						{
+							$arrCategoryTitles[$objTitleCategories->id] = $objTitleCategories->frontendTitle;
+							continue;
+						}
+
+						$arrCategoryTitles[$objTitleCategories->id] = $objTitleCategories->title;
+					}
+
+					$objTemplate->archive->title .= ' : ' . implode(' : ', $arrCategoryTitles);
+				}
+			}
+		}
+
 		$objTemplate->count = $intCount; // see #5708
 		$objTemplate->text = '';
 

@@ -271,9 +271,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
     static function getArchiveClassFromTitle($title, $strToLower = false)
     {
-        $type = explode(' ',trim($title));
-        $subject = explode(' - ',trim($title));
-        $strNewTitle = $type[0] . ' ' . $subject[1];
+        $type = standardize($title);
+        $strBase = strstr($type, '-', true);
+        $strNewTitle = ($strBase ? $strBase . ' ' : '') . $type;
         if($strToLower) $strNewTitle = strtolower($strNewTitle);
         return $strNewTitle;
     }

@@ -97,6 +97,12 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $blnFeatured = null;
         }
 
+        // show all news items, if search word is present - TODO: make configurable in tl_module
+        if($this->strKeywords!=='' && $this->news_archives!=='')
+        {
+            $blnFeatured = null;
+        }
+
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 

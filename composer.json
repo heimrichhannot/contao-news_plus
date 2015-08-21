@@ -17,7 +17,8 @@
         "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
     },
     "require": {
-        "contao/core": ">=3.3,<4-dev"
+        "contao/core": ">=3.3,<4-dev",
+        "codefog/contao-news_categories": ">=2.0.0,<3-dev"
     },
     "autoload": {
         "classmap": [""]

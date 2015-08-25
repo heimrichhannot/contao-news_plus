@@ -37,3 +37,11 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'] = array('Nac
 $GLOBALS['TL_LANG']['tl_module']['news_filterModule'] = array('Nachrichtenfilter', 'Bitte wählen Sie einen Nachrichtenfilter um die Filtereingrenzungen für die Liste bereitzustellen.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleAppendCategories'] = array('Kategorien-Titel an Archiv-Titel anhängen', 'Fügt die Kategorien getrennt an den Archiv-Titel an.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleCategories'] = array('Anzuhängende Kategorien', 'Bitte wählen Sie die Kategorien aus, die an den Titel Ihrer Nachrichtenarchive angehangen werden sollen.');
+
+/**
+ * References
+ */
+
+$GLOBALS['TL_LANG']['tl_module']['latest_day'] = 'Zum letzten Tag mit veröffentlichten Nachrichten springen';
+$GLOBALS['TL_LANG']['tl_module']['latest_month'] = 'Zum letzten Monat mit veröffentlichten Nachrichten springen';
+$GLOBALS['TL_LANG']['tl_module']['latest_year'] = 'Zum letzten Jahr mit veröffentlichten Nachrichten springen';

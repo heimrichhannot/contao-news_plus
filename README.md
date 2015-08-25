@@ -10,3 +10,8 @@ A collection of enhancements for the contao news module.
 - Module NewsReaderPlus (possibility to show details in modal window, with next/prev event navigation and browser history support)
 - Module Newsfilter (filter list by date, archive and search term, use contao search)
 
+
+### Newsarchive
+
+- added option values jump to day, year, month of latest published news for news_jumpToCurrent 
+

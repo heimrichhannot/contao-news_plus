@@ -51,6 +51,7 @@ $dc['palettes']['newsreader_plus'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
+
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 
 /**
@@ -210,6 +211,9 @@ $dc['fields'] = array_merge
 );
 
 $dc['fields']['news_archives']['options_callback'] = array('tl_module_news_plus', 'getNewsArchives');
+
+// add show_latest_day, show_latest_month, show_latest_year to news_jumpToCurrent
+array_insert($dc['fields']['news_jumpToCurrent']['options'], 2, array('latest_day', 'latest_month', 'latest_year'));
 
 /**
  * Class tl_module_news_plus

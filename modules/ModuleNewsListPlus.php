@@ -98,11 +98,11 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         }
 
         // show all news items, if search word is present - TODO: make configurable in tl_module
-        if($this->strKeywords !== '' || $this->news_categories !='')
+        if($this->strKeywords !== '' || isset($_GET['newscategories']))
         {
             $blnFeatured = null;
         }
-    
+
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 

@@ -135,16 +135,6 @@ $dc['fields'] = array_merge
 			'eval'             => array('multiple' => true),
 			'sql'              => "blob NULL",
 		),
-		'news_readerModule'                 => array
-		(
-			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_readerModule'],
-			'exclude'          => true,
-			'inputType'        => 'select',
-			'options_callback' => array('tl_module_news_plus', 'getReaderModules'),
-			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
-			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
-			'sql'              => "int(10) unsigned NOT NULL default '0'",
-		),
 		'news_template_modal'               => array
 		(
 			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_template_modal'],
@@ -211,6 +201,7 @@ $dc['fields'] = array_merge
 );
 
 $dc['fields']['news_archives']['options_callback'] = array('tl_module_news_plus', 'getNewsArchives');
+$dc['fields']['news_readerModule']['options_callback'] = array('tl_module_news_plus', 'getReaderModules');
 
 // add show_latest_day, show_latest_month, show_latest_year to news_jumpToCurrent
 array_insert($dc['fields']['news_jumpToCurrent']['options'], 2, array('latest_day', 'latest_month', 'latest_year'));

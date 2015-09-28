@@ -20,3 +20,10 @@ $GLOBALS['TL_LANG']['tl_news_archive']['root'][1] = 'Wählen Sie eine Zugehörig
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_archive']['root_legend'] = 'Zugehörigkeit';
+
+/**
+ * Buttons
+ */
+
+$GLOBALS['TL_LANG']['tl_news_archive']['news_config'][0] = 'Nachrichten-Konfigurationen';
+$GLOBALS['TL_LANG']['tl_news_archive']['news_config'][1] = 'Nachrichten-Konfigurationen verwalten.';

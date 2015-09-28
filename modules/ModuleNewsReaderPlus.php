@@ -106,7 +106,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             global $objPage;
             $objPage->noSearch = 1;
             $objPage->cache = 0;
-            return false;
+            return '';
         }
 
         $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
@@ -117,7 +117,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             global $objPage;
             $objPage->noSearch = 1;
             $objPage->cache = 0;
-            return false;
+            return '';
         }
 
         return true;

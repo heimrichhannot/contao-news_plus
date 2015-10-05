@@ -1,13 +1,13 @@
 <div class="news-reader-arrow-nav">
 	<?php if($this->prev): ?>
-		<a class="prev"<?php if($this->prev['modal']): ?> data-news="modal" data-target="<?php echo $this->prev['modalTarget']; ?>"<?php endif; ?> href="<?php echo $this->prev['href']; ?>" title="<?php echo $this->prev['title']; ?>" <?php echo $this->prev['target']; ?>><?php echo $this->prevLink; ?></a>
+		<a class="prev"<?php if($this->prev['modal']): ?> data-news="modal" data-target="<?php echo $this->prev['modalTarget']; ?>"<?php endif; ?> href="<?php echo $this->prev['href']; ?>" title="<?php echo $this->prev['title']; ?>" <?php echo $this->prev['target']; ?>><span><?php echo $this->prevLink; ?></span></a>
 	<?php endif; ?>
 
 	<?php if($this->prev && $this->next): ?>
-		&nbsp;&frasl;&nbsp;&nbsp;
+		<span class="separator"></span>
 	<?php endif; ?>
 
 	<?php if($this->next): ?>
-		<a class="next"<?php if($this->next['modal']): ?> data-news="modal" data-target="<?php echo $this->next['modalTarget']; ?>"<?php endif; ?> href="<?php echo $this->next['href']; ?>" title="<?php echo $this->next['title']; ?>" <?php echo $this->next['target']; ?>><?php echo $this->nextLink; ?></a>
+		<a class="next"<?php if($this->next['modal']): ?> data-news="modal" data-target="<?php echo $this->next['modalTarget']; ?>"<?php endif; ?> href="<?php echo $this->next['href']; ?>" title="<?php echo $this->next['title']; ?>" <?php echo $this->next['target']; ?>><span><?php echo $this->nextLink; ?></span></a>
 	<?php endif; ?>
 </div>

@@ -32,7 +32,6 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\NewsPlus\ModuleNewsReaderPlus'    => 'system/modules/news_plus/modules/ModuleNewsReaderPlus.php',
 	'HeimrichHannot\NewsPlus\ModuleNewsFilter'        => 'system/modules/news_plus/modules/ModuleNewsFilter.php',
 	'HeimrichHannot\NewsPlus\ModuleNewsListPlus'      => 'system/modules/news_plus/modules/ModuleNewsListPlus.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsArchive'       => 'system/modules/news_plus/modules/ModuleNewsArchive.php',
 
 	// Classes
 	'HeimrichHannot\NewsPlus\NewsPlusTagHelper'       => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',

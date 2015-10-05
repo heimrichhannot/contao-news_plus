@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="system/modules/news/languages/en/tl_module.php" source-language="en">
+    <body>
+      <trans-unit id="tl_module.news_readerModulePlus.0">
+        <source>Extended News reader module</source>
+      </trans-unit>
+      <trans-unit id="tl_module.news_readerModulePlus.1">
+        <source>Automatically switch to the news reader if an item has been selected.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -17,6 +17,20 @@ $dc = &$GLOBALS['TL_DCA']['tl_news_archive'];
 $dc['list']['sorting']['fields'] = array('root', 'title');
 
 /**
+ * Add a global operation to tl_news_archive
+ */
+array_insert($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'], 1, array
+(
+	'config_fe' => array
+	(
+		'label'               => &$GLOBALS['TL_LANG']['tl_news_archive']['news_config'],
+		'href'                => 'table=tl_news_config',
+		'icon'                => 'system/modules/news_plus/assets/img/news_config.png',
+		'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
+	)
+));
+
+/**
  * Palettes
  */
 $dc['palettes']['__selector__'][] = 'addDummyImage';

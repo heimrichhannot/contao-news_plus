@@ -203,7 +203,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, array $arrOptions=array())
+	public static function countPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -221,6 +221,12 @@ class NewsPlusModel extends \NewsModel
 		{
 			$arrColumns[] = "$t.featured=''";
 		}
+
+		// filter by date
+		if($startDate != null)
+			$arrColumns[] = "$t.date>=$startDate";
+		if($endDate != null)
+			$arrColumns[] = "$t.date<=$endDate";
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -530,20 +536,4 @@ class NewsPlusModel extends \NewsModel
 
         return static::findBy($arrColumns, null, $arrOptions);
     }
-
-	public static function findMaxPublishedByPids(array $arrPids, array $arrOptions=array())
-	{
-		$t          = static::$strTable;
-
-		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
-
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time         = time();
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
-
-		$objResult = \Database::getInstance()->prepare("SELECT * FROM $t WHERE " . implode(' AND ', $arrColumns) . " ORDER BY date DESC")->limit(1)->execute();
-		return static::createModelFromDbResult($objResult);
-	}
 }

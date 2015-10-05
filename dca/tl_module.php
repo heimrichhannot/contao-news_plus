@@ -204,18 +204,6 @@ $dc['fields'] = array_merge
 								  'managerHref'  => 'do=news&table=tl_news_category',
 			),
 			'sql'        => "blob NULL",
-		),
-		'news_config' => array
-		(
-			'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_config'],
-			'inputType'  => 'select',
-			'exclude'    => true,
-			'foreignKey' => 'tl_news_config.title',
-			'sql'        => "int(10) unsigned NOT NULL",
-			'wizard'     => array
-			(
-				array('tl_module_news_plus', 'editNewsConfig'),
-			),
 		)
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()
@@ -346,20 +334,4 @@ class tl_module_news_plus extends Backend
 		return $arrArchives;
 	}
 
-	public function editNewsConfig(DataContainer $dc)
-	{
-		return ($dc->value < 1)
-			? ''
-			: ' <a href="contao/main.php?do=news&amp;table=tl_news_config_fe&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN
-			  . '" title="' . sprintf(
-				  specialchars($GLOBALS['TL_LANG']['tl_news']['editNewsConfig'][1]),
-				  $dc->value
-			  ) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(
-				  str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_news']['editNewsConfig'][1], $dc->value))
-			  ) . '\',\'url\':this.href});return false">' . Image::getHtml(
-				'alias.gif',
-				$GLOBALS['TL_LANG']['tl_news']['editNewsConfig'][0],
-				'style="vertical-align:top"'
-			) . '</a>';
-	}
 }

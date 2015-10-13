@@ -44,8 +44,9 @@ $dc['palettes']['newsreader_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives;
                                     {showtags_legend},tag_filter,tag_ignore,news_showtags;
-                                    {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl,news_pdfJumpTo;
+                                    {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl;
                                     {image_legend:hide},imgSize;
+                                    {share_legend},addShare;
                                     {youtube_legend},youtube_template;
                                     {media_legend},media_template,media_posterSRC;
                                     {protected_legend:hide},protected;
@@ -160,16 +161,6 @@ $dc['fields'] = array_merge
 			'inputType' => 'checkbox',
 			'eval'      => array('tl_class' => 'w50 m12'),
 			'sql'       => "char(1) NOT NULL default ''",
-		),
-		'news_pdfJumpTo'                    => array
-		(
-			'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'],
-			'exclude'    => true,
-			'inputType'  => 'pageTree',
-			'foreignKey' => 'tl_page.title',
-			'eval'       => array('fieldType' => 'radio', 'tl_class' => 'w50 clr'),
-			'sql'        => "int(10) unsigned NOT NULL default '0'",
-			'relation'   => array('type' => 'belongsTo', 'load' => 'lazy'),
 		),
 		'news_filterModule'                 => array
 		(

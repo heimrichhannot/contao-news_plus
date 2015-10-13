@@ -255,8 +255,9 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			$this->addEnclosuresToTemplate($objTemplate, $objArticle->row());
 		}
 
-		if(in_array('share',$this->Config->getActiveModules()))
+		if(in_array('share', \ModuleLoader::getActive()))
 		{
+			$objArticle->title = $objArticle->headline;
 			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objArticle);
 			$objTemplate->share = $objShare->generate();
 		}

@@ -97,18 +97,18 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $blnFeatured = null;
         }
 
-        // show all news items, if search word is present - TODO: make configurable in tl_module
-        if($this->strKeywords!=='' && $this->news_archives!=='')
+        // show all news items, if search word is present or news archive is filtered - TODO: make configurable in tl_module
+        if($this->strKeywords!=='' || $this->news_archives!=='')
         {
             $blnFeatured = null;
         }
-
+    
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
 		// Get the total number of items
 		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
-
+    
 		if ($intTotal < 1) {
 			return;
 		}

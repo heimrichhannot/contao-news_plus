@@ -18,6 +18,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 	protected $t = "tl_news";
 
+    protected $filterActive = false;
+
+    protected $filterSearch = false;
+
     /**
      * Display a wildcard in the back end
      * @return string
@@ -38,7 +42,11 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         }
 
         // set news categories from filter
-        if(isset($_GET['newscategories']) && $_GET['newscategories'] != '') $this->news_archives = explode(',', \Input::get('newscategories'));
+        if(\Input::get('newscategories')){
+            $this->news_archives = explode(',', \Input::get('newscategories'));
+            $this->filterActive = true;
+        }
+    
         $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
 
         // Return if there are no archives
@@ -58,8 +66,11 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		$this->news_categories = array();
 		// set news categories from filter
-		if(isset($_GET['categories']) && $_GET['categories'] != '')
-			$this->news_categories = explode(',', \Input::get('categories'));
+		if(\Input::get('categories'))
+        {
+            $this->news_categories = explode(',', \Input::get('categories'));
+            $this->filterActive = true;
+        }
 
         // Show the event reader if an item has been selected
         if (!$this->news_showInModal && $this->news_readerModule > 0  && (isset($_GET['news']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
@@ -68,9 +79,24 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         }
 
         // filter
-        $this->startDate = strtotime (\Input::get('startDate'));
-        $this->endDate = strtotime (\Input::get('endDate'));
-		$this->strKeywords = trim(\Input::get('searchKeywords'));
+        if(\Input::get('startData'))
+        {
+            $this->startDate = strtotime (\Input::get('startDate'));
+            $this->filterActive = true;
+        }
+
+        if(\Input::get('endDate'))
+        {
+            $this->endDate = strtotime (\Input::get('endDate'));
+            $this->filterActive = true;
+        }
+
+        if(\Input::get('searchKeywords'))
+        {
+            $this->strKeywords = trim(\Input::get('searchKeywords'));
+            $this->filterActive = true;
+            $this->filterSearch = true;
+        }
 
         return parent::generate();
     }
@@ -97,8 +123,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $blnFeatured = null;
         }
 
-        // show all news items, if search word is present or news archive is filtered - TODO: make configurable in tl_module
-        if($this->strKeywords!=='' || $this->news_archives!=='')
+        // show all news items, filter is active - TODO: make configurable in tl_module
+        if($this->filterActive)
         {
             $blnFeatured = null;
         }
@@ -140,7 +166,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(count($arrTagIds) > 0) {
             $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
         } elseif (isset($limit) && !isset($objArticles)) {
-			if( $this->strKeywords!=='' && $this->news_archives!=='' )
+			if($this->filterSearch)
 			{
 				$objArticles = static::findNewsInSearchIndex($this->strKeywords, true, true);
 			}
@@ -158,7 +184,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(\Input::get("searchKeywords")) $arrUrlParam[] = 'searchKeywords=' . \Input::get("searchKeywords");
         if(\Input::get("startDate"))      $arrUrlParam[] = 'startDate=' . \Input::get("startDate");
         if(\Input::get("endDate"))        $arrUrlParam[] = 'endDate=' . \Input::get("endDate");
-        $strUrlParam = implode("&", $arrUrlParam);
 
         $arrIds = NewsPlus::getAllPublishedNews($this->news_archives, $this->news_categories);
 
@@ -170,7 +195,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $session = \Session::getInstance()->getData();
         $session[NEWSPLUS_SESSION_NEWS_IDS] = array();
         $session[NEWSPLUS_SESSION_NEWS_IDS] = $arrIds;
-        // $session[NEWSPLUS_SESSION_URL_PARAM] = $strUrlParam;
         \Session::getInstance()->setData($session);
 
 

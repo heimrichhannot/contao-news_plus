@@ -23,7 +23,7 @@ $dc['palettes']['newsfilter'] = '
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
-                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
                                     {media_legend},media_template,media_posterSRC;

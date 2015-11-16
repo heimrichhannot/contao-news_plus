@@ -134,10 +134,11 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		// Get the total number of items
 		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
-    
+
 		if ($intTotal < 1) {
 			return;
 		}
+
 		$total = $intTotal - $offset;
 
 		// Adjust the overall limit
@@ -145,19 +146,23 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			$total = min($limit, $total);
 		}
 
-		// Get the current page
-		$id = 'page_n' . $this->id;
-		$page = \Input::get($id) ?: 1;
 
-		//Set limit and offset
-		$limit = $this->perPage;
-		$offset += (max($page, 1) - 1) * $this->perPage;
-		$skip = intval($this->skipFirst);
+        // Split the results
+        if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage)) {
+            // Get the current page
+            $id   = 'page_n' . $this->id;
+            $page = \Input::get($id) ?: 1;
 
-		// Overall limit
-		if ($offset + $limit > $total + $skip) {
-			$limit = $total + $skip - $offset;
-		}
+            //Set limit and offset
+            $limit = $this->perPage;
+            $offset += (max($page, 1) - 1) * $this->perPage;
+            $skip = intval($this->skipFirst);
+
+            // Overall limit
+            if ($offset + $limit > $total + $skip) {
+                $limit = $total + $skip - $offset;
+            }
+        }
 
         // get items by tag tid
         $arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
@@ -172,7 +177,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			}
 			else
 			{
-				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, $limit, $offset, array(),  $this->startDate, $this->endDate);
+				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
 			}
         } else {
             $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);

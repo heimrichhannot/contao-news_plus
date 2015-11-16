@@ -88,7 +88,10 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
 		$objTemplate->linkTarget = ($objArticle->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : '');
 		$objTemplate->linkTitle = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true);
-
+		$objTemplate->count = $intCount; // see #5708
+		$objTemplate->text = '';
+		$objTemplate->hasText = false;
+		$objTemplate->hasTeaser = false;
 
         // print pdf
         if($this->news_pdfJumpTo) {
@@ -139,9 +142,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			}
 		}
 
-		$objTemplate->count = $intCount; // see #5708
-		$objTemplate->text = '';
-
         // add tags
         $objTemplate->showTags = $this->news_showtags;
         if ($this->news_showtags && $this->news_template_modal && $this->Environment->isAjaxRequest)
@@ -169,36 +169,49 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		// Clean the RTE output
 		if ($objArticle->teaser != '')
 		{
+			$objTemplate->hasTeaser = true;
+
 			if ($objPage->outputFormat == 'xhtml')
 			{
-				$objTemplate->teaser = \String::toXhtml($objArticle->teaser);
+				$objTemplate->teaser = \StringUtil::toXhtml($objArticle->teaser);
 			}
 			else
 			{
-				$objTemplate->teaser = \String::toHtml5($objArticle->teaser);
+				$objTemplate->teaser = \StringUtil::toHtml5($objArticle->teaser);
 			}
 
-			$objTemplate->teaser = \String::encodeEmail($objTemplate->teaser);
+			$objTemplate->teaser = \StringUtil::encodeEmail($objTemplate->teaser);
 		}
 
 		// Display the "read more" button for external/article links
 		if ($objArticle->source != 'default')
 		{
 			$objTemplate->text = true;
+			$objTemplate->hasText = true;
 		}
 
 		// Compile the news text
 		else
 		{
-			$objElement = \ContentModel::findPublishedByPidAndTable($objArticle->id, 'tl_news');
+			$id = $objArticle->id;
 
-			if ($objElement !== null)
+			$objTemplate->text = function () use ($id)
 			{
-				while ($objElement->next())
+				$strText = '';
+				$objElement = \ContentModel::findPublishedByPidAndTable($id, 'tl_news');
+
+				if ($objElement !== null)
 				{
-					$objTemplate->text .= $this->getContentElement($objElement->current());
+					while ($objElement->next())
+					{
+						$strText .= $this->getContentElement($objElement->current());
+					}
 				}
-			}
+
+				return $strText;
+			};
+
+			$objTemplate->hasText = (\ContentModel::countPublishedByPidAndTable($objArticle->id, 'tl_news') > 0);
 		}
 
 		$arrMeta = $this->getMetaFields($objArticle);
@@ -291,74 +304,22 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	 */
 	protected function parseArticles($objArticles, $blnAddArchive=false)
 	{
-		$limit = $objArticles->count();
+		$arrArticles = parent::parseArticles($objArticles, $blnAddArchive);
 
-		if ($limit < 1)
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['parseAllArticles']) && is_array($GLOBALS['TL_HOOKS']['parseAllArticles']))
 		{
-			return array();
-		}
-
-		$count = 0;
-		$arrArticles = array();
-
-		while ($objArticles->next())
-		{
-			$arrArticles[] = $this->parseArticle($objArticles, $blnAddArchive, ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even'), $count);
+			foreach ($GLOBALS['TL_HOOKS']['parseAllArticles'] as $callback)
+			{
+				$this->import($callback[0]);
+				$arrArticles = $this->$callback[0]->$callback[1]($arrArticles, $blnAddArchive, $this);
+			}
 		}
 
 		return $arrArticles;
 	}
 
-
-	/**
-	 * Return the meta fields of a news article as array
-	 * @param object
-	 * @return array
-	 */
-	protected function getMetaFields($objArticle)
-	{
-		$meta = deserialize($this->news_metaFields);
-
-		if (!is_array($meta))
-		{
-			return array();
-		}
-
-		global $objPage;
-		$return = array();
-
-		foreach ($meta as $field)
-		{
-			switch ($field)
-			{
-				case 'date':
-					$return['date'] = \Date::parse($objPage->datimFormat, $objArticle->date);
-					break;
-
-				case 'author':
-					if (($objAuthor = $objArticle->getRelated('author')) !== null)
-					{
-						$return['author'] = $GLOBALS['TL_LANG']['MSC']['by'] . ' ' . $objAuthor->name;
-					}
-					break;
-
-				case 'comments':
-					if ($objArticle->noComments || $objArticle->source != 'default')
-					{
-						break;
-					}
-					$intTotal = \CommentsModel::countPublishedBySourceAndParent('tl_news', $objArticle->id);
-					$return['ccount'] = $intTotal;
-					$return['comments'] = sprintf($GLOBALS['TL_LANG']['MSC']['commentCount'], $intTotal);
-					break;
-			}
-		}
-
-		return $return;
-	}
-
-
-	/**
+/**
 	 * Generate a URL and return it as string
 	 * @param object
 	 * @param boolean
@@ -431,48 +392,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		return self::$arrUrlCache[$strCacheKey];
 	}
 
-
-	/**
-	 * Generate a link and return it as string
-	 * @param string
-	 * @param object
-	 * @param boolean
-	 * @param boolean
-	 * @return string
-	 */
-	protected function generateLink($strLink, $objArticle, $blnAddArchive=false, $blnIsReadMore=false)
-	{
-		// Internal link
-		if ($objArticle->source != 'external')
-		{
-			return sprintf('<a href="%s" title="%s">%s%s</a>',
-							$this->generateNewsUrl($objArticle, $blnAddArchive),
-							specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true),
-							$strLink,
-							($blnIsReadMore ? ' <span class="invisible">'.$objArticle->headline.'</span>' : ''));
-		}
-
-		// Encode e-mail addresses
-		if (substr($objArticle->url, 0, 7) == 'mailto:')
-		{
-			$strArticleUrl = \String::encodeEmail($objArticle->url);
-		}
-
-		// Ampersand URIs
-		else
-		{
-			$strArticleUrl = ampersand($objArticle->url);
-		}
-
-		global $objPage;
-
-		// External link
-		return sprintf('<a href="%s" title="%s"%s>%s</a>',
-						$strArticleUrl,
-						specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
-						($objArticle->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
-						$strLink);
-	}
 
     /**
      * Parse the template

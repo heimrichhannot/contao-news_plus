@@ -2,8 +2,6 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-use HeimrichHannot\CalendarPlus\EventsPlusHelper;
-
 class ModuleNewsListPlus extends ModuleNewsPlus
 {
 	/**
@@ -164,13 +162,22 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             }
         }
 
-        // get items by tag tid
-        $arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
+		$arrTagIds = array();
+
+		// get items by tag tid
+		if(in_array('tags', \ModuleLoader::getActive()))
+		{
+			$arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
+		}
+
 
         // Get the items normal or by tag
-        if(count($arrTagIds) > 0) {
+        if(count($arrTagIds) > 0)
+		{
             $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
-        } elseif (isset($limit) && !isset($objArticles)) {
+        }
+		elseif (isset($limit) && !isset($objArticles))
+		{
 			if($this->filterSearch)
 			{
 				$objArticles = static::findNewsInSearchIndex($this->strKeywords, true, true);
@@ -179,7 +186,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			{
 				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
 			}
-        } else {
+        }
+		else
+		{
             $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
         }
 

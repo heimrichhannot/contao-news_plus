@@ -64,7 +64,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
             // set modal css ID for generateModal() and parent::generate()
             $arrCss = deserialize($this->cssID, true);
-            $arrCss[0] = EventsPlusHelper::getCSSModalID($this->id);
+            $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
             $this->cssID = $arrCss;
             $this->base = \Controller::generateFrontendUrl($objPage->row());
 

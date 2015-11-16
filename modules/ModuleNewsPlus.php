@@ -2,7 +2,6 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-use HeimrichHannot\CalendarPlus\EventsPlusHelper;
 use NewsCategories\NewsCategoryModel;
 
 abstract class ModuleNewsPlus extends \ModuleNews
@@ -173,14 +172,14 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
 			if ($objPage->outputFormat == 'xhtml')
 			{
-				$objTemplate->teaser = \StringUtil::toXhtml($objArticle->teaser);
+				$objTemplate->teaser = \String::toXhtml($objArticle->teaser);
 			}
 			else
 			{
-				$objTemplate->teaser = \StringUtil::toHtml5($objArticle->teaser);
+				$objTemplate->teaser = \String::toHtml5($objArticle->teaser);
 			}
 
-			$objTemplate->teaser = \StringUtil::encodeEmail($objTemplate->teaser);
+			$objTemplate->teaser = \String::encodeEmail($objTemplate->teaser);
 		}
 
 		// Display the "read more" button for external/article links
@@ -211,7 +210,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 				return $strText;
 			};
 
-			$objTemplate->hasText = (\ContentModel::countPublishedByPidAndTable($objArticle->id, 'tl_news') > 0);
+			$objTemplate->hasText = (\ContentModel::findPublishedByPidAndTable($objArticle->id, 'tl_news') !== null);
 		}
 
 		$arrMeta = $this->getMetaFields($objArticle);
@@ -279,7 +278,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
         if($this->news_showInModal && $objArticle->source == 'default' && $this->news_readerModule)
         {
             $objTemplate->modal = true;
-            $objTemplate->modalTarget = '#' . EventsPlusHelper::getCSSModalID($this->news_readerModule);
+            $objTemplate->modalTarget = '#' . NewsPlusHelper::getCSSModalID($this->news_readerModule);
         }
 
 		// HOOK: add custom logic
@@ -490,7 +489,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
     protected static function getNewsDetails($objNews, $strUrl, $modalId)
     {
         $arrNews['modal'] = true;
-        $arrNews['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($modalId);
+        $arrNews['modalTarget'] = '#' . NewsPlusHelper::getCSSModalID($modalId);
         $arrNews['title'] = specialchars($objNews->headline, true);
 
         //$session = \Session::getInstance()->getData();

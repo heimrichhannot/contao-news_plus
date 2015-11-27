@@ -77,7 +77,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         }
 
         // filter
-        if(\Input::get('startData'))
+        if(\Input::get('startDate'))
         {
             $this->startDate = strtotime (\Input::get('startDate'));
             $this->filterActive = true;

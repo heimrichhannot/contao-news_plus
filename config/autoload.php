@@ -53,6 +53,7 @@ TemplateLoader::addFiles(array
 	'newsnav_default'                => 'system/modules/news_plus/templates/navigation',
 	'news_short_plus'                => 'system/modules/news_plus/templates/news',
 	'news_full_modal_plus'           => 'system/modules/news_plus/templates/news',
+	'news_full_leisuretips'          => 'system/modules/news_plus/templates/news',
 	'news_full_modal_content_plus'   => 'system/modules/news_plus/templates/news',
 	'mod_news_modal'                 => 'system/modules/news_plus/templates/modules',
 	'mod_newsreader_plus'            => 'system/modules/news_plus/templates/modules',

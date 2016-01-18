@@ -1,0 +1,34 @@
+<div class="<?php echo $this->class; ?><?php if ($this->skipScrollingToSuccessMessage): ?> noscroll<?php endif ?> block"<?php echo $this->cssID; ?>>
+	<script><?php echo \HeimrichHannot\FormHybrid\FormHelper::getLocaleString(); ?></script>
+	<form action="<?php echo $this->action; ?>"
+	id="<?php echo $this->formId; ?>" 
+	method="<?php echo $this->method; ?>" 
+	enctype="<?php echo $this->enctype; ?>"
+	<?php echo $this->attributes; ?>
+	<?php echo $this->novalidate; ?>
+	<?php if($this->formClass):?> class="<?php echo $this->formClass; ?>"<?php endif;?>>
+		<!-- formhybrid::stop -->
+		<div class="formbody">
+			<?php if(!$this->invalid): ?>
+				<?php if ($this->method == FORMHYBRID_METHOD_POST): ?>
+					<input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
+					<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+					<?php if ($this->maxFileSize): ?>
+						<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->maxFileSize; ?>">
+					<?php endif; ?>
+				<?php endif; ?>
+				<?php echo $this->hidden; ?>
+				<?php foreach($this->fields as $name => $objField): ?>
+					<?php if($objField->type == 'submit'): ?>
+						<div class="btn-group submit" role="group">
+							<button type="submit" class="btn btn-xs btn-primary"><?= $objField->slabel; ?></button>
+							<a href="{{page::alias}}?reset=1" title="<?= $this->resetTitle; ?>" class="btn btn-xs btn-default">x</a>
+						</div>
+						<?php continue; ?>
+					<?php endif; ?>
+					<?php echo $objField->parse(); ?>
+				<?php endforeach; ?>
+			<?php endif; ?>
+		</div>
+	</form>
+</div>

@@ -51,36 +51,47 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             return $objTemplate->parse();
         }
 
-        global $objPage;
-
+        // modal news
         if($this->news_template_modal)
         {
-            $this->strTemplate = 'mod_news_modal';
-            $this->news_template = $this->news_template_modal;
-
-            // list config
-            $this->news_showInModal = true;
-            $this->news_readerModule = $this->id;
-
-            // set modal css ID for generateModal() and parent::generate()
-            $arrCss = deserialize($this->cssID, true);
-            $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
-            $this->cssID = $arrCss;
-            $this->base = \Controller::generateFrontendUrl($objPage->row());
-
-            if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
-            {
-                $this->strTemplate = 'mod_news_modal_ajax';
-                $this->generateAjax();
-            }
-
-            if(!$this->checkConditions())
-            {
-                return $this->generateModal();
-            }
+            $this->generateInModal();
+        }
+        // default news
+        else if($this->checkConditions())
+        {
+            return parent::generate();
         }
 
-        return parent::generate();
+        return '';
+    }
+
+    protected function generateInModal()
+    {
+        global $objPage;
+
+        $this->strTemplate = 'mod_news_modal';
+        $this->news_template = $this->news_template_modal;
+
+        // list config
+        $this->news_showInModal = true;
+        $this->news_readerModule = $this->id;
+
+        // set modal css ID for generateModal() and parent::generate()
+        $arrCss = deserialize($this->cssID, true);
+        $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
+        $this->cssID = $arrCss;
+        $this->base = \Controller::generateFrontendUrl($objPage->row());
+
+        if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
+        {
+            $this->strTemplate = 'mod_news_modal_ajax';
+            $this->generateAjax();
+        }
+
+        if(!$this->checkConditions())
+        {
+            return $this->generateModal();
+        }
     }
 
     protected function generateAjax()

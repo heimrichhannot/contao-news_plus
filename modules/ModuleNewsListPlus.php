@@ -12,6 +12,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 	protected $objFilter = null;
 
+    protected $arrSubmission = array();
+
 	protected $strKeywords;
 
 	protected $t = "tl_news";
@@ -19,6 +21,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
     protected $filterActive = false;
 
     protected $filterSearch = false;
+
+	protected $news_categories = array();
 
     /**
      * Display a wildcard in the back end
@@ -39,12 +43,11 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             return $objTemplate->parse();
         }
 
-        // set news categories from filter
-        if(\Input::get('newscategories')){
-            $this->news_archives = explode(',', \Input::get('newscategories'));
-            $this->filterActive = true;
-        }
-    
+		if($this->news_filterModule && ($objFilter = \ModuleModel::findByPk($this->news_filterModule)) !== null)
+		{
+			$this->initFilter($objFilter);
+		}
+
         $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
 
         // Return if there are no archives
@@ -55,45 +58,14 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		$GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
 		$GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
+        $GLOBALS['NEWS_FILTER_DEFAULT_EXCLUDE']    = deserialize($this->news_filterDefaultExclude, true);
 		$GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
 
-		if($this->news_filterModule)
-		{
-			$this->objFilter = \ModuleModel::findByPk($this->news_filterModule);
-		}
-
-		$this->news_categories = array();
-		// set news categories from filter
-		if(\Input::get('categories'))
-        {
-            $this->news_categories = explode(',', \Input::get('categories'));
-            $this->filterActive = true;
-        }
 
         // Show the event reader if an item has been selected
         if (!$this->news_showInModal && $this->news_readerModule > 0  && (isset($_GET['news']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
         {
             return $this->getFrontendModule($this->news_readerModule, $this->strColumn);
-        }
-
-        // filter
-        if(\Input::get('startDate'))
-        {
-            $this->startDate = strtotime (\Input::get('startDate'));
-            $this->filterActive = true;
-        }
-
-        if(\Input::get('endDate'))
-        {
-            $this->endDate = strtotime (\Input::get('endDate'));
-            $this->filterActive = true;
-        }
-
-        if(\Input::get('searchKeywords'))
-        {
-            $this->strKeywords = trim(\Input::get('searchKeywords'));
-            $this->filterActive = true;
-            $this->filterSearch = true;
         }
 
         return parent::generate();
@@ -126,7 +98,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         {
             $blnFeatured = null;
         }
-    
+
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
@@ -137,13 +109,41 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			return;
 		}
 
-		$total = $intTotal - $offset;
+        $arrFilterIds = array();
 
-		// Adjust the overall limit
-		if(isset($limit)) {
-			$total = min($limit, $total);
+		// get items by tag tid
+		if(in_array('tags', \ModuleLoader::getActive()))
+		{
+			$arrFilterIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
 		}
 
+        if($this->filterSearch)
+        {
+            $objKeywordArticles = static::findNewsInSearchIndex($this->strKeywords, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true));
+
+			if($objKeywordArticles !== null)
+			{
+				$arrFilterIds = array_merge($arrFilterIds, $objKeywordArticles->fetchEach('id'));
+			}
+		}
+
+
+        if(is_array($arrFilterIds) && !empty($arrFilterIds))
+        {
+            // Get the total number of items
+            $intTotal = NewsPlusModel::countPublishedByPidsAndIds($this->news_archives, $arrFilterIds, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
+
+            if ($intTotal < 1) {
+                return;
+            }
+        }
+
+        $total = $intTotal - $offset;
+
+        // Adjust the overall limit
+        if(isset($limit)) {
+            $total = min($limit, $total);
+        }
 
         // Split the results
         if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage)) {
@@ -162,35 +162,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             }
         }
 
-		$arrTagIds = array();
-
-		// get items by tag tid
-		if(in_array('tags', \ModuleLoader::getActive()))
-		{
-			$arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
-		}
-
-
-        // Get the items normal or by tag
-        if(count($arrTagIds) > 0)
-		{
-            $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
-        }
-		elseif (isset($limit) && !isset($objArticles))
-		{
-			if($this->filterSearch)
-			{
-				$objArticles = static::findNewsInSearchIndex($this->strKeywords, true, true);
-			}
-			else
-			{
-				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
-			}
-        }
-		else
-		{
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
-        }
+		$objArticles = $this->fetchItems($this->news_archives, $blnFeatured, ($limit ?: 0), $offset, $arrFilterIds, $this->news_categories,  $this->startDate, $this->endDate);
 
         // store all events ids in session
         $arrUrlParam = array();
@@ -199,18 +171,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if(\Input::get("startDate"))      $arrUrlParam[] = 'startDate=' . \Input::get("startDate");
         if(\Input::get("endDate"))        $arrUrlParam[] = 'endDate=' . \Input::get("endDate");
 
-        $arrIds = NewsPlus::getAllPublishedNews($this->news_archives, $this->news_categories);
-
         // show only news by tag
         if(\Input::get("tag")) $arrUrlParam[] = 'tag=' . \Input::get("tag");
-
-        if(count($arrTagIds)) $arrIds = array_intersect($arrIds, $arrTagIds);
-
-        $session = \Session::getInstance()->getData();
-        $session[NEWSPLUS_SESSION_NEWS_IDS] = array();
-        $session[NEWSPLUS_SESSION_NEWS_IDS] = $arrIds;
-        \Session::getInstance()->setData($session);
-
 
 		// Split the results
 		if($limit > 0 && $limit < $total)
@@ -232,13 +194,58 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 		}
 
         // Add the articles
-        if ($objArticles !== null) {
+        if ($objArticles !== null)
+		{
             $this->Template->articles = $this->parseArticles($objArticles);
         }
         $this->Template->archives = $this->news_archives;
     }
 
-    protected function findNewsInSearchIndex($strKeywords,$strQueryType, $blnFuzzy)
+	/**
+	 * Fetch the matching items
+	 *
+	 * @param  array   $newsArchives
+	 * @param  boolean $blnFeatured
+	 * @param  integer $limit
+	 * @param  integer $offset
+	 *
+	 * @return \Model\Collection|\NewsModel|null
+	 */
+	protected function fetchItems($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories, $startDate, $endDate)
+	{
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['newsListPlusFetchItems']) && is_array($GLOBALS['TL_HOOKS']['newsListPlusFetchItems']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['newsListPlusFetchItems'] as $callback)
+			{
+				if (($objCollection = \System::importStatic($callback[0])->{$callback[1]}($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories, $startDate, $endDate, $this)) === false)
+				{
+					continue;
+				}
+
+				if ($objCollection === null || $objCollection instanceof \Model\Collection)
+				{
+					return $objCollection;
+				}
+			}
+		}
+		
+		// store all news item ids in the session
+		if($this->objFilter !== null)
+		{
+			$objAllItems = NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, 0, 0, array(), $this->startDate, $this->endDate);
+
+			if($objAllItems !== null)
+			{
+				// store ids for later navigation
+				\Session::getInstance()->set(NEWSPLUS_SESSION_NEWS_IDS, $objAllItems->fetchEach('id'));
+			}
+		}
+
+		return NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
+	}
+
+    protected function findNewsInSearchIndex($strKeywords,$blnOrSearch=false, $blnFuzzy=false)
     {
         // Reference page
         if ($this->rootPage > 0)
@@ -255,7 +262,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		try
 		{
-            $objSearch = \Search::searchFor($this->strKeywords, $strQueryType, $arrPages, null, null, $blnFuzzy);
+            $objSearch = \Search::searchFor($strKeywords, $blnOrSearch, $arrPages, null, null, $blnFuzzy);
 			if($objSearch->numRows > 0)
 			{
 				$arrUrls = $objSearch->fetchEach('url');
@@ -268,17 +275,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 					$n++;
 				}
 				$arrColumns[] = "($strKeyWordColumns)";
-				$arrColumns[] = "($this->t.pid IN (" . implode(',', $this->news_archives) . "))";
-				if($this->startDate)
-					$arrColumns[] = "($this->t.date='' OR $this->t.date>$this->startDate)";
-				if($this->endDate)
-					$arrColumns[] = "($this->t.date='' OR $this->t.date<$this->endDate)";
-
-				if (!BE_USER_LOGGED_IN)
-				{
-					$time         = time();
-					$arrColumns[] = "($this->t.start='' OR $this->t.start<$time) AND ($this->t.stop='' OR $this->t.stop>$time) AND $this->t.published=1";
-				}
 
 				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
 			}
@@ -322,4 +318,53 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         if($strToLower) $strNewTitle = strtolower($strNewTitle);
         return $strNewTitle;
     }
+
+	protected function initFilter(\ModuleModel $objFilter)
+	{
+		$this->objFilter = new NewsFilterForm($objFilter);
+		$this->objFilter->generate();
+		$this->arrSubmission = $this->objFilter->getSubmission(false, true);
+
+		if($this->arrSubmission === null)
+		{
+			return false;
+		}
+
+		// set news archives from filter
+		if(is_array($this->arrSubmission['pid']) && !empty($this->arrSubmission['pid']))
+		{
+			$this->news_archives = $this->arrSubmission['pid'];
+			$this->filterActive = true;
+		}
+
+		// set news categories from filter
+		if(is_array($this->arrSubmission['cat']) && !empty($this->arrSubmission['cat']))
+		{
+			$this->news_categories = $this->arrSubmission['cat'];
+			$GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_categories;
+			$this->filterActive = true;
+		}
+
+		// startDate
+		if($this->arrSubmission['startDate'])
+		{
+			$this->startDate = strtotime($this->arrSubmission['startDate'] . ' 00:00:00');
+			$this->filterActive = true;
+		}
+
+		// endDate
+		if($this->arrSubmission['endDate'])
+		{
+			$this->endDate = strtotime($this->arrSubmission['endDate'] . ' 23:59:59');
+			$this->filterActive = true;
+		}
+
+		// search query
+		if($this->arrSubmission['q'])
+		{
+			$this->strKeywords = $this->arrSubmission['q'];
+			$this->filterActive = true;
+			$this->filterSearch = true;
+		}
+	}
 }

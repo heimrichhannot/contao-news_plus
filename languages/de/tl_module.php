@@ -20,6 +20,7 @@ $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Nachrichtenfilter', 'Zeigt ein
  */
 
 $GLOBALS['TL_LANG']['tl_module']['filter_legend'] = 'Filtereinstellungen';
+$GLOBALS['TL_LANG']['tl_module']['navigation_legend'] = 'Navigation-Einstellungen';
 
 /**
  * Fields
@@ -37,3 +38,7 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'] = array('Nac
 $GLOBALS['TL_LANG']['tl_module']['news_filterModule'] = array('Nachrichtenfilter', 'Bitte wählen Sie einen Nachrichtenfilter um die Filtereingrenzungen für die Liste bereitzustellen.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleAppendCategories'] = array('Kategorien-Titel an Archiv-Titel anhängen', 'Fügt die Kategorien getrennt an den Archiv-Titel an.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleCategories'] = array('Anzuhängende Kategorien', 'Bitte wählen Sie die Kategorien aus, die an den Titel Ihrer Nachrichtenarchive angehangen werden sollen.');
+$GLOBALS['TL_LANG']['tl_module']['news_filterDefaultExclude'] = array('Standard-Filter (ausschließen)', 'Hier kann der Standard-Filter für die Nachrichtenliste zum Ausschließen von Beiträgen mit gewählten Kategorien erstellt werden.');
+$GLOBALS['TL_LANG']['tl_module']['news_addNavigation'] = array('Nachrichtennavigation aktivieren', 'Eine einfache Navigation zur nächsten und vorherigen Nachricht einbinden.');
+$GLOBALS['TL_LANG']['tl_module']['news_navigation_template'] = array('Nachrichtennavigation Template', 'Hier können Sie das Nachrichtennavigation Template auswählen.');
+$GLOBALS['TL_LANG']['tl_module']['news_navigation_infinite'] = array('Endlosnavigation', 'Endloses klicken durch die Nachrichtennavigation aktivieren.');

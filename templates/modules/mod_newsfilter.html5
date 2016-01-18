@@ -1,49 +1,7 @@
+<?php $this->extend('block_unsearchable'); ?>
 
-<?php // @todo Auslagern in Templates ?>
-<div class="<?php echo $this->class; ?> block" <?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
-    <?php if ($this->headline): ?>
-    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
-    <?php endif; ?>
+<?php $this->block('content'); ?>
 
-    <form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?>
-        id="<?php echo $this->formId; ?>"
-        method="<?php echo $this->method; ?>"
-        enctype="<?php echo $this->enctype; ?>"
-        <?php echo $this->attributes; ?>
-        <?php echo $this->novalidate; ?>
-        <?php if($this->formClass):?> class="<?php echo $this->formClass; ?>"<?php endif;?>>
+<?= $this->form ; ?>
 
-        <div class="formbody">
-
-            <div class="fields-container">
-                <?php if($this->showCategories): ?>
-                <div class="cat-wrapper">
-                    <div class="form-group newscategories">
-                       <?php echo $this->categories; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
-
-                <div class="date-wrapper">
-                    <div class="form-group startDate">
-                        <div class="input-group datepicker">
-                            <input type="text" name="startDate" id="ctrl_startDate" class="text control-label form-control" value="<?php echo \Input::get('startDate') ? \Input::get('startDate') : ''; ?>" placeholder="von" autocomplete="off" data-format="DD.MM.YYYY" data-linked="#ctrl_endDate">
-                            <span class="input-group-addon"><i class="ei ei-calendar"></i></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group endDate">
-                        <div class="input-group datepicker">
-                            <input type="text" name="endDate" id="ctrl_endDate" class="text control-label form-control" value="<?php echo \Input::get('endDate'); ?>" placeholder="bis" autocomplete="off" data-format="DD.MM.YYYY">
-                            <span class="input-group-addon"><i class="ei ei-calendar"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <?php if($this->showSearch): ?>
-                    <?php include_once \Contao\Controller::getTemplate('form_newsfilter_search'); ?>
-                <?php endif; ?>
-            </div>
-        </div> <!-- /formbody -->
-    </form>
-</div>
+<?php $this->endblock(); ?>

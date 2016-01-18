@@ -21,6 +21,8 @@ $GLOBALS['TL_MODELS']['tl_news']     = 'HeimrichHannot\NewsPlus\NewsPlusModel';
  * Constants
  */
 define('NEWSPLUS_SESSION_NEWS_IDS', 'NEWS_PLUS_NEWS_IDS');
+define('NEWSPLUS_SESSION_NEWS_FILTER', 'NEWSPLUS_SESSION_NEWS_FILTER');
+
 
 /**
  * Javascript

@@ -44,6 +44,10 @@ class ModuleNewsFilter extends ModuleNewsPlus
 
     protected function compile()
     {
+        $objForm = new NewsFilterForm($this->objModel);
+
+        $this->Template->form = $objForm->generate();
+
         global $objPage;
 
         // Set the flags

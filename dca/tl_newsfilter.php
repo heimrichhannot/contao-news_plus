@@ -15,9 +15,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 	'palettes' => array
 	(
 		'default' => '{archive_legend},pid;{date_legend},startDate,endDate;{search_legend},q;{category_legend},cat;{submit_legend},submit',
+		'leisuretip' => 'trailInfoDistanceMin,trailInfoDistanceMax,trailInfoDurationMin,trailInfoDurationMax,trailInfoDifficultyMin,trailInfoDifficultyMax,trailInfoStart,trailInfoDestination'
+
 	),
 	'fields'   => array
 	(
+		// default
 		'q'         => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['q'],
@@ -68,6 +71,76 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'inputType' => 'submit',
 			'eval'      => array('class' => 'btn btn-primary'),
 		),
+
+		// leisuretip
+		'trailInfoDistanceMin' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMin'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMin'],
+			),
+		),
+		'trailInfoDistanceMax' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMax'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMax'],
+			),
+		),
+		'trailInfoDurationMin' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMin'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDurationMin'],
+			),
+		),
+		'trailInfoDurationMax' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMax'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDurationMax'],
+			),
+		),
+		'trailInfoDifficultyMin' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMin'],
+			'inputType' => 'select',
+			'options'   => array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+			'eval'      => array(
+				'includeBlankOption' => true,
+				'blankOptionLabel'   => &$GLOBALS['TL_LANG']['tl_newsfilter']['blankOptionLabel']['trailInfoDifficultyMin'],
+			),
+		),
+		'trailInfoDifficultyMax' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMax'],
+			'inputType' => 'select',
+			'options'   => array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+			'eval'      => array(
+				'includeBlankOption' => true,
+				'blankOptionLabel'   => &$GLOBALS['TL_LANG']['tl_newsfilter']['blankOptionLabel']['trailInfoDifficultyMax'],
+			),
+		),
+		'trailInfoStart' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoStart'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoStart'],
+			),
+		),
+		'trailInfoDestination' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDestination'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDestination'],
+			),
+		),
 	),
 );
 
@@ -79,6 +152,20 @@ class tl_newsfilter extends Backend
 		parent::__construct();
 		$this->import('FrontendUser', 'User');
 	}
+
+//	public function getTrailInfoStart(\DataContainer $dc)
+//	{
+//		$arrNewsArchives = $this->getNewsArchives($dc);
+//		$objResult = \HeimrichHannot\NewsPlus\NewsPlusModel::findPublishedByPids(array_keys($arrNewsArchives));
+//		return array_filter($objResult->fetchEach('trailInfoStart'));
+//	}
+//
+//	public function getTrailInfoDestination(\DataContainer $dc)
+//	{
+//		$arrNewsArchives = $this->getNewsArchives($dc);
+//		$objResult = \HeimrichHannot\NewsPlus\NewsPlusModel::findPublishedByPids(array_keys($arrNewsArchives));
+//		return array_filter($objResult->fetchEach('trailInfoDestination'));
+//	}
 
 
 	public function getNewsCategories($dc)

@@ -79,6 +79,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $offset = intval($this->skipFirst);
         $limit = null;
 
+		NewsFilterRegistry::getInstance()->set('filter', $this->objFilter);
+
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $limit = $this->numberOfItems;
@@ -103,11 +105,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
 		// Get the total number of items
-		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
+		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array());
 
-		if ($intTotal < 1) {
-			return;
-		}
+		if ($intTotal < 1) return;
 
         $arrFilterIds = array();
 
@@ -127,11 +127,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			}
 		}
 
-
         if(is_array($arrFilterIds) && !empty($arrFilterIds))
         {
             // Get the total number of items
-            $intTotal = NewsPlusModel::countPublishedByPidsAndIds($this->news_archives, $arrFilterIds, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
+            $intTotal = NewsPlusModel::countPublishedByPidsAndIds($this->news_archives, $arrFilterIds, $this->news_categories, $blnFeatured, array(), $this->objFilter);
 
             if ($intTotal < 1) {
                 return;
@@ -162,7 +161,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             }
         }
 
-		$objArticles = $this->fetchItems($this->news_archives, $blnFeatured, ($limit ?: 0), $offset, $arrFilterIds, $this->news_categories,  $this->startDate, $this->endDate);
+		$objArticles = $this->fetchItems($this->news_archives, $blnFeatured, ($limit ?: 0), $offset, $arrFilterIds, $this->news_categories);
 
         // store all events ids in session
         $arrUrlParam = array();
@@ -211,14 +210,14 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 	 *
 	 * @return \Model\Collection|\NewsModel|null
 	 */
-	protected function fetchItems($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories, $startDate, $endDate)
+	protected function fetchItems($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories)
 	{
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['newsListPlusFetchItems']) && is_array($GLOBALS['TL_HOOKS']['newsListPlusFetchItems']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['newsListPlusFetchItems'] as $callback)
 			{
-				if (($objCollection = \System::importStatic($callback[0])->{$callback[1]}($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories, $startDate, $endDate, $this)) === false)
+				if (($objCollection = \System::importStatic($callback[0])->{$callback[1]}($newsArchives, $blnFeatured, $limit, $offset, $arrFilterIds, $newsCategories, $this->startDate, $this->endDate, $this)) === false)
 				{
 					continue;
 				}
@@ -231,9 +230,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 		}
 		
 		// store all news item ids in the session
-		if($this->objFilter !== null)
+		if(NewsFilterRegistry::getInstance()->get('filter') !== null)
 		{
-			$objAllItems = NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, 0, 0, array(), $this->startDate, $this->endDate);
+			$objAllItems = NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, 0, 0, array());
 
 			if($objAllItems !== null)
 			{
@@ -242,7 +241,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			}
 		}
 
-		return NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
+		return NewsPlusModel::findPublishedByPidsAndIds($newsArchives, $arrFilterIds, $newsCategories, $blnFeatured, ($limit ?: 0), $offset, array());
 	}
 
     protected function findNewsInSearchIndex($strKeywords,$blnOrSearch=false, $blnFuzzy=false)

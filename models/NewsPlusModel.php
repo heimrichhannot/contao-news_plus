@@ -135,6 +135,100 @@ class NewsPlusModel extends \NewsModel
 
 
 	/**
+	 * Find the matching filter-function for the palette
+	 *
+	 * @param $arrColumns
+	 * @param array $arrFilterPalettes
+	 * @return mixed
+	 */
+	protected static function filterByFilterPalettes($arrColumns)
+	{
+		$objNewsFilter = NewsFilterRegistry::getInstance()->get('filter');
+		$arrSubmission = $objNewsFilter->getSubmission(false, true);
+
+		if ($arrSubmission === null)
+			return $arrColumns;
+
+		switch($objNewsFilter->formHybridPalette)
+		{
+			case 'leisuretip' :
+				$arrColumns = static::filterByFilterPaletteLeisureTip($arrColumns, $arrSubmission);
+				break;
+			default :
+				$arrColumns = static::filterByFilterPaletteDefault($arrColumns, $arrSubmission);
+				break;
+		}
+
+		return $arrColumns;
+	}
+
+	protected static function filterByFilterPaletteLeisureTip($arrColumns, array $arrSubmission=array())
+	{
+		$t = static::$strTable;
+
+		if ($arrSubmission['trailInfoDistanceMin'] != null && $arrSubmission['trailInfoDistanceMin'] != '')
+		{
+			$strMin = str_replace(',', '.', $arrSubmission['trailInfoDistanceMin']);
+			$arrColumns[] = "$t.addTrailInfoDistance=1";
+			$arrColumns[] = "$t.trailInfoDistanceMax>=$strMin";
+		}
+		if ($arrSubmission['trailInfoDistanceMax'] != null && $arrSubmission['trailInfoDistanceMax'] != '')
+		{
+			$strMax = str_replace(',', '.', $arrSubmission['trailInfoDistanceMax']);
+			$arrColumns[] = "$t.addTrailInfoDistance=1";
+			$arrColumns[] = "($t.trailInfoDistanceMax<=$strMax OR ($t.trailInfoDistanceMin>0.0 AND $t.trailInfoDistanceMin<=$strMax))";
+		}
+
+		if ($arrSubmission['trailInfoDurationMin'] != null && $arrSubmission['trailInfoDurationMin'] != '')
+		{
+			$strMin = str_replace(',', '.', $arrSubmission['trailInfoDurationMin']);
+			$arrColumns[] = "$t.addTrailInfoDuration=1";
+			$arrColumns[] = "$t.trailInfoDurationMax>=$strMin";
+		}
+		if ($arrSubmission['trailInfoDurationMax'] != null && $arrSubmission['trailInfoDurationMax'] != '')
+		{
+			$strMax = str_replace(',', '.', $arrSubmission['trailInfoDurationMax']);
+			$arrColumns[] = "$t.addTrailInfoDuration=1";
+			$arrColumns[] = "($t.trailInfoDurationMax<=$strMax OR ($t.trailInfoDurationMin>0.0 AND $t.trailInfoDurationMin<=$strMax))";
+		}
+
+		if ($arrSubmission['trailInfoDifficultyMin'] != null && $arrSubmission['trailInfoDifficultyMin'] != '')
+			if ($arrSubmission['trailInfoDifficultyMin'] != null && $arrSubmission['trailInfoDifficultyMin'] != '')
+			{
+				$strMin = str_replace(',', '.', $arrSubmission['trailInfoDifficultyMin']);
+				$arrColumns[] = "$t.addTrailInfoDifficulty=1";
+				$arrColumns[] = "$t.trailInfoDifficultyMax>=$strMin";
+			}
+		if ($arrSubmission['trailInfoDifficultyMax'] != null && $arrSubmission['trailInfoDifficultyMax'] != '')
+		{
+			$strMax = str_replace(',', '.', $arrSubmission['trailInfoDifficultyMax']);
+			$arrColumns[] = "$t.addTrailInfoDifficulty=1";
+			$arrColumns[] = "($t.trailInfoDifficultyMax<=$strMax OR ($t.trailInfoDifficultyMin>0.0 AND $t.trailInfoDifficultyMin<=$strMax))";
+		}
+
+		if ($arrSubmission['trailInfoStart'] != null && $arrSubmission['trailInfoStart'] != '')
+			$arrColumns[] = "$t.trailInfoStart LIKE '%".$arrSubmission['trailInfoStart']."%'";
+		if ($arrSubmission['trailInfoDestination'] != null && $arrSubmission['trailInfoDestination'] != '')
+			$arrColumns[] = "$t.trailInfoDestination LIKE '%".$arrSubmission['trailInfoDestination']."%'";
+
+		return $arrColumns;
+	}
+
+	protected static function filterByFilterPaletteDefault($arrColumns, array $arrSubmission=array())
+	{
+		$t = static::$strTable;
+
+		// filter by date
+		if ($arrSubmission['startDate'] != null && $arrSubmission['startDate'] != '')
+			$arrColumns[] = "$t.date>=".$arrSubmission['startDate'];
+		if ($arrSubmission['endDate'] != null && $arrSubmission['endDate'] != '')
+			$arrColumns[] = "$t.date<=".$arrSubmission['endDate'];
+
+		return $arrColumns;
+	}
+
+
+	/**
 	 * Find published news items by their parent ID and ID or alias
 	 *
 	 * @param mixed $varId      The numeric ID or alias name
@@ -173,7 +267,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPidsAndIds(array $arrPids, array $arrIds = array(), array $arrCategories=array(), $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function findPublishedByPidsAndIds(array $arrPids, array $arrIds = array(), array $arrCategories=array(), $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
@@ -192,12 +286,6 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "$t.featured=''";
 		}
 
-		// filter by date
-		if($startDate != null)
-			$arrColumns[] = "$t.date>=$startDate";
-		if($endDate != null)
-			$arrColumns[] = "$t.date<=$endDate";
-
 		// Never return unpublished elements in the back end, so they don't end up in the RSS feed
 		if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
 		{
@@ -211,6 +299,10 @@ class NewsPlusModel extends \NewsModel
 		// Filter by search
 		$arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
+		// Filter by palette
+		if(NewsFilterRegistry::getInstance()->get('filter') !== null)
+			$arrColumns = static::filterByFilterPalettes($arrColumns);
+
 		if (!isset($arrOptions['order']))
 		{
 			$arrOptions['order']  = "$t.date DESC";
@@ -218,7 +310,7 @@ class NewsPlusModel extends \NewsModel
 
 		$arrOptions['limit']  = $intLimit;
 		$arrOptions['offset'] = $intOffset;
-		
+
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
 
@@ -231,7 +323,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPidsAndIds(array $arrPids, array $arrIds, array $arrCategories=array(), $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function countPublishedByPidsAndIds(array $arrPids, array $arrIds, array $arrCategories=array(), $blnFeatured=null, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
@@ -246,12 +338,6 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "$t.featured=''";
 		}
 
-		// filter by date
-		if($startDate != null)
-			$arrColumns[] = "$t.date>=$startDate";
-		if($endDate != null)
-			$arrColumns[] = "$t.date<=$endDate";
-
 		if (!BE_USER_LOGGED_IN)
 		{
 			$time = time();
@@ -263,6 +349,10 @@ class NewsPlusModel extends \NewsModel
 
 		// Filter by search
 		$arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+
+		// Filter by palette
+		if(NewsFilterRegistry::getInstance()->get('filter') !== null)
+			$arrColumns = static::filterByFilterPalettes($arrColumns);
 
 		return static::countBy($arrColumns, null, $arrOptions);
 	}
@@ -337,7 +427,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, array $arrCategories = array(), $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function countPublishedByPids($arrPids, array $arrCategories = array(), $blnFeatured=null, array $arrOptions=array())
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -356,12 +446,6 @@ class NewsPlusModel extends \NewsModel
 			$arrColumns[] = "$t.featured=''";
 		}
 
-		// filter by date
-		if($startDate != null)
-			$arrColumns[] = "$t.date>=$startDate";
-		if($endDate != null)
-			$arrColumns[] = "$t.date<=$endDate";
-
 		if (!BE_USER_LOGGED_IN)
 		{
 			$time = time();
@@ -373,6 +457,10 @@ class NewsPlusModel extends \NewsModel
 
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+
+		// Filter by palette
+		if(NewsFilterRegistry::getInstance()->get('filter') !== null)
+			$arrColumns = static::filterByFilterPalettes($arrColumns);
 
 		return static::countBy($arrColumns, null, $arrOptions);
 	}

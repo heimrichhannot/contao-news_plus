@@ -21,8 +21,8 @@
 				<?php foreach($this->fields as $name => $objField): ?>
 					<?php if($objField->type == 'submit'): ?>
 						<div class="btn-group submit" role="group">
-							<button type="submit" class="btn btn-xs btn-primary"><?= $objField->slabel; ?></button>
-							<a href="{{page::alias}}?reset=1" title="<?= $this->resetTitle; ?>" class="btn btn-xs btn-default">x</a>
+							<button type="submit" class="btn btn-primary"><?= $objField->slabel; ?></button>
+							<a href="{{page::alias}}?reset=1" title="<?= $this->resetTitle; ?>" class="btn btn-default">x</a>
 						</div>
 						<?php continue; ?>
 					<?php endif; ?>

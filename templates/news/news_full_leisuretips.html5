@@ -1,4 +1,4 @@
-<div class="news_full news_full_leisuretip block<?= $this->class ?>">
+<div class="news_full news_full_leisuretip block <?= $this->class ?>">
 
 	<!-- indexer::stop -->
 	<?php echo $this->nav; ?>

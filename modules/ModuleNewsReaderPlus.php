@@ -162,7 +162,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the news item
-        $objArticle = \NewsModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
+        $objArticle = NewsPlusModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
 
         if ($objArticle === null)
         {

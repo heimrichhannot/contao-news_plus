@@ -44,7 +44,9 @@ class ModuleNewsListHighlight extends ModuleNewsListPlus
 		// unset search string for highlighted section
 		\Input::setGet('searchKeywords', null);
 
-		$this->objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, array(), $this->news_featured == 'featured', $this->numberOfItems, 0);
+		$this->objFilter = NewsFilterRegistry::getInstance($this->arrData);
+
+		$this->objArticles = NewsPlusModel::findPublishedByFilter($this->news_archives, array(), $this->news_featured == 'featured', $this->numberOfItems, 0);
 
 		if($this->objArticles === null)
 		{

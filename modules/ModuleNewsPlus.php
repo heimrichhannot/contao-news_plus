@@ -120,7 +120,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		{
 			$objTemplate->nav = $this->generateNavigation($objNews, $arrData['link'], $this->news_readerModule);
 		}
-
+		
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['parseArticles']) && is_array($GLOBALS['TL_HOOKS']['parseArticles']))
 		{

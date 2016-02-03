@@ -107,7 +107,7 @@ class ModuleNewsFilter extends ModuleNewsPlus
 						$filterName = $objNewsCategory->frontendTitle ? $objNewsCategory->frontendTitle : $objNewsCategory->title;
 					}
 				}
-				
+
                 $objTemplate->filterName = self::getShortCategoryTitle($filterName);
                 $objTemplate->filterResetName = $GLOBALS['TL_LANG']['news_plus']['resetFilterLabel'];
                 $objTemplate->pageLink = $objPage->alias;

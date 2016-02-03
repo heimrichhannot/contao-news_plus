@@ -28,8 +28,8 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 			\Session::getInstance()->remove($strSessionKey);
 			\Controller::redirect(\HeimrichHannot\Haste\Util\Url::removeQueryString(array('reset'), \Environment::get('request')));
 		}
-		
-		
+
+
 		// store submission in session and return
 		if($this->isSubmitted() && $objSubmission !== null)
 		{

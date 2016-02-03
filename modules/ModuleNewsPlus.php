@@ -2,17 +2,8 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-use NewsCategories\NewsCategoryModel;
-
 abstract class ModuleNewsPlus extends \ModuleNews
 {
-
-	/**
-	 * URL cache array
-	 * @var array
-	 */
-	private static $arrUrlCache = array();
-
     /**
      * News
      * @var string
@@ -182,57 +173,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
 		return $arrArticles;
 	}
-
-
-    /**
-     * Parse the template
-     * @return string
-     */
-    public function generate()
-    {
-        if ($this->arrData['space'][0] != '')
-        {
-            $this->arrStyle[] = 'margin-top:'.$this->arrData['space'][0].'px;';
-        }
-
-        if ($this->arrData['space'][1] != '')
-        {
-            $this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
-        }
-
-        $this->Template = new \FrontendTemplate($this->strTemplate);
-        $this->Template->setData($this->arrData);
-
-        $this->compile();
-
-        // print to pdf
-        $this->Template->pdfJumpTo = $this->news_pdfJumpTo;
-
-        // Do not change this order (see #6191)
-        $this->Template->style = !empty($this->arrStyle) ? implode(' ', $this->arrStyle) : '';
-        $this->Template->class = trim('mod_' . $this->type . ' ' . $this->cssID[1]);
-        $this->Template->cssID = ($this->cssID[0] != '') ? ' id="' . $this->cssID[0] . '"' : '';
-
-        $this->Template->inColumn = $this->strColumn;
-
-        if ($this->Template->headline == '')
-        {
-            $this->Template->headline = $this->headline;
-        }
-
-        if ($this->Template->hl == '')
-        {
-            $this->Template->hl = $this->hl;
-        }
-
-        if (!empty($this->objModel->classes) && is_array($this->objModel->classes))
-        {
-            $this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
-        }
-
-        return $this->Template->parse();
-    }
-
 
     protected function generateNavigation($objCurrentArticle, $strUrl, $modalId)
     {

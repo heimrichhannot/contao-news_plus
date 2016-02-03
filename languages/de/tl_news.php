@@ -18,6 +18,12 @@ $GLOBALS['TL_LANG']['tl_news']['orderEnclosureSRC'][1] = 'Die Sortierreihenfolge
 $GLOBALS['TL_LANG']['tl_news']['addVenue'][0] = 'Veranstaltungsort hinzufügen';
 $GLOBALS['TL_LANG']['tl_news']['addVenue'][1] = 'Dem Beitrag einen Veranstaltungsort hinzufügen.';
 
+$GLOBALS['TL_LANG']['tl_news']['addVenues'][0] = 'Veranstaltungsorte hinzufügen';
+$GLOBALS['TL_LANG']['tl_news']['addVenues'][1] = 'Dem Beitrag Veranstaltungsorte hinzufügen.';
+
+$GLOBALS['TL_LANG']['tl_news']['venues'][0] = 'Veranstaltungsorte';
+$GLOBALS['TL_LANG']['tl_news']['venues'][1] = 'Verwalten Sie Veranstaltungsorte für den Beitrag.';
+
 $GLOBALS['TL_LANG']['tl_news']['venueName'][0] = 'Name des Veranstaltungsorts';
 $GLOBALS['TL_LANG']['tl_news']['venueName'][1] = 'Geben Sie den Namen des Veranstaltungsorts ein.';
 

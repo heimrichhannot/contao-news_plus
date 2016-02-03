@@ -27,39 +27,29 @@ class NewsFilterRegistry
 
 	private function  __clone() {}
 
-	public static function set($index, $value)
+	public function set($index, $value)
 	{
-		$instance = self::getInstance();
-
-		if (isset($instance->arrValues[$index]))
+		if (isset($this->arrValues[$index]))
 		{
-			throw new \Exception("There is already an entry for key '$index'");
+			return false;
 		}
 
-		$instance->arrValues[$index] = $value;
+		$this->arrValues[$index] = $value;
 	}
 
-	public static function get($index)
+	public function get($index)
 	{
-		$instance = self::getInstance();
-
-		if (!isset($instance->arrValues[$index]))
+		if (isset($this->arrValues[$index]))
 		{
-			throw new \Exception("There is no entry for key '$index'");
+			return $this->arrValues[$index];
 		}
-
-		return $instance->arrValues[$index];
 	}
 
-	public static function reset($index)
+	public function reset($index)
 	{
-		$instance = self::getInstance();
-
-		if (!isset($instance->arrValues[$index]))
+		if (isset($this->arrValues[$index]))
 		{
-			throw new \Exception("There is no entry for key '$index'");
+			unset($this->arrValues[$index]);
 		}
-
-		unset($instance->arrValues[$index]);
 	}
 }

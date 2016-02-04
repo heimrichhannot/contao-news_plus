@@ -102,6 +102,17 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			}
 		}
 
+		$arrMeta = $this->getMetaFields($objNews);
+
+		// Add the meta information
+		$objTemplate->date = $arrMeta['date'];
+		$objTemplate->hasMetaFields = !empty($arrMeta);
+		$objTemplate->numberOfComments = $arrMeta['ccount'];
+		$objTemplate->commentCount = $arrMeta['comments'];
+		$objTemplate->timestamp = $objNews->date;
+		$objTemplate->author = $arrMeta['author'];
+		$objTemplate->datetime = date('Y-m-d\TH:i:sP', $objNews->date);
+
 		// Add enclosures
 		if ($objNews->addEnclosure)
 		{
@@ -181,6 +192,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		// get ids from newslist
 		$arrIds = \Session::getInstance()->get(NEWSPLUS_SESSION_NEWS_IDS);
 
+		// if no list context, aquire news ids from news_archive
         if(count($arrIds) < 1)
 		{
 			$objNews = NewsPlusModel::findPublishedByPid($objCurrentArticle->pid);
@@ -196,11 +208,12 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $currentIndex = array_search($objCurrentArticle->id, $arrIds);
 
 		$prevID = isset($arrIds[$currentIndex - 1]) ? $arrIds[$currentIndex - 1] : ($this->news_navigation_infinite ? end($arrIds) : null);
-
+	
         // prev only of not first item
         if($prevID !== null)
         {
             $objNews = NewsPlusModel::findByPk($prevID, array());
+
             if($objNews !== null)
             {
                 $objT->prev = $this->generateArticle($objNews);

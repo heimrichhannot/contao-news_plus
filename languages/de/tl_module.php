@@ -11,9 +11,10 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Erweiterte Nachrichtenliste', 'Listet alle Nachrichten eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
-$GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Erweiterter Nachrichtenleser', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Nachrichtenliste Plus', 'Listet alle Nachrichten eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Nachrichtenleser Plus', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
 $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Nachrichtenfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Nachrichtenliste manipuliert.');
+$GLOBALS['TL_LANG']['FMD']['newsmenu_plus'] = array('Nachrichtenarchiv-Menü Plus', 'Erzeugt ein erweitertes Nachrichtenarchiv-Menü.');
 
 /**
  * Legends

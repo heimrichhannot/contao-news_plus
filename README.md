@@ -15,11 +15,15 @@ A collection of enhancements for the contao news module.
 
 | Name | Description |
 |---|---|
-| NewsFilter | filter list by chosen palette and fields (filter list by date, archive and search term, use contao search) |
-| NewsListHighlight | show the featured news |
-| NewsListPlus | extend the contao news list |
-| NewsPlus | extend the contao news module |
-| NewsReaderPlus | extend the contao news reader (possibility to show details in modal window, with next/prev event navigation and browser history support) |
+| ModuleNewsFilter | filter list by chosen palette and fields (filter list by date, archive and search term, use contao search) |
+| ModuleNewsListPlus | extend the contao news list |
+| ModuleNewsPlus | extend the contao news module |
+| ModuleNewsReaderPlus | extend the contao news reader (possibility to show details in modal window, with next/prev event navigation and browser history support) |
+| ModuleNewsMenuPlus | extend the contao newsarchive menu |
+
+
+#### ModuleNewsMenuPlus - Features
+- add news_jumpToCurrent to newsarchive-menu as well, to provide active state in menu, when no user selection was made
 
 ### Connected Modules
 

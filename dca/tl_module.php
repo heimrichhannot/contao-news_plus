@@ -56,6 +56,14 @@ $dc['palettes']['newsreader_plus'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
+$dc['palettes']['newsmenu_plus'] = '
+									{title_legend},name,headline,type;
+									{config_legend},news_archives,news_showQuantity,news_jumpToCurrent,news_format,news_startDay,news_order;
+									{redirect_legend},jumpTo;
+									{template_legend:hide},customTpl;
+									{protected_legend:hide},protected;
+									{expert_legend:hide},guests,cssID,space';
+
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 $dc['palettes']['__selector__'][] = 'news_addNavigation';
 

@@ -58,14 +58,13 @@ class NewsPlusModel extends \NewsModel
 	 * @param array
 	 * @return array
 	 */
-	protected static function filterByCategories($arrColumns, array $arrUserCategories=array())
+	protected static function filterByCategories($arrColumns)
 	{
 		$t = static::$strTable;
-
-		$arrCategories = static::getCategoriesCache();
-
+		
 		// Use the default filter
 		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT'])) {
+			$arrCategories = static::getCategoriesCache();
 
 			if (!empty($arrCategories)) {
 				$arrIds = array();
@@ -88,46 +87,18 @@ class NewsPlusModel extends \NewsModel
 			}
 		}
 
-		// Use the default exclude filter
-		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT_EXCLUDE']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT_EXCLUDE'])) {
-
-			if (!empty($arrCategories)) {
-				$arrExcludeIds = array();
-
-				// Get the news IDs for particular categories
-				foreach ($GLOBALS['NEWS_FILTER_DEFAULT_EXCLUDE'] as $category) {
-					if (isset($arrCategories[$category])) {
-						$arrExcludeIds = array_merge($arrCategories[$category], $arrExcludeIds);
-					}
-				}
-
-				$strKey = 'category';
-
-				// Preserve the default category
-				if ($GLOBALS['NEWS_FILTER_PRESERVE']) {
-					$strKey = 'category_default';
-				}
-
-				$arrColumns[$strKey] = "$t.id NOT IN (" . implode(',', (empty($arrExcludeIds) ? array(0) : array_unique($arrExcludeIds))) . ")";
-			}
-		}
-
 		// Try to find by category
-		if (!empty($arrUserCategories))
-		{
-			$arrUserCategoriesNews = array();
+		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category')) {
+			$strClass = \NewsCategories\NewsCategories::getModelClass();
+			$objCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
-			foreach($arrUserCategories as $id)
-			{
-				if(!isset($arrCategories[$id]) || !is_array($arrCategories[$id])) continue;
-				
-				$arrUserCategoriesNews = array_merge($arrUserCategoriesNews, $arrCategories[$id]);
+
+			if ($objCategory === null) {
+				return null;
 			}
 
-			if(!empty($arrUserCategoriesNews))
-			{
-				$arrColumns[] = "$t.id IN (" . implode(',', $arrUserCategoriesNews) . ")";
-			}
+			$arrCategories = static::getCategoriesCache();
+			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
 		}
 
 		return $arrColumns;
@@ -162,111 +133,6 @@ class NewsPlusModel extends \NewsModel
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
 	}
 
-	/**
-	 * Find published news items by their parent ID and Filter by news items
-	 *
-	 * @param array   $arrPids     An array of news archive IDs
-	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
-	 * @param integer $intLimit    An optional limit
-	 * @param integer $intOffset   An optional offset
-	 * @param array   $arrOptions  An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no news
-	 */
-	public static function findPublishedByPidsAndIds(array $arrPids, array $arrIds = array(), array $arrCategories=array(), $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
-	{
-		$t = static::$strTable;
-		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
-
-		if(!empty($arrIds))
-		{
-			$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
-		}
-
-		if ($blnFeatured === true)
-		{
-			$arrColumns[] = "$t.featured=1";
-		}
-		elseif ($blnFeatured === false)
-		{
-			$arrColumns[] = "$t.featured=''";
-		}
-
-		// filter by date
-		if($startDate != null)
-			$arrColumns[] = "$t.date>=$startDate";
-		if($endDate != null)
-			$arrColumns[] = "$t.date<=$endDate";
-
-		// Never return unpublished elements in the back end, so they don't end up in the RSS feed
-		if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
-		{
-			$time = time();
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
-
-		// Filter by categories
-		$arrColumns = static::filterByCategories($arrColumns, $arrCategories);
-
-		// Filter by search
-		$arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
-
-		if (!isset($arrOptions['order']))
-		{
-			$arrOptions['order']  = "$t.date DESC";
-		}
-
-		$arrOptions['limit']  = $intLimit;
-		$arrOptions['offset'] = $intOffset;
-		
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
-
-	/**
-	 * Count published news items by their parent ID and Filter by news items
-	 *
-	 * @param array   $arrPids     An array of news archive IDs
-	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
-	 * @param array   $arrOptions  An optional options array
-	 *
-	 * @return integer The number of news items
-	 */
-	public static function countPublishedByPidsAndIds(array $arrPids, array $arrIds, array $arrCategories=array(), $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
-	{
-		$t = static::$strTable;
-		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
-		$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
-
-		if ($blnFeatured === true)
-		{
-			$arrColumns[] = "$t.featured=1";
-		}
-		elseif ($blnFeatured === false)
-		{
-			$arrColumns[] = "$t.featured=''";
-		}
-
-		// filter by date
-		if($startDate != null)
-			$arrColumns[] = "$t.date>=$startDate";
-		if($endDate != null)
-			$arrColumns[] = "$t.date<=$endDate";
-
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
-
-		// Filter by categories
-		$arrColumns = static::filterByCategories($arrColumns, $arrCategories);
-
-		// Filter by search
-		$arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
-
-		return static::countBy($arrColumns, null, $arrOptions);
-	}
-
 
 	/**
 	 * Find published news items by their parent ID
@@ -279,7 +145,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPids($arrPids, array $arrCategories=array(), $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function findPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -312,7 +178,7 @@ class NewsPlusModel extends \NewsModel
 		}
 
 		// Filter by categories
-		$arrColumns = static::filterByCategories($arrColumns, $arrCategories);
+		$arrColumns = static::filterByCategories($arrColumns);
 
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
@@ -337,7 +203,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, array $arrCategories = array(), $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function countPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -369,7 +235,7 @@ class NewsPlusModel extends \NewsModel
 		}
 
 		// Filter by categories
-		$arrColumns = static::filterByCategories($arrColumns, $arrCategories);
+		$arrColumns = static::filterByCategories($arrColumns);
 
         // Filter by search
         $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);

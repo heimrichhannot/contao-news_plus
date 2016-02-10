@@ -11,21 +11,18 @@
 
 $dc = &$GLOBALS['TL_DCA']['tl_module'];
 
-$dc['config']['onload_callback'][] = array('tl_module_news_plus', 'initDCA');
-
 /**
  * Palettes
  */
 $dc['palettes']['newsfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},news_archives;
-									{template_legend},formHybridPalette,formHybridEditable,formHybridTemplate,formHybridCustomSubTemplates;
+									{template_legend},news_archives,news_filterTemplate,news_filterCategoryTemplate,news_filterShowSearch,news_filterShowCategories;
 									{filter_legend},news_filterUseSearchIndex,news_filterFuzzySearch,news_filterSearchQueryType,news_filterNewsCategoryArchives,news_categoriesRoot,news_customCategories;
 									{expert_legend:hide},guests,cssID,space';
 
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
-                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
+                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
@@ -48,7 +45,6 @@ $dc['palettes']['newsreader_plus'] = '
                                     {config_legend},news_archives;
                                     {showtags_legend},tag_filter,tag_ignore,news_showtags;
                                     {template_legend:hide},news_metaFields,news_template,news_template_modal,customTpl;
-                                    {navigation_legend:hide},news_addNavigation;
                                     {image_legend:hide},imgSize;
                                     {share_legend},addShare;
                                     {youtube_legend},youtube_template;
@@ -57,15 +53,12 @@ $dc['palettes']['newsreader_plus'] = '
                                     {expert_legend:hide},guests,cssID,space';
 
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
-$dc['palettes']['__selector__'][] = 'news_addNavigation';
-
 
 /**
  * SubPalettes
  */
 
 $dc['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
-$dc['subpalettes']['news_addNavigation'] = 'news_navigation_infinite,news_navigation_template';
 
 /**
  * Fields
@@ -73,6 +66,34 @@ $dc['subpalettes']['news_addNavigation'] = 'news_navigation_infinite,news_naviga
 $dc['fields'] = array_merge
 (
 	array(
+		'news_filterTemplate'               => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getFilterTemplates'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+			'sql'              => "varchar(64) NOT NULL default ''",
+		),
+		'news_filterCategoryTemplate'       => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategoryTemplate'],
+			'exclude'          => true,
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getFilterCategoriesTemplates'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_module'],
+			'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+			'sql'              => "varchar(64) NOT NULL default ''",
+		),
+		'news_filterShowSearch'             => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowSearch'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'      => array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
 		'news_filterUseSearchIndex'         => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterUseSearchIndex'],
@@ -95,6 +116,14 @@ $dc['fields'] = array_merge
 			'exclude'   => true,
 			'inputType' => 'checkbox',
 			'eval'      => array('tl_class' => 'w100 clr'),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_filterShowCategories'         => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_filterShowCategories'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'      => array('tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
 		),
 		'news_filterNewsCategoryArchives'   => array
@@ -157,66 +186,21 @@ $dc['fields'] = array_merge
 			'exclude'    => true,
 			'inputType'  => 'treePicker',
 			'foreignKey' => 'tl_news_category.title',
-			'eval'       => array(
-				'mandatory'    => true,
-				'multiple'     => true,
-				'fieldType'    => 'checkbox',
-				'foreignTable' => 'tl_news_category',
-				'titleField'   => 'title',
-				'searchField'  => 'title',
-				'managerHref'  => 'do=news&table=tl_news_category',
-			),
-			'sql'        => "blob NULL",
-		),
-
-		'news_filterDefaultExclude' => array
-		(
-			'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefaultExclude'],
-			'exclude'    => true,
-			'inputType'  => 'treePicker',
-			'foreignKey' => 'tl_news_category.title',
-			'eval'       => array('multiple'     => true,
+			'eval'       => array('mandatory'    => true,
+								  'multiple'     => true,
 								  'fieldType'    => 'checkbox',
 								  'foreignTable' => 'tl_news_category',
 								  'titleField'   => 'title',
 								  'searchField'  => 'title',
 								  'managerHref'  => 'do=news&table=tl_news_category',
-								  'tl_class'     => 'clr',
 			),
 			'sql'        => "blob NULL",
-		),
-		'news_addNavigation' => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_addNavigation'],
-			'exclude'   => true,
-			'inputType' => 'checkbox',
-			'eval'      => array('tl_class' => 'clr', 'submitOnChange' => true),
-			'sql'       => "char(1) NOT NULL default ''",
-		),
-		'news_navigation_template'               => array
-		(
-			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_navigation_template'],
-			'exclude'          => true,
-			'default'		   => 'newsnav_default',
-			'inputType'        => 'select',
-			'options_callback' => array('tl_module_news_plus', 'getNewsNavigationTemplates'),
-			'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
-			'sql'              => "varchar(64) NOT NULL default ''",
-		),
-		'news_navigation_infinite' => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_navigation_infinite'],
-			'exclude'   => true,
-			'inputType' => 'checkbox',
-			'eval'      => array('tl_class' => 'clr'),
-			'sql'       => "char(1) NOT NULL default ''",
 		)
-
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()
 );
 
-$dc['fields']['news_archives']['options_callback']     = array('tl_module_news_plus', 'getNewsArchives');
+$dc['fields']['news_archives']['options_callback'] = array('tl_module_news_plus', 'getNewsArchives');
 $dc['fields']['news_readerModule']['options_callback'] = array('tl_module_news_plus', 'getReaderModules');
 
 /**
@@ -292,17 +276,6 @@ class tl_module_news_plus extends Backend
 		return $this->getTemplateGroup('news_');
 	}
 
-
-	/**
-	 * Return all news navigation templates as array
-	 *
-	 * @return array
-	 */
-	public function getNewsNavigationTemplates()
-	{
-		return $this->getTemplateGroup('newsnav_');
-	}
-
 	/**
 	 * Get all news reader modules and return them as array
 	 *
@@ -350,30 +323,6 @@ class tl_module_news_plus extends Backend
 		}
 		
 		return $arrArchives;
-	}
-
-	public function initDCA(\DataContainer $dc)
-	{
-		$objModule = \ModuleModel::findByPk($dc->id);
-
-		if($objModule === null || $objModule->type != 'newsfilter')
-		{
-			return;
-		}
-
-		$this->setNewsFilterDefaults($objModule);
-		$objModule->save();
-	}
-
-	private function setNewsFilterDefaults(&$objModule)
-	{
-		$objModule->formHybridDataContainer = 'tl_newsfilter';
-
-		if($objModule == '')
-		{
-			$objModule->formHybridPalette = 'default';
-			$objModule->formhybridTemplate = 'formhybrid_newsfilter_default';
-		}
 	}
 
 }

@@ -180,7 +180,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 		{
 			if($this->filterSearch)
 			{
-				$objArticles = static::findNewsInSearchIndex(($limit ?: 0), $offset);
+				$objArticles = static::findNewsInSearchIndex($this->strKeywords, true, true);
 			}
 			else
 			{
@@ -238,7 +238,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->archives = $this->news_archives;
     }
 
-    protected function findNewsInSearchIndex($intLimit=0, $intOffset=0)
+    protected function findNewsInSearchIndex($strKeywords,$strQueryType, $blnFuzzy)
     {
         // Reference page
         if ($this->rootPage > 0)
@@ -255,10 +255,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		try
 		{
-			$strQueryType = !$this->objFilter->news_filterSearchQueryType;
-			
-            $objSearch = \Search::searchFor($this->strKeywords, $strQueryType, $arrPages, 0, 0, $this->objFilter->news_filterFuzzySearch);
-			
+            $objSearch = \Search::searchFor($this->strKeywords, $strQueryType, $arrPages, null, null, $blnFuzzy);
 			if($objSearch->numRows > 0)
 			{
 				$arrUrls = $objSearch->fetchEach('url');
@@ -283,10 +280,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 					$arrColumns[] = "($this->t.start='' OR $this->t.start<$time) AND ($this->t.stop='' OR $this->t.stop>$time) AND $this->t.published=1";
 				}
 
-				$arrOptions['limit']  = $intLimit;
-				$arrOptions['offset'] = $intOffset;
-
-				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues, $arrOptions);
+				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
 			}
 			else
 				return null;

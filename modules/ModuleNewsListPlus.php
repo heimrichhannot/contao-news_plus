@@ -79,13 +79,13 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         // filter
         if(\Input::get('startDate'))
         {
-            $this->startDate = strtotime (\Input::get('startDate'));
+            $this->startDate = strtotime (\Input::get('startDate') . ' 00:00:00');
             $this->filterActive = true;
         }
 
         if(\Input::get('endDate'))
         {
-            $this->endDate = strtotime (\Input::get('endDate'));
+            $this->endDate = strtotime(\Input::get('endDate') . ' 23:59:59');
             $this->filterActive = true;
         }
 
@@ -133,7 +133,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 		// Get the total number of items
 		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
 
-		if ($intTotal < 1) {
+		if ($intTotal < 1 && !$this->filterSearch) {
 			return;
 		}
 
@@ -272,11 +272,13 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 				}
 				$arrColumns[] = "($strKeyWordColumns)";
 				$arrColumns[] = "($this->t.pid IN (" . implode(',', $this->news_archives) . "))";
-				if($this->startDate)
-					$arrColumns[] = "($this->t.date='' OR $this->t.date>$this->startDate)";
-				if($this->endDate)
-					$arrColumns[] = "($this->t.date='' OR $this->t.date<$this->endDate)";
 
+				// filter by date
+				if($this->startDate)
+					$arrColumns[] = "($this->t.date>=$this->startDate)";
+				if($this->endDate)
+					$arrColumns[] = "($this->t.date<=$this->endDate)";
+				
 				if (!BE_USER_LOGGED_IN)
 				{
 					$time         = time();
@@ -285,7 +287,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 				$arrOptions['limit']  = $intLimit;
 				$arrOptions['offset'] = $intOffset;
-
+				
 				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues, $arrOptions);
 			}
 			else
@@ -329,3 +331,4 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         return $strNewTitle;
     }
 }
+

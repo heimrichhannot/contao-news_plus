@@ -38,11 +38,9 @@ class NewsPlusModel extends \NewsModel
 
 		$arrColumns = $objFilter->getWhereSql();
 
-		if ($blnFeatured === true)
-		{
+		if ($blnFeatured === true) {
 			$arrColumns[] = "$t.featured=1";
-		} elseif ($blnFeatured === false)
-		{
+		} elseif ($blnFeatured === false) {
 			$arrColumns[] = "$t.featured=''";
 		}
 
@@ -72,7 +70,7 @@ class NewsPlusModel extends \NewsModel
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByFilter(NewsFilterRegistry $objFilter,$blnFeatured = null, array $arrOptions = array())
+	public static function countPublishedByFilter(NewsFilterRegistry $objFilter, $blnFeatured = null, array $arrOptions = array())
 	{
 		$t = static::$strTable;
 
@@ -118,5 +116,124 @@ class NewsPlusModel extends \NewsModel
 		}
 
 		return static::findBy($arrColumns, $intId, $arrOptions);
+	}
+
+	public static function findNewPublishedByIds($currentID, $currentDate, $arrIds, $blnInfinite=false, $strType='default', array $arrOptions = array())
+	{
+		$time = time();
+		$t    = static::$strTable;
+
+		$arrValues = array();
+		$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+		
+		$arrColumns['id'] = "$t.id != ?";
+		$arrValues['id'] = $currentID;
+
+		$arrColumns['date'] = "$t.date >= ?";
+		$arrValues['date'] = $currentDate;
+
+		$arrColumns['source'] = "$t.source = ?";
+		$arrValues['source'] = $strType;
+
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$arrOptions['order'] = 'date';
+
+		$arrOptions['limit'] = 1;
+
+		$objModel = static::findBy($arrColumns, $arrValues, $arrOptions);
+
+		if($objModel === null && $blnInfinite)
+		{
+			$objModel = static::findLastPublishedByIds($arrIds, $strType, $arrOptions);
+		}
+
+		return $objModel;
+	}
+
+
+	public static function findOldPublishedByIds($currentID, $currentDate, $arrIds, $blnInfinite=false, $strType='default', array $arrOptions = array())
+	{
+		$time = time();
+		$t    = static::$strTable;
+
+		$arrValues = array();
+		$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+
+		$arrColumns['id'] = "$t.id != ?";
+		$arrValues['id'] = $currentID;
+
+		$arrColumns['date'] = "$t.date <= ?";
+		$arrValues['date'] = $currentDate;
+
+		$arrColumns['source'] = "$t.source = ?";
+		$arrValues['source'] = $strType;
+
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$arrOptions['limit'] = 1;
+
+		$arrOptions['order'] = 'date DESC';
+
+		$objModel = static::findBy($arrColumns, $arrValues, $arrOptions);
+
+		if($objModel === null && $blnInfinite)
+		{
+			$objModel = static::findFirstPublishedByIds($arrIds, $strType, $arrOptions);
+		}
+
+		return $objModel;
+	}
+
+	public static function findFirstPublishedByIds($arrIds, $strType='default', array $arrOptions = array())
+	{
+		$time = time();
+		$t    = static::$strTable;
+
+		$arrValues = array();
+		$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+
+		$arrColumns['source'] = "$t.source = ?";
+		$arrValues['source'] = $strType;
+
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$arrOptions['limit'] = 1;
+
+		$arrOptions['order'] = 'date DESC';
+
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+	public static function findLastPublishedByIds($arrIds, $strType='default', array $arrOptions = array())
+	{
+		$time = time();
+		$t    = static::$strTable;
+
+		$arrValues = array();
+		$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+
+		$arrColumns['source'] = "$t.source = ?";
+		$arrValues['source'] = $strType;
+
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$arrOptions['limit'] = 1;
+
+		$arrOptions['order'] = 'date';
+
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
 }

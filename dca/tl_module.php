@@ -51,7 +51,7 @@ $dc['palettes']['newsreader_plus'] = '
                                     {navigation_legend:hide},news_addNavigation;
                                     {image_legend:hide},imgSize;
                                     {share_legend},addShare;
-                                    {youtube_legend},youtube_template;
+                                    {youtube_legend},youtube_template,autoplay;
                                     {media_legend},media_template,media_posterSRC;
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';

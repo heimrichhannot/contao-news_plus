@@ -4,11 +4,11 @@ namespace HeimrichHannot\NewsPlus;
 
 abstract class ModuleNewsPlus extends \ModuleNews
 {
-    /**
-     * News
-     * @var string
-     */
-    protected $news;
+	/**
+	 * Active news, if list and reader module are on the same page
+	 * @var
+	 */
+	protected $activeNews = null;
 
 	/**
 	 * Sort out protected archives
@@ -62,6 +62,12 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	 */
 	protected function parseArticle($objNews, $blnAddArchive=false, $strClass='', $intCount=0)
 	{
+		// add active class if current news is active news
+		if($this->activeNews !== null && $this->activeNews->id == $objNews->id)
+		{
+			$strClass .= ($strClass ? ' active' : '');
+		}
+
 		$arrData = $this->generateArticle($objNews, $blnAddArchive, $strClass, $intCount);
 
 		$objTemplate = new \FrontendTemplate($this->news_template);
@@ -179,8 +185,8 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $objT = new \FrontendTemplate($this->news_navigation_template);
 
 		// get ids from newslist
-		$arrIds = \Session::getInstance()->get(NEWSPLUS_SESSION_NEWS_IDS);
-
+		$arrIds = \Session::getInstance()->get(NewsPlusHelper::getKeyForSessionNewsIds($this->objModel));
+	
 		// if no list context, aquire news ids from news_archive
         if(count($arrIds) < 1)
 		{
@@ -194,34 +200,23 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			$arrIds = $objNews->fetchEach('id');
 		}
 
-        $currentIndex = array_search($objCurrentArticle->id, $arrIds);
+		$objPrevNews = NewsPlusModel::findNewPublishedByIds($objCurrentArticle->id, $objCurrentArticle->date, $arrIds, $this->news_navigation_infinite);
 
-		$prevID = isset($arrIds[$currentIndex - 1]) ? $arrIds[$currentIndex - 1] : ($this->news_navigation_infinite ? end($arrIds) : null);
-	
-        // prev only of not first item
-        if($prevID !== null)
+        // prev only if not first item
+        if($objPrevNews !== null)
         {
-            $objNews = NewsPlusModel::findByPk($prevID, array());
-
-            if($objNews !== null)
-            {
-                $objT->prev = $this->generateArticle($objNews);
-                $objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
-            }
+			$objT->prev = $this->generateArticle($objPrevNews);
+			$objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
         }
 
-		$nextID = isset($arrIds[$currentIndex + 1]) ? $arrIds[$currentIndex + 1] : ($this->news_navigation_infinite ? reset($arrIds) : null);
+
+		$objNextNews = NewsPlusModel::findOldPublishedByIds($objCurrentArticle->id, $objCurrentArticle->date, $arrIds, $this->news_navigation_infinite);
 
         // next only of not last item
-        if($nextID !== null)
+        if($objNextNews !== null)
         {
-            $objNews = NewsPlusModel::findByPk($nextID, array());
-
-            if($objNews !== null)
-            {
-                $objT->next = $this->generateArticle($objNews);
-                $objT->nextLink = $GLOBALS['TL_LANG']['news_plus']['nextLink'];
-            }
+			$objT->next = $this->generateArticle($objNextNews);
+			$objT->nextLink = $GLOBALS['TL_LANG']['news_plus']['nextLink'];
         }
 
         return $objT->parse();

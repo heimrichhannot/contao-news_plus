@@ -16,4 +16,17 @@ class NewsPlusHelper extends \Controller
 		$strID = 'modal_' . $type . '_' . $id;
 		return $strID;
 	}
+
+
+	/**
+	 * Get the session key for the news id from associated reader module
+	 *
+	 * @param \ModuleModel $objReaderModule Model of the news reader
+	 *
+	 * @return string The key for news ids from session
+	 */
+	public static function getKeyForSessionNewsIds(\ModuleModel $objReaderModule)
+	{
+		return NEWSPLUS_SESSION_NEWS_IDS . '_' . $objReaderModule->id;
+	}
 }

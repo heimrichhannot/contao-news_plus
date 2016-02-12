@@ -54,7 +54,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         // modal news
         if($this->news_template_modal)
         {
-            $this->generateInModal();
+            return $this->generateInModal();
         }
         // default news
         else if($this->checkConditions())

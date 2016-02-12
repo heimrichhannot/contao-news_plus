@@ -176,9 +176,9 @@ class NewsArticle extends \Controller
 		$this->hasMetaFields = !empty($arrMeta);
 		$this->numberOfComments = $arrMeta['ccount'];
 		$this->commentCount = $arrMeta['comments'];
-		$this->timestamp = $this->date;
+		$this->timestamp = $this->objNews->date;
 		$this->author = $arrMeta['author'];
-		$this->datetime = date('Y-m-d\TH:i:sP', $this->date);
+		$this->datetime = date('Y-m-d\TH:i:sP', $this->objNews->date);
 
 		// Modal
 		if($this->objConfig->news_showInModal && $this->source == 'default' && $this->objConfig->news_readerModule)

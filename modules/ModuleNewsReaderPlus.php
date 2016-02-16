@@ -268,7 +268,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
                 }
             break;
             case 'external':
-                \Controller::redirect(ampersand($objArticle->url));
+                \Controller::redirect(\Controller::replaceInsertTags(ampersand($objArticle->url)));
             break;
         }
     }

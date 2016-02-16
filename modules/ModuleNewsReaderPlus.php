@@ -176,6 +176,11 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             return;
         }
 
+        if($objArticle->source !== 'default')
+        {
+            $this->forwardNews($objArticle);
+        }
+
         $arrArticle = $this->parseArticle($objArticle);
         $this->Template->articles = $arrArticle;
 
@@ -240,6 +245,32 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         $objConfig->moderate = $objArchive->moderate;
 
         $this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_news', $objArticle->id, $arrNotifies);
+    }
+
+    /**
+     * Redirect if news source is not 'default'
+     * @param $objArticle
+     */
+    protected function forwardNews($objArticle)
+    {
+        switch($objArticle->source)
+        {
+            case 'internal':
+                if($objArticle->jumpTo >0 & ($objTarget = \PageModel::findByPk($objArticle->jumpTo)) !== null)
+                {
+                    \Controller::redirect(\Controller::generateFrontendUrl($objTarget->row(), null, null, true));
+                }
+            break;
+            case 'article':
+                if (($objArticle = \ArticleModel::findByPk($objArticle->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+                {
+                    \Controller::redirect(ampersand(\Controller::generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id))));
+                }
+            break;
+            case 'external':
+                \Controller::redirect(ampersand($objArticle->url));
+            break;
+        }
     }
 
     protected function isSearchIndexer()

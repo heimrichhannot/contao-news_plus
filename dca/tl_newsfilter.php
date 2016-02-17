@@ -55,14 +55,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['startDate'],
 			'inputType' => 'text',
-			'default'   => time(),
 			'eval'      => array('rgxp' => 'date', 'datepicker' => true),
 		),
 		'endDate'   => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['endDate'],
 			'inputType' => 'text',
-			'default'   => time(),
 			'eval'      => array('rgxp' => 'date', 'datepicker' => true),
 		),
 		'submit'    => array

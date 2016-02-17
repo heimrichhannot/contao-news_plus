@@ -273,7 +273,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
                 if (version_compare(VERSION, '3.5.6', '<='))
                 {
-                    $strUrl = $this->replaceInserttagsAndFixDomain($strUrl);
+                    $strUrl = NewsPlusHelper::replaceInserttagsAndFixDomain($strUrl);
                 }
 
                 if($strUrl != '')
@@ -282,87 +282,6 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
                 }
             break;
         }
-    }
-
-    /**
-     * \Contao\InsertTags::replace does not fix the domain, until contao 3.5.7
-     * see: https://github.com/contao/core/issues/8212
-     *
-     * @param $strUrl
-     *
-     * @return string The Url
-     */
-    protected function replaceInsertTagsandFixDomain($strUrl)
-    {
-        // Preserve insert tags
-        if (\Config::get('disableInsertTags'))
-        {
-            return \StringUtil::restoreBasicEntities($strUrl);
-        }
-
-        $tags = preg_split('/{{(([^{}]*|(?R))*)}}/', $strUrl, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-
-        for ($_rit=0, $_cnt=count($tags); $_rit<$_cnt; $_rit+=3)
-        {
-            $strTag = $tags[$_rit + 1];
-
-            // Skip empty tags
-            if ($strTag == '') {
-                continue;
-            }
-
-            // Run the replacement again if there are more tags
-            if (strpos($strTag, '{{') !== false)
-            {
-                $strTag = $this->replaceInsertTagsandFixDomain($strTag);
-            }
-
-            $flags = explode('|', $strTag);
-            $tag = array_shift($flags);
-            $elements = explode('::', $tag);
-
-            // Replace the tag
-            switch (strtolower($elements[0]))
-            {
-                case 'news_url':
-                    if (($objNews = \NewsModel::findByIdOrAlias($elements[1])) === null)
-                    {
-                        break;
-                    }
-
-                    if ($objNews->source == 'external')
-                    {
-                        $strUrl = $objNews->url;
-                    }
-                    elseif ($objNews->source == 'internal')
-                    {
-                        if (($objJumpTo = $objNews->getRelated('jumpTo')) !== null)
-                        {
-                            $strUrl = \Controller::generateFrontendUrl($objJumpTo->loadDetails()->row(), null, null, true);
-                        }
-                    }
-                    elseif ($objNews->source == 'article')
-                    {
-                        if (($objArticle = \ArticleModel::findByPk($objNews->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
-                        {
-                            $strUrl = \Controller::generateFrontendUrl($objPid->loadDetails()->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id), null, true);
-                        }
-                    }
-                    else
-                    {
-                        if (($objArchive = $objNews->getRelated('pid')) !== null && ($objJumpTo = $objArchive->getRelated('jumpTo')) !== null)
-                        {
-                            $strUrl = \Controller::generateFrontendUrl($objJumpTo->loadDetails()->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id), null, true);
-                        }
-                    }
-
-                break;
-            }
-        }
-
-        return $strUrl;
-
     }
 
     protected function isSearchIndexer()

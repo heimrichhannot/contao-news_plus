@@ -24,24 +24,24 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Models
-	'HeimrichHannot\NewsPlus\NewsPlusModel'           => 'system/modules/news_plus/models/NewsPlusModel.php',
+	'HeimrichHannot\NewsPlus\NewsPlusModel'        => 'system/modules/news_plus/models/NewsPlusModel.php',
 
 	// Modules
-	'HeimrichHannot\NewsPlus\ModuleNewsListHighlight' => 'system/modules/news_plus/modules/ModuleNewsListHighlight.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsPlus'          => 'system/modules/news_plus/modules/ModuleNewsPlus.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsMenuPlus'      => 'system/modules/news_plus/modules/ModuleNewsMenuPlus.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsReaderPlus'    => 'system/modules/news_plus/modules/ModuleNewsReaderPlus.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsFilter'        => 'system/modules/news_plus/modules/ModuleNewsFilter.php',
-	'HeimrichHannot\NewsPlus\ModuleNewsListPlus'      => 'system/modules/news_plus/modules/ModuleNewsListPlus.php',
+	'HeimrichHannot\NewsPlus\ModuleNewsPlus'       => 'system/modules/news_plus/modules/ModuleNewsPlus.php',
+	'HeimrichHannot\NewsPlus\ModuleNewsMenuPlus'   => 'system/modules/news_plus/modules/ModuleNewsMenuPlus.php',
+	'HeimrichHannot\NewsPlus\ModuleNewsReaderPlus' => 'system/modules/news_plus/modules/ModuleNewsReaderPlus.php',
+	'HeimrichHannot\NewsPlus\ModuleNewsFilter'     => 'system/modules/news_plus/modules/ModuleNewsFilter.php',
+	'HeimrichHannot\NewsPlus\ModuleNewsListPlus'   => 'system/modules/news_plus/modules/ModuleNewsListPlus.php',
 
 	// Classes
-	'HeimrichHannot\NewsPlus\NewsPlusTagHelper'       => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',
-	'HeimrichHannot\NewsPlus\Hooks'                   => 'system/modules/news_plus/classes/Hooks.php',
-	'HeimrichHannot\NewsPlus\NewsPlusHelper'          => 'system/modules/news_plus/classes/NewsPlusHelper.php',
-	'HeimrichHannot\NewsPlus\NewsFilterForm'          => 'system/modules/news_plus/classes/NewsFilterForm.php',
-	'HeimrichHannot\NewsPlus\NewsPlus'                => 'system/modules/news_plus/classes/NewsPlus.php',
-	'HeimrichHannot\NewsPlus\NewsArticle'             => 'system/modules/news_plus/classes/NewsArticle.php',
-	'HeimrichHannot\NewsPlus\NewsFilterRegistry'      => 'system/modules/news_plus/classes/NewsFilterRegistry.php',
+	'HeimrichHannot\NewsPlus\NewsPlusTagHelper'    => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',
+	'HeimrichHannot\NewsPlus\Hooks'                => 'system/modules/news_plus/classes/Hooks.php',
+	'HeimrichHannot\NewsPlus\NewsPlusHelper'       => 'system/modules/news_plus/classes/NewsPlusHelper.php',
+	'HeimrichHannot\NewsPlus\NewsFilterForm'       => 'system/modules/news_plus/classes/NewsFilterForm.php',
+	'HeimrichHannot\NewsPlus\NewsPlus'             => 'system/modules/news_plus/classes/NewsPlus.php',
+	'HeimrichHannot\NewsPlus\Backend\News'         => 'system/modules/news_plus/classes/Backend/News.php',
+	'HeimrichHannot\NewsPlus\NewsArticle'          => 'system/modules/news_plus/classes/NewsArticle.php',
+	'HeimrichHannot\NewsPlus\NewsFilterRegistry'   => 'system/modules/news_plus/classes/NewsFilterRegistry.php',
 ));
 
 

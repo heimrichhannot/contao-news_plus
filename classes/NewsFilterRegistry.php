@@ -66,7 +66,7 @@ class NewsFilterRegistry
 
 	public static function getInstance(array $arrConfig)
 	{
-		$strKey = $arrConfig['id'];
+		$strKey = $arrConfig['news_filterModule'] ? ('filter_' . $arrConfig['news_filterModule'])  : ('list_' . $arrConfig['id']);
 
 		if (!isset(static::$arrInstances[$strKey]))
 		{

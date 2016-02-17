@@ -23,3 +23,9 @@ $GLOBALS['TL_LANG']['MSC']['trailDistance']		= 'Länge';
 $GLOBALS['TL_LANG']['MSC']['trailDuration']		= 'Dauer';
 $GLOBALS['TL_LANG']['MSC']['trailAltitude']		= 'Höhenmeter';
 $GLOBALS['TL_LANG']['MSC']['trailDifficulty']	= 'Anspruch';
+
+
+$GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['default'] = 'mehr';
+$GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['moreLong'] = 'mehr erfahren';
+$GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['download'] = 'herunterladen';
+$GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['order'] = 'bestellen';

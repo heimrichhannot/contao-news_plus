@@ -26,7 +26,7 @@ $dc['palettes']['newsfilter'] = '
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
-                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid,news_pagination_overwrite;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
                                     {media_legend},media_template,media_posterSRC;
@@ -66,6 +66,8 @@ $dc['palettes']['newsmenu_plus'] = '
 
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 $dc['palettes']['__selector__'][] = 'news_addNavigation';
+$dc['palettes']['__selector__'][] = 'news_pagination_overwrite';
+
 
 
 /**
@@ -74,6 +76,7 @@ $dc['palettes']['__selector__'][] = 'news_addNavigation';
 
 $dc['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
 $dc['subpalettes']['news_addNavigation'] = 'news_navigation_infinite,news_navigation_template';
+$dc['subpalettes']['news_pagination_overwrite'] = 'pagination_template,pagination_hash';
 
 /**
  * Fields
@@ -218,7 +221,34 @@ $dc['fields'] = array_merge
 			'inputType' => 'checkbox',
 			'eval'      => array('tl_class' => 'clr'),
 			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_pagination_overwrite' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_pagination_overwrite'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'      => array('tl_class' => 'clr', 'submitOnChange' => true),
+			'sql'       => "char(1) NOT NULL default ''",
 		)
+		,
+		'pagination_template' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['pagination_template'],
+			'exclude'          => true,
+			'default'		   => 'pagination',
+			'inputType'        => 'select',
+			'options_callback' => array('tl_module_news_plus', 'getPaginationTemplates'),
+			'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
+			'sql'              => "varchar(64) NOT NULL default ''",
+		),
+		'pagination_hash' => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['pagination_hash'],
+			'exclude'          => true,
+			'inputType'        => 'text',
+			'eval'             => array('tl_class' => 'w50'),
+			'sql'              => "varchar(255) NOT NULL default ''",
+		),
 
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()
@@ -277,6 +307,16 @@ class tl_module_news_plus extends Backend
 	public function getFilterTemplates()
 	{
 		return $this->getTemplateGroup('form_news');
+	}
+
+	/**
+	 * Return all pagintation templates as array
+	 *
+	 * @return array
+	 */
+	public function getPaginationTemplates()
+	{
+		return array_merge(array('pagination'), $this->getTemplateGroup('pagination_'));
 	}
 
 	/**

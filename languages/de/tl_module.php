@@ -43,3 +43,6 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterDefaultExclude'] = array('Standard-
 $GLOBALS['TL_LANG']['tl_module']['news_addNavigation'] = array('Nachrichtennavigation aktivieren', 'Eine einfache Navigation zur nächsten und vorherigen Nachricht einbinden.');
 $GLOBALS['TL_LANG']['tl_module']['news_navigation_template'] = array('Nachrichtennavigation Template', 'Hier können Sie das Nachrichtennavigation Template auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['news_navigation_infinite'] = array('Endlosnavigation', 'Endloses klicken durch die Nachrichtennavigation aktivieren.');
+$GLOBALS['TL_LANG']['tl_module']['news_pagination_overwrite'] = array('Paginierung anpassen/überschreiben', 'Die Paginierung der Nachrichtenliste anpassen');
+$GLOBALS['TL_LANG']['tl_module']['pagination_template'] = array('Paginierungs-Template', 'Überschreiben Sie das Standard-Template der Paginierung.');
+$GLOBALS['TL_LANG']['tl_module']['pagination_hash'] = array('Paginierungs-Hash', 'Fügen Sie den Links der Paginierung ein Sprungziel hinzu. (Angabe ohne # Zeichen)');

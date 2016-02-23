@@ -138,8 +138,22 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 				return;
 			}
 
+			$objPaginationTemplate = null;
+
+			// custom pagination template
+			if($this->news_pagination_overwrite && $this->pagination_template != '')
+			{
+				$objPaginationTemplate = new \FrontendTemplate($this->pagination_template);
+			}
+
 			// Add the pagination menu
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+			$objPagination = new NewsPagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objPaginationTemplate);
+
+			if($this->pagination_hash != '')
+			{
+				$objPagination->setLinkHash($this->pagination_hash);
+			}
+
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 

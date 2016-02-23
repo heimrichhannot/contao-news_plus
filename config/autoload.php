@@ -35,6 +35,7 @@ ClassLoader::addClasses(array
 
 	// Classes
 	'HeimrichHannot\NewsPlus\NewsPlusTagHelper'    => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',
+	'HeimrichHannot\NewsPlus\NewsPagination'       => 'system/modules/news_plus/classes/NewsPagination.php',
 	'HeimrichHannot\NewsPlus\Hooks'                => 'system/modules/news_plus/classes/Hooks.php',
 	'HeimrichHannot\NewsPlus\NewsPlusHelper'       => 'system/modules/news_plus/classes/NewsPlusHelper.php',
 	'HeimrichHannot\NewsPlus\NewsFilterForm'       => 'system/modules/news_plus/classes/NewsFilterForm.php',

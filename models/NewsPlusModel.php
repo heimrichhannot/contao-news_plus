@@ -135,17 +135,21 @@ class NewsPlusModel extends \NewsModel
 
 
 	/**
-	 * Find published news items by their parent ID
+	 * Find published news items by their parent ID, news categories and ids
 	 *
-	 * @param array   $arrPids     An array of news archive IDs
-	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
-	 * @param integer $intLimit    An optional limit
-	 * @param integer $intOffset   An optional offset
-	 * @param array   $arrOptions  An optional options array
+	 * @param array     $arrPids       An array of news archive IDs
+	 * @param bool|null $arrCategories An array of news category IDs
+	 * @param array     $arrIds        An array of news IDs
+	 * @param boolean   $blnFeatured   If true, return only featured news, if false, return only unfeatured news
+	 * @param integer   $intLimit      An optional limit
+	 * @param integer   $intOffset     An optional offset
+	 * @param array     $arrOptions    An optional options array
+	 * @param null      $startDate 	   An optional startDate
+	 * @param null      $endDate	   An optional endDate
 	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function findPublishedByPids($arrPids, $arrCategories, array $arrIds=array(), $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -154,6 +158,11 @@ class NewsPlusModel extends \NewsModel
 
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		if(!empty($arrIds))
+		{
+			$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+		}
 
 		if ($blnFeatured === true)
 		{
@@ -166,9 +175,13 @@ class NewsPlusModel extends \NewsModel
 
         // filter by date
         if($startDate != null)
-            $arrColumns[] = "$t.date>=$startDate";
+		{
+			$arrColumns[] = "$t.date>=$startDate";
+		}
         if($endDate != null)
-            $arrColumns[] = "$t.date<=$endDate";
+		{
+			$arrColumns[] = "$t.date<=$endDate";
+		}
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
 		if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
@@ -180,9 +193,6 @@ class NewsPlusModel extends \NewsModel
 		// Filter by categories
 		$arrColumns = static::filterByCategories($arrColumns);
 
-        // Filter by search
-        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
-
 		if (!isset($arrOptions['order']))
 		{
 			$arrOptions['order']  = "$t.date DESC";
@@ -190,20 +200,24 @@ class NewsPlusModel extends \NewsModel
 
 		$arrOptions['limit']  = $intLimit;
 		$arrOptions['offset'] = $intOffset;
-
+		
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
 
 	/**
 	 * Count published news items by their parent ID
 	 *
-	 * @param array   $arrPids     An array of news archive IDs
-	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
-	 * @param array   $arrOptions  An optional options array
+	 * @param array     $arrPids       An array of news archive IDs
+	 * @param bool|null $arrCategories An array of news category IDs
+	 * @param array     $arrIds        An array of news IDs
+	 * @param boolean   $blnFeatured   If true, return only featured news, if false, return only unfeatured news
+	 * @param array     $arrOptions    An optional options array
+	 * @param null      $startDate 	   An optional startDate
+	 * @param null      $endDate	   An optional endDate
 	 *
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, $arrCategories, $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
+	public static function countPublishedByPids($arrPids, $arrCategories, array $arrIds = array(), $blnFeatured=null, array $arrOptions=array(), $startDate=null, $endDate=null)
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -212,6 +226,11 @@ class NewsPlusModel extends \NewsModel
 
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		if(!empty($arrIds))
+		{
+			$arrColumns[] = "$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")";
+		}
 
 		if ($blnFeatured === true)
 		{
@@ -236,9 +255,6 @@ class NewsPlusModel extends \NewsModel
 
 		// Filter by categories
 		$arrColumns = static::filterByCategories($arrColumns);
-
-        // Filter by search
-        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
 		return static::countBy($arrColumns, null, $arrOptions);
 	}

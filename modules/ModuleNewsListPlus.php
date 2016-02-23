@@ -130,10 +130,24 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
-		// Get the total number of items
-		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, array(), $this->startDate, $this->endDate);
+		$arrIds = array();
 
-		if ($intTotal < 1 && !$this->filterSearch) {
+		// get items by tag tid
+		if(in_array('tags', \ModuleLoader::getActive()))
+		{
+			$arrIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
+		}
+
+		if($this->filterSearch)
+		{
+			$arrIds = array_merge($arrIds, $this->findNewsInSearchIndex(($limit ?: 0), $offset));
+		}
+
+		// Get the total number of items
+		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, array(), $this->startDate, $this->endDate);
+
+		if ($intTotal < 1 && !$this->filterSearch)
+		{
 			return;
 		}
 
@@ -162,35 +176,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             }
         }
 
-		$arrTagIds = array();
-
-		// get items by tag tid
-		if(in_array('tags', \ModuleLoader::getActive()))
-		{
-			$arrTagIds = NewsPlusTagHelper::getNewsIdByTableAndTag(\Input::get("tag"));
-		}
-
-
-        // Get the items normal or by tag
-        if(count($arrTagIds) > 0)
-		{
-            $objArticles = NewsPlusModel::findPublishedByIds($arrTagIds);
-        }
-		elseif (isset($limit) && !isset($objArticles))
-		{
-			if($this->filterSearch)
-			{
-				$objArticles = static::findNewsInSearchIndex(($limit ?: 0), $offset);
-			}
-			else
-			{
-				$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
-			}
-        }
-		else
-		{
-            $objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $blnFeatured, 0, $offset, array(), $this->startDate, $this->endDate);
-        }
+		$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
 
         // store all events ids in session
         $arrUrlParam = array();
@@ -201,10 +187,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
         $arrIds = NewsPlus::getAllPublishedNews($this->news_archives, $this->news_categories);
 
-        // show only news by tag
-        if(\Input::get("tag")) $arrUrlParam[] = 'tag=' . \Input::get("tag");
-
-        if(count($arrTagIds)) $arrIds = array_intersect($arrIds, $arrTagIds);
+//        // show only news by tag
+//        if(\Input::get("tag")) $arrUrlParam[] = 'tag=' . \Input::get("tag");
+//
+//        if(count($arrTagIds)) $arrIds = array_intersect($arrIds, $arrTagIds);
 
         $session = \Session::getInstance()->getData();
         $session[NEWSPLUS_SESSION_NEWS_IDS] = array();
@@ -238,8 +224,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->archives = $this->news_archives;
     }
 
-    protected function findNewsInSearchIndex($intLimit=0, $intOffset=0)
+    protected function findNewsInSearchIndex()
     {
+		$arrIds = array();
+
         // Reference page
         if ($this->rootPage > 0)
         {
@@ -255,48 +243,45 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		try
 		{
-			$strQueryType = !$this->objFilter->news_filterSearchQueryType;
-			
-            $objSearch = \Search::searchFor($this->strKeywords, $strQueryType, $arrPages, 0, 0, $this->objFilter->news_filterFuzzySearch);
+            $objSearch = \Search::searchFor($this->strKeywords, $this->objFilter->news_filterSearchQueryType === false, $arrPages, 0, 0, $this->objFilter->news_filterFuzzySearch);
 			
 			if($objSearch->numRows > 0)
 			{
-				$arrUrls = $objSearch->fetchEach('url');
+				$arrUrls = array();
+
+				while($objSearch->next())
+				{
+					$arrUrls[] = $objSearch->url;
+				}
+
 				$strKeyWordColumns = "";
 				$n = 0;
+
 				foreach($arrUrls as $i => $strAlias)
 				{
 					$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$this->t.alias = ?";
 					$arrValues[] = basename($strAlias);
 					$n++;
 				}
+
 				$arrColumns[] = "($strKeyWordColumns)";
-				$arrColumns[] = "($this->t.pid IN (" . implode(',', $this->news_archives) . "))";
 
-				// filter by date
-				if($this->startDate)
-					$arrColumns[] = "($this->t.date>=$this->startDate)";
-				if($this->endDate)
-					$arrColumns[] = "($this->t.date<=$this->endDate)";
+				$objArticles = \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
 				
-				if (!BE_USER_LOGGED_IN)
+				if($objArticles !== null)
 				{
-					$time         = time();
-					$arrColumns[] = "($this->t.start='' OR $this->t.start<$time) AND ($this->t.stop='' OR $this->t.stop>$time) AND $this->t.published=1";
+					$arrIds =  $objArticles->fetchEach('id');
 				}
-
-				$arrOptions['limit']  = $intLimit;
-				$arrOptions['offset'] = $intOffset;
 				
-				return \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues, $arrOptions);
+				return $arrIds;
 			}
 			else
-				return null;
+				return $arrIds;
 		}
 		catch (\Exception $e)
 		{
 			$this->log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
-			return null;
+			return $arrIds;
 		}
     }
 

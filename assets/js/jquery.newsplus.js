@@ -2,8 +2,8 @@
 
     var NewsPlus = {
         onReady: function () {
-            this.showNewsInModal();
-            this.closeNewsModal();
+            //this.showNewsInModal();
+            //this.closeNewsModal();
             this.changeUrl();
         },
         showNewsInModal: function () {

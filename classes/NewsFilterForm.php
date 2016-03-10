@@ -75,6 +75,18 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$this->dca['fields']['trailInfoDifficultyMin']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDifficultyFromPublishedNews');
 		$this->dca['fields']['trailInfoDifficultyMax']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDifficultyFromPublishedNews');
 
+		if($this->minDate !== null)
+		{
+			$this->dca['fields']['startDate']['eval']['minDate'] = $this->minDate;
+			$this->dca['fields']['startDate']['default'] = $this->minDate;
+		}
+
+		if($this->maxDate !== null)
+		{
+			$this->dca['fields']['endDate']['eval']['maxDate'] = $this->maxDate;
+			$this->dca['fields']['endDate']['default'] = $this->maxDate;
+		}
+
 		// HOOK: modify dca
 		if (isset($GLOBALS['TL_HOOKS']['modifyNewsFilterDca']) && is_array($GLOBALS['TL_HOOKS']['modifyNewsFilterDca']))
 		{

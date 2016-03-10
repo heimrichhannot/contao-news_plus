@@ -30,13 +30,18 @@ $dc['palettes']['__selector__'][] = 'addTrailInfoDuration';
 $dc['palettes']['__selector__'][] = 'addTrailInfoAltitude';
 $dc['palettes']['__selector__'][] = 'addTrailInfoDifficulty';
 $dc['palettes']['__selector__'][] = 'addTrailInfoStartDestination';
+$dc['palettes']['__selector__'][] = 'customLinkText';
 /**
  * Palettes
  */
 $strLeisureTipFieldset = '{venue_legend:hide},addVenues,addArrivalInfo;{touristInfo_legend:hide},addTouristInfo;{trailInfo_legend:hide},addTrailInfo;{openingHours_legend:hide},addOpeningHours;{ticketprice_legend:hide},addTicketPrice;';
 
+$dc['palettes']['default'] = str_replace('source', 'source,customLinkText', $dc['palettes']['default']);
+
+
 $dc['palettes']['leisuretip'] = $dc['palettes']['default'];
 $dc['palettes']['leisuretip'] = str_replace('addImage;', 'addImage;' . $strLeisureTipFieldset, $dc['palettes']['leisuretip']);
+
 
 /**
  * Subpalettes
@@ -52,6 +57,7 @@ $dc['subpalettes']['addTrailInfoDuration'] = 'trailInfoDurationMin,trailInfoDura
 $dc['subpalettes']['addTrailInfoAltitude'] = 'trailInfoAltitudeMin,trailInfoAltitudeMax';
 $dc['subpalettes']['addTrailInfoDifficulty'] = 'trailInfoDifficultyMin,trailInfoDifficultyMax';
 $dc['subpalettes']['addTrailInfoStartDestination'] = 'trailInfoStart,trailInfoDestination';
+$dc['subpalettes']['customLinkText'] = 'moreLinkText';
 
 
 /**
@@ -93,7 +99,7 @@ $arrFields = array
 			),
 			'palettes' => array
 			(
-				'default' => 'venueName,venueStreet,venuePostal,venueCity,venueCountry,venueSingleCoords,venuePhone,venueFax,venueEmail,venueWebsite,venueText',
+				'default' => '{venue_address_legend},venueName,venueStreet,venuePostal,venueCity,venueCountry,venueSingleCoords;{venue_contact_legend},venuePhone,venueFax,venueEmail,venueWebsite;{venue_text_legend},venueText',
 			),
 			'fields'   => array
 			(
@@ -158,6 +164,61 @@ $arrFields = array
 					(
 						array('tl_news_plus', 'generateVenueCoords'),
 					),
+				),
+				'venuePhone'   => array
+				(
+					'label'     => &$GLOBALS['TL_LANG']['tl_news']['venuePhone'],
+					'exclude'   => true,
+					'search'    => true,
+					'inputType' => 'text',
+					'eval'      => array(
+						'maxlength'      => 64,
+						'rgxp'           => 'phone',
+						'decodeEntities' => true,
+						'tl_class'       => 'w50',
+					),
+					'sql'       => "varchar(64) NOT NULL default ''",
+				),
+				'venueFax'     => array
+				(
+					'label'     => &$GLOBALS['TL_LANG']['tl_news']['venueFax'],
+					'exclude'   => true,
+					'search'    => true,
+					'inputType' => 'text',
+					'eval'      => array(
+						'maxlength'      => 64,
+						'rgxp'           => 'phone',
+						'decodeEntities' => true,
+						'tl_class'       => 'w50',
+					),
+					'sql'       => "varchar(64) NOT NULL default ''",
+				),
+				'venueEmail'   => array
+				(
+					'label'     => &$GLOBALS['TL_LANG']['tl_news']['venueEmail'],
+					'exclude'   => true,
+					'search'    => true,
+					'inputType' => 'text',
+					'eval'      => array(
+						'maxlength'      => 255,
+						'rgxp'           => 'email',
+						'decodeEntities' => true,
+						'tl_class'       => 'w50',
+					),
+					'sql'       => "varchar(255) NOT NULL default ''",
+				),
+				'venueWebsite' => array
+				(
+					'label'     => &$GLOBALS['TL_LANG']['tl_news']['venueWebsite'],
+					'exclude'   => true,
+					'search'    => true,
+					'inputType' => 'text',
+					'eval'      => array(
+						'rgxp'       => 'url',
+						'maxlength'  => 255,
+						'tl_class'   => 'w50',
+					),
+					'sql'       => "varchar(255) NOT NULL default ''",
 				),
 				'venueText'         => array
 				(
@@ -514,6 +575,24 @@ $arrFields = array
 		'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr', 'mandatory' => true),
 		'sql'       => "text NULL",
 	),
+	'customLinkText'           => array
+	(
+		'label'     => &$GLOBALS['TL_LANG']['tl_news']['customLinkText'],
+		'exclude'   => true,
+		'inputType' => 'checkbox',
+		'eval'      => array('submitOnChange' => true),
+		'sql'       => "char(1) NOT NULL default ''",
+	),
+	'moreLinkText'	 => array
+	(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_news']['moreLinkText'],
+		'exclude'                 => true,
+		'search'                  => true,
+		'inputType'               => 'select',
+		'options_callback'		  => array('HeimrichHannot\NewsPlus\Backend\News', 'getMoreLinkText'),
+		'eval'					  =>array('tl_class' => 'w50 clr'),
+		'sql'                     => "varchar(255) NOT NULL default ''",
+	)
 );
 
 $dc['fields'] = array_merge($dc['fields'], $arrFields);
@@ -589,7 +668,7 @@ class tl_news_plus extends Backend
 
 		if($dc->activeRecord->venuePostal != '' && $dc->activeRecord->venueCity)
 		{
-			$strAddress .= ($strAddress ? ($strAddress . ',') : '') . $dc->activeRecord->venuePostal . ' ' . $dc->activeRecord->venueCity;
+			$strAddress .= ($strAddress ? ',' : '') . $dc->activeRecord->venuePostal . ' ' . $dc->activeRecord->venueCity;
 		}
 
 		if(($strCoords = $this->generateCoordsFromAddress($strAddress, $dc->activeRecord->venueCountry ?: 'de')) !== false)
@@ -626,7 +705,7 @@ class tl_news_plus extends Backend
 
 		if($dc->activeRecord->arrivalPostal != '' && $dc->activeRecord->arrivalCity)
 		{
-			$strAddress .= ($strAddress ? ($strAddress . ',') : '') . $dc->activeRecord->arrivalPostal . ' ' . $dc->activeRecord->arrivalCity;
+			$strAddress .= ($strAddress ? ',' : '') . $dc->activeRecord->arrivalPostal . ' ' . $dc->activeRecord->arrivalCity;
 		}
 
 		if(($strCoords = $this->generateCoordsFromAddress($strAddress, $dc->activeRecord->arrivalCountry ?: 'de')) !== false)
@@ -651,5 +730,10 @@ class tl_news_plus extends Backend
 		}
 		
 		return \delahaye\GeoCode::getCoordinates($strAddress, $strCountry, 'de');
+	}
+
+	public static function formatCommaToDot($value)
+	{
+		return str_replace(',', '.', $value);
 	}
 }

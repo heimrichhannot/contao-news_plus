@@ -54,11 +54,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 
 		$this->objFilter = NewsFilterRegistry::getInstance($this->arrData);
 
-        // Show the event reader if an item has been selected
-        if (!$this->news_showInModal && $this->news_readerModule > 0  && (isset($_GET['news']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
-        {
-            return $this->getFrontendModule($this->news_readerModule, $this->strColumn);
-        }
+        $this->activeNews = $this->getActiveNews();
 
         return parent::generate();
     }
@@ -142,8 +138,22 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 				return;
 			}
 
+			$objPaginationTemplate = null;
+
+			// custom pagination template
+			if($this->news_pagination_overwrite && $this->pagination_template != '')
+			{
+				$objPaginationTemplate = new \FrontendTemplate($this->pagination_template);
+			}
+
 			// Add the pagination menu
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+			$objPagination = new NewsPagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objPaginationTemplate);
+
+			if($this->pagination_hash != '')
+			{
+				$objPagination->setLinkHash($this->pagination_hash);
+			}
+
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
@@ -212,19 +222,60 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			}
 		}
 		
-		// store all news item ids in the session
-		if($this->objFilter !== null)
+		// store all news item ids in the session if reader module is set
+		if($this->objFilter !== null && $this->news_readerModule > 0 && ($objReader = \ModuleModel::findByPk($this->news_readerModule)) !== null)
 		{
 			$objAllItems = NewsPlusModel::findPublishedByFilter($this->objFilter, $blnFeatured, 0, 0, array());
 
 			if($objAllItems !== null)
 			{
 				// store ids for later navigation
-				\Session::getInstance()->set(NEWSPLUS_SESSION_NEWS_IDS, $objAllItems->fetchEach('id'));
+				\Session::getInstance()->set(NewsPlusHelper::getKeyForSessionNewsIds($objReader), $objAllItems->fetchEach('id'));
 			}
 		}
 
 		return NewsPlusModel::findPublishedByFilter($this->objFilter, $blnFeatured, ($limit ?: 0), $offset, array());
+	}
+
+	/**
+	 * Get the active item if news reader is set
+	 * @return The NewsPlusModel or null if none is set
+	 */
+	protected function getActiveNews()
+	{
+		// Set the item from the auto_item parameter
+		if (!isset($_GET['items']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+		{
+			\Input::setGet('items', \Input::get('auto_item'));
+		}
+
+		// Do not index or cache the page if no news item has been specified
+		if (!\Input::get('items'))
+		{
+			return null;
+		}
+
+		if($this->news_showInModal || $this->news_readerModule < 1 || ($objModule = \ModuleModel::findByPk($this->news_readerModule)) === null)
+		{
+			return null;
+		}
+
+		$arrArchives = $this->sortOutProtected(deserialize($objModule->news_archives));
+
+		if (!is_array($arrArchives) || empty($arrArchives))
+		{
+			return null;
+		}
+
+		// Get the news item
+		$objNews = NewsPlusModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $arrArchives);
+
+		if ($objNews === null)
+		{
+			return null;
+		}
+
+		return $objNews;
 	}
 
     /**

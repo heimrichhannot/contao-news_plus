@@ -49,11 +49,16 @@ class NewsFilterRegistry
 	{
 		// set defaults, to provide getWhereSql() functionality for news_list without filter
 		$this->arrData = \HeimrichHannot\Haste\Util\Arrays::filterByPrefixes($arrConfig, array('news_', 'root'));
+		$this->arrAllCategories = \NewsCategories\NewsModel::getCategoriesCache();
+
+		if ($this->news_filterCategories)
+		{
+			$this->initCategories();
+		}
 
 		if (($objFilter = \ModuleModel::findByPk($arrConfig['news_filterModule'])) !== null) {
 			$this->objFilter        = new NewsFilterForm($objFilter);
 			$this->arrFields        = deserialize($objFilter->formHybridEditable, true);
-			$this->arrAllCategories = \NewsCategories\NewsModel::getCategoriesCache();
 			$this->init();
 		}
 	}
@@ -61,7 +66,7 @@ class NewsFilterRegistry
 
 	public static function getInstance(array $arrConfig)
 	{
-		$strKey = $arrConfig['news_filterModule'];
+		$strKey = $arrConfig['news_filterModule'] ? ('filter_' . $arrConfig['news_filterModule'])  : ('list_' . $arrConfig['id']);
 
 		if (!isset(static::$arrInstances[$strKey]))
 		{
@@ -88,15 +93,12 @@ class NewsFilterRegistry
 			$strKey          = isset(static::$arrFieldAlias[$strName]) ? static::$arrFieldAlias[$strName] : $strName;
 			$this->{$strKey} = $varValue;
 		}
-
-		if ($this->news_filterCategories) {
-			$this->initCategories();
-		}
 	}
 
 	protected function initCategories()
 	{
-		if (!is_array($this->arrAllCategories)) {
+		if (!is_array($this->arrAllCategories))
+		{
 			return false;
 		}
 
@@ -192,6 +194,7 @@ class NewsFilterRegistry
 		{
 			$arrColumns['ids'] = "$t.id IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIds))) . ")";
 		}
+
 
 		// news ids : second - remove news ids that should be excluded from the result
 		if (is_array($this->arrNewsIdsExclude) && !empty($this->arrNewsIdsExclude)) {

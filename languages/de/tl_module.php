@@ -11,9 +11,10 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Erweiterte Nachrichtenliste', 'Listet alle Nachrichten eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
-$GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Erweiterter Nachrichtenleser', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Nachrichtenliste Plus', 'Listet alle Nachrichten eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
+$GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Nachrichtenleser Plus', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
 $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Nachrichtenfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Nachrichtenliste manipuliert.');
+$GLOBALS['TL_LANG']['FMD']['newsmenu_plus'] = array('Nachrichtenarchiv-Menü Plus', 'Erzeugt ein erweitertes Nachrichtenarchiv-Menü.');
 
 /**
  * Legends
@@ -42,3 +43,6 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterDefaultExclude'] = array('Standard-
 $GLOBALS['TL_LANG']['tl_module']['news_addNavigation'] = array('Nachrichtennavigation aktivieren', 'Eine einfache Navigation zur nächsten und vorherigen Nachricht einbinden.');
 $GLOBALS['TL_LANG']['tl_module']['news_navigation_template'] = array('Nachrichtennavigation Template', 'Hier können Sie das Nachrichtennavigation Template auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['news_navigation_infinite'] = array('Endlosnavigation', 'Endloses klicken durch die Nachrichtennavigation aktivieren.');
+$GLOBALS['TL_LANG']['tl_module']['news_pagination_overwrite'] = array('Paginierung anpassen/überschreiben', 'Die Paginierung der Nachrichtenliste anpassen');
+$GLOBALS['TL_LANG']['tl_module']['pagination_template'] = array('Paginierungs-Template', 'Überschreiben Sie das Standard-Template der Paginierung.');
+$GLOBALS['TL_LANG']['tl_module']['pagination_hash'] = array('Paginierungs-Hash', 'Fügen Sie den Links der Paginierung ein Sprungziel hinzu. (Angabe ohne # Zeichen)');

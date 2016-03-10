@@ -55,14 +55,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['startDate'],
 			'inputType' => 'text',
-			'default'   => time(),
 			'eval'      => array('rgxp' => 'date', 'datepicker' => true),
 		),
 		'endDate'   => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['endDate'],
 			'inputType' => 'text',
-			'default'   => time(),
 			'eval'      => array('rgxp' => 'date', 'datepicker' => true),
 		),
 		'submit'    => array
@@ -78,6 +76,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMin'],
 			'inputType' => 'text',
 			'eval'      => array(
+				'slider' => array(
+					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceValue'),
+					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceMinValue'),
+					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceMaxValue'),
+					'step' => 1
+				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMin'],
 			),
 		),
@@ -86,6 +90,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMax'],
 			'inputType' => 'text',
 			'eval'      => array(
+				'slider' => array(
+					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceValue'),
+					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceMinValue'),
+					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceMaxValue'),
+					'step' => 1
+				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMax'],
 			),
 		),
@@ -94,6 +104,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMin'],
 			'inputType' => 'text',
 			'eval'      => array(
+				'slider' => array(
+					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDurationValue'),
+					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDurationMinValue'),
+					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDurationMaxValue'),
+					'step' => 0.5
+				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDurationMin'],
 			),
 		),
@@ -102,6 +118,12 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMax'],
 			'inputType' => 'text',
 			'eval'      => array(
+				'slider' => array(
+					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDurationValue'),
+					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDurationMinValue'),
+					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDurationMaxValue'),
+					'step' => 0.5
+				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDurationMax'],
 			),
 		),
@@ -152,21 +174,6 @@ class tl_newsfilter extends Backend
 		parent::__construct();
 		$this->import('FrontendUser', 'User');
 	}
-
-//	public function getTrailInfoStart(\DataContainer $dc)
-//	{
-//		$arrNewsArchives = $this->getNewsArchives($dc);
-//		$objResult = \HeimrichHannot\NewsPlus\NewsPlusModel::findPublishedByPids(array_keys($arrNewsArchives));
-//		return array_filter($objResult->fetchEach('trailInfoStart'));
-//	}
-//
-//	public function getTrailInfoDestination(\DataContainer $dc)
-//	{
-//		$arrNewsArchives = $this->getNewsArchives($dc);
-//		$objResult = \HeimrichHannot\NewsPlus\NewsPlusModel::findPublishedByPids(array_keys($arrNewsArchives));
-//		return array_filter($objResult->fetchEach('trailInfoDestination'));
-//	}
-
 
 	public function getNewsCategories($dc)
 	{

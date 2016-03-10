@@ -3,14 +3,26 @@
 /**
  * Front end modules
  */
-array_insert($GLOBALS['FE_MOD']['news'], 2, array
-	(
-		'newslist_plus'         => 'HeimrichHannot\NewsPlus\ModuleNewsListPlus',
-        'newslist_highlight'    => 'HeimrichHannot\NewsPlus\ModuleNewsListHighlight',
-        'newsfilter'            => 'HeimrichHannot\NewsPlus\ModuleNewsFilter',
-        'newsreader_plus'       => 'HeimrichHannot\NewsPlus\ModuleNewsReaderPlus',
-	)
+array_insert($GLOBALS['FE_MOD']['news'], 1, array(
+   'newslist_plus'         => 'HeimrichHannot\NewsPlus\ModuleNewsListPlus',
+   )
 );
+
+array_insert($GLOBALS['FE_MOD']['news'], 3, array(
+   'newsreader_plus'       => 'HeimrichHannot\NewsPlus\ModuleNewsReaderPlus',
+   )
+);
+
+array_insert($GLOBALS['FE_MOD']['news'], 6, array(
+   'newsmenu_plus'       => 'HeimrichHannot\NewsPlus\ModuleNewsMenuPlus',
+   )
+);
+
+array_insert($GLOBALS['FE_MOD']['news'], count($GLOBALS['FE_MOD']['news']), array(
+   'newsfilter'            => 'HeimrichHannot\NewsPlus\ModuleNewsFilter',
+)
+);
+
 
 /**
  * Models

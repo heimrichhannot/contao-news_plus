@@ -107,6 +107,14 @@ $GLOBALS['TL_LANG']['tl_news']['addTrailInfoStartDestination']	= array('Start un
 $GLOBALS['TL_LANG']['tl_news']['trailInfoStart']				= array('Start der Tour', 'Geben Sie den Start der Tour an.');
 $GLOBALS['TL_LANG']['tl_news']['trailInfoDestination']			= array('Ziel der Tour', 'Geben Sie das Ziel der Tour an.');
 
+// more link
+
+$GLOBALS['TL_LANG']['tl_news']['customLinkText'][0]		= 'Weiterlesen-Link anpassen';
+$GLOBALS['TL_LANG']['tl_news']['customLinkText'][1]		= 'Den Weiterlesen-Link des Beitrags anpassen.';
+$GLOBALS['TL_LANG']['tl_news']['moreLinkText'][0]		= 'Weiterlesen-Link Text';
+$GLOBALS['TL_LANG']['tl_news']['moreLinkText'][1]		= 'Wählen Sie den anzuzeigenden Weiterlesen-Link Text aus.';
+
+
 /**
  * Legends
  */
@@ -115,4 +123,6 @@ $GLOBALS['TL_LANG']['tl_news']['touristInfo_legend'] = 'Tourist-Information';
 $GLOBALS['TL_LANG']['tl_news']['trailInfo_legend'] = 'Tour-Information';
 $GLOBALS['TL_LANG']['tl_news']['openingHours_legend'] = 'Öffnungszeiten';
 $GLOBALS['TL_LANG']['tl_news']['ticketprice_legend'] = 'Ticketpreise';
+
+
 

@@ -176,9 +176,9 @@ class NewsArticle extends \Controller
 		$this->hasMetaFields = !empty($arrMeta);
 		$this->numberOfComments = $arrMeta['ccount'];
 		$this->commentCount = $arrMeta['comments'];
-		$this->timestamp = $this->date;
+		$this->timestamp = $this->objNews->date;
 		$this->author = $arrMeta['author'];
-		$this->datetime = date('Y-m-d\TH:i:sP', $this->date);
+		$this->datetime = date('Y-m-d\TH:i:sP', $this->objNews->date);
 
 		// Modal
 		if($this->objConfig->news_showInModal && $this->source == 'default' && $this->objConfig->news_readerModule)
@@ -269,7 +269,7 @@ class NewsArticle extends \Controller
 				}
 				else
 				{
-					self::$arrUrlCache[$strCacheKey] = ampersand($this->objNews->url);
+					self::$arrUrlCache[$strCacheKey] = ampersand(NewsPlusHelper::replaceInsertTagsandFixDomain($this->objNews->url));
 				}
 				break;
 
@@ -277,7 +277,7 @@ class NewsArticle extends \Controller
 			case 'internal':
 				if (($objTarget = $this->objNews->getRelated('jumpTo')) !== null)
 				{
-					self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objTarget->row()));
+					self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objTarget->loadDetails()->row()), null, null, true);
 				}
 				break;
 
@@ -285,7 +285,7 @@ class NewsArticle extends \Controller
 			case 'article':
 				if (($objArticle = \ArticleModel::findByPk($this->objNews->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
 				{
-					self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $this->objNews->alias != '') ? $this->objNews->alias : $this->objNews->id)));
+					self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objPid->loadDetails()->row(), '/articles/' . ((!\Config::get('disableAlias') && $this->objNews->alias != '') ? $this->objNews->alias : $this->objNews->id)), null, true);
 				}
 				break;
 		}
@@ -301,7 +301,7 @@ class NewsArticle extends \Controller
 			}
 			else
 			{
-				self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objPage->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $this->objNews->alias != '') ? $this->objNews->alias : $this->objNews->id)));
+				self::$arrUrlCache[$strCacheKey] = ampersand(\Controller::generateFrontendUrl($objPage->loadDetails()->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $this->objNews->alias != '') ? $this->objNews->alias : $this->objNews->id)), null, true);
 			}
 
 			// Add the current archive parameter (news archive)

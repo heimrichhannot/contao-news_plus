@@ -22,7 +22,8 @@ $GLOBALS['TL_LANG']['tl_newsfilter']['startDate'][0] = 'Von';
 $GLOBALS['TL_LANG']['tl_newsfilter']['startDate'][1] = 'Wählen Sie ein Anfangsdatum zur Eingrenzung der Nachrichtenliste aus.';
 $GLOBALS['TL_LANG']['tl_newsfilter']['endDate'][0] = 'Bis';
 $GLOBALS['TL_LANG']['tl_newsfilter']['endDate'][1] = 'Wählen Sie ein Enddatum zur Eingrenzung der Nachrichtenliste aus.';
-$GLOBALS['TL_LANG']['tl_newsfilter']['submit'][0] = 'Suchen';
+$GLOBALS['TL_LANG']['tl_newsfilter']['submit'][0] = 'suchen';
+$GLOBALS['TL_LANG']['tl_newsfilter']['reset'][0] = 'zurücksetzen';
 
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMin'][0] = 'Minimale Länge';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMax'][0] = 'Maximale Länge';

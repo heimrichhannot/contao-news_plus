@@ -17,9 +17,11 @@
                 if (!$modal.hasClass('in')) {
                     $modal.data('history-base-filtered', window.location);
                 }
-
+                
                 $replace.load($this.attr('href'), function (responseText, textStatus, jqXHR) {
+                    $replace.html(responseText);
                     history.pushState(null, null, $this.attr('href'));
+                    $modal.modal('show');
                 });
             });
         },

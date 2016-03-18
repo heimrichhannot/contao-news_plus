@@ -66,12 +66,23 @@ class NewsFilterFormHelper extends \Controller
 	}
 
 
+	public function getTrailInfoDistanceValue($objForm, $arrConfig)
+	{
+		if ($arrConfig['type'] == 'range')
+		{
+			return (Input::get('trailInfoDistance') != null) ? Input::get('trailInfoDistance') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+		}
+		else {
+			return (Input::get('trailInfoDistance') != null) ? Input::get('trailInfoDistance') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+		}
+	}
+
 	public function getTrailInfoMinDistanceMinValue($objForm)
 	{
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDistanceMin';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(min($arrValues));
 	}
@@ -80,13 +91,13 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDistanceMin';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(max($arrValues));
 	}
-	public function getTrailInfoMinDistanceValue()
+	public function getTrailInfoMinDistanceValue($objForm, $arrConfig)
 	{
-		return (Input::get('trailInfoDistanceMin') != null) ? Input::get('trailInfoDistanceMin') : 0;
+		return (Input::get('trailInfoDistanceMin') != null) ? Input::get('trailInfoDistanceMin') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 	}
 
 
@@ -95,7 +106,7 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDistanceMax';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(min($arrValues));
 	}
@@ -104,22 +115,33 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDistanceMax';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(max($arrValues));
 	}
 	public function getTrailInfoMaxDistanceValue()
 	{
-		return (Input::get('trailInfoDistanceMax') != null) ? Input::get('trailInfoDistanceMax') : 100;
+		return (Input::get('trailInfoDistanceMax') != null) ? Input::get('trailInfoDistanceMax') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
 	}
 
+
+	public function getTrailInfoDurationValue($objForm, $arrConfig)
+	{
+		if ($arrConfig['type'] == 'range')
+		{
+			return (Input::get('trailInfoDuration') != null) ? Input::get('trailInfoDuration') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+		}
+		else {
+			return (Input::get('trailInfoDuration') != null) ? Input::get('trailInfoDuration') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+		}
+	}
 
 	public function getTrailInfoMinDurationMinValue($objForm)
 	{
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDurationMin';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(min($arrValues));
 	}
@@ -128,13 +150,13 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDurationMin';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(max($arrValues));
 	}
 	public function getTrailInfoMinDurationValue()
 	{
-		return (Input::get('trailInfoDurationMin') != null) ? Input::get('trailInfoDurationMin') : 0;
+		return (Input::get('trailInfoDurationMin') != null) ? Input::get('trailInfoDurationMin') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 	}
 
 
@@ -143,7 +165,7 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDurationMax';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(min($arrValues));
 	}
@@ -152,13 +174,102 @@ class NewsFilterFormHelper extends \Controller
 		$arrPids = deserialize($objForm->news_archives, true);
 		$field = 'trailInfoDurationMax';
 
-		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return 0;
+		if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
 
 		return ceil(max($arrValues));
 	}
 	public function getTrailInfoMaxDurationValue()
 	{
-		return (Input::get('trailInfoDurationMax') != null) ? Input::get('trailInfoDurationMax') : 100;
+		return (Input::get('trailInfoDurationMax') != null) ? Input::get('trailInfoDurationMax') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+	}
+
+
+	public function getTrailInfoDifficultyValue($objForm, $arrConfig)
+	{
+		if ($arrConfig['type'] == 'range')
+		{
+			return (Input::get('trailInfoDifficulty') != null) ? Input::get('trailInfoDifficulty') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+		}
+		else {
+			return (Input::get('trailInfoDifficulty') != null) ? Input::get('trailInfoDifficulty') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+		}
+	}
+
+	public function getTrailInfoMinDifficultyMinValue($objForm, $arrConfig)
+	{
+		if($arrConfig['type'] == 'ticks')
+		{
+			return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+		}
+		else
+		{
+			$arrPids = deserialize($objForm->news_archives, true);
+			$field = 'trailInfoDifficultyMin';
+
+			if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+
+			return ceil(min($arrValues));
+		}
+	}
+	public function getTrailInfoMinDifficultyMaxValue($objForm, $arrConfig)
+	{
+		if ($arrConfig['type'] == 'ticks')
+		{
+			$arrTicks = json_decode($arrConfig['ticks']);
+			return $arrTicks[sizeof($arrTicks)-1];
+		}
+		else
+		{
+			$arrPids = deserialize($objForm->news_archives, true);
+			$field = 'trailInfoDifficultyMin';
+
+			if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+
+			return ceil(max($arrValues));
+		}
+	}
+	public function getTrailInfoMinDifficultyValue($objForm, $arrConfig)
+	{
+		return (Input::get('trailInfoDifficultyMin') != null) ? Input::get('trailInfoDifficultyMin') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+	}
+
+
+	public function getTrailInfoMaxDifficultyMinValue($objForm, $arrConfig)
+	{
+		if($arrConfig['type'] == 'ticks')
+		{
+			return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+		}
+		else
+		{
+			$arrPids = deserialize($objForm->news_archives, true);
+			$field = 'trailInfoDifficultyMax';
+
+			if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+
+			return ceil(min($arrValues));
+		}
+	}
+	public function getTrailInfoMaxDifficultyMaxValue($objForm, $arrConfig)
+	{
+		if ($arrConfig['type'] == 'ticks')
+		{
+			$arrTicks = json_decode($arrConfig['ticks']);
+			return $arrTicks[sizeof($arrTicks)-1];
+		}
+		else
+		{
+			$arrPids = deserialize($objForm->news_archives, true);
+			$field = 'trailInfoDifficultyMax';
+
+			if (($arrValues = $this->getValidTrailInfoOptions($arrPids, $field)) === null) return NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
+
+			return ceil(max($arrValues));
+		}
+	}
+	public function getTrailInfoMaxDifficultyValue()
+	{
+		return (Input::get('trailInfoDifficultyMax') != null) ? Input::get('trailInfoDifficultyMax') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
 	}
 
 
@@ -181,6 +292,14 @@ class NewsFilterFormHelper extends \Controller
 		foreach ($objNewsCollection as $objNews)
 		{
 			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDistance == '1')
+			{
+				$arrNews[$objNews->$field] = $objNews->$field;
+			}
+			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDuration == '1')
+			{
+				$arrNews[$objNews->$field] = $objNews->$field;
+			}
+			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDifficulty == '1')
 			{
 				$arrNews[$objNews->$field] = $objNews->$field;
 			}

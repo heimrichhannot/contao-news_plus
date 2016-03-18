@@ -195,7 +195,6 @@ class NewsFilterRegistry
 			$arrColumns['ids'] = "$t.id IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIds))) . ")";
 		}
 
-
 		// news ids : second - remove news ids that should be excluded from the result
 		if (is_array($this->arrNewsIdsExclude) && !empty($this->arrNewsIdsExclude)) {
 			$arrColumns['ids_exclude'] = "$t.id NOT IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIdsExclude))) . ")";
@@ -233,36 +232,58 @@ class NewsFilterRegistry
 				return null;
 			case 'startDate':
 				return "$t.date >= " . strtotime($this->startDate . ' 00:00:00');
+
 			case 'endDate':
 				return "$t.date <= " . strtotime($this->endDate . ' 23:59:59');
+
+			case 'trailInfoDistance':
+				$arrMinMax = explode(',', $this->trailInfoDistance);
+				$strMin = str_replace(',', '.', $arrMinMax[0]);
+				$strMax = str_replace(',', '.', $arrMinMax[1]);
+				return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMin>=$strMin AND $t.trailInfoDistanceMax<=$strMax)";
+
 			case 'trailInfoDistanceMin':
 				$strMin = str_replace(',', '.', $this->trailInfoDistanceMin);
-
 				return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMax>=$strMin)";
+
 			case 'trailInfoDistanceMax':
 				$strMax = str_replace(',', '.', $this->trailInfoDistanceMax);
-
 				return "($t.addTrailInfoDistance=1 AND ($t.trailInfoDistanceMax<=$strMax OR ($t.trailInfoDistanceMin>0.0 AND $t.trailInfoDistanceMin<=$strMax)))";
+
+			case 'trailInfoDuration':
+				$arrMinMax = explode(',', $this->trailInfoDuration);
+				$strMin = str_replace(',', '.', $arrMinMax[0]);
+				$strMax = str_replace(',', '.', $arrMinMax[1]);
+				return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMin>=$strMin AND $t.trailInfoDurationMax<=$strMax)";
+
 			case 'trailInfoDurationMin':
 				$strMin = str_replace(',', '.', $this->trailInfoDurationMin);
-
 				return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMax>=$strMin)";
+
 			case 'trailInfoDurationMax':
 				$strMax = str_replace(',', '.', $this->trailInfoDurationMax);
-
 				return "($t.addTrailInfoDuration=1 AND ($t.trailInfoDurationMax<=$strMax OR ($t.trailInfoDurationMin>0.0 AND $t.trailInfoDurationMax<=$strMax)))";
+
+			case 'trailInfoDifficulty':
+				$arrMinMax = explode(',', $this->trailInfoDifficulty);
+				$strMin = str_replace(',', '.', $arrMinMax[0]);
+				$strMax = str_replace(',', '.', $arrMinMax[1]);
+				return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMin>=$strMin AND $t.trailInfoDifficultyMax<=$strMax)";
+
 			case 'trailInfoDifficultyMin':
 				$strMin = str_replace(',', '.', $this->trailInfoDifficultyMin);
-
 				return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMax>=$strMin)";
+
 			case 'trailInfoDifficultyMax':
 				$strMax = str_replace(',', '.', $this->trailInfoDifficultyMax);
-
 				return "($t.addTrailInfoDifficulty=1 AND ($t.trailInfoDifficultyMax<=$strMax OR ($t.trailInfoDifficultymin>0.0 AND $t.trailInfoDifficultyMin<=$strMax)))";
+
 			case 'trailInfoStart':
 				return "$t.trailInfoStart LIKE '%" . $this->trailInfoStart . "%'";
+
 			case 'trailInfoDestination':
 				return "$t.trailInfoDestination LIKE '%" . $this->trailInfoDestination . "%'";
+
 			case 'q':
 				if(($arrNewsIds = $this->findNewsInSearchIndex($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
 				{

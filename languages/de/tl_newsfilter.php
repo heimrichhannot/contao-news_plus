@@ -25,12 +25,16 @@ $GLOBALS['TL_LANG']['tl_newsfilter']['endDate'][1] = 'Wählen Sie ein Enddatum z
 $GLOBALS['TL_LANG']['tl_newsfilter']['submit'][0] = 'suchen';
 $GLOBALS['TL_LANG']['tl_newsfilter']['reset'][0] = 'zurücksetzen';
 
+$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistance'][0] = 'Länge (km)';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMin'][0] = 'Minimale Länge';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMax'][0] = 'Maximale Länge';
+$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDuration'][0] = 'Dauer (Stunden)';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMin'][0] = 'Minimale Dauer';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDurationMax'][0] = 'Maximale Dauer';
+$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulty'][0] = 'Anspruch';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMin'][0] = 'Minimaler Anspruch';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMax'][0] = 'Maximaler Anspruch';
+$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulties'] = array('leicht', 'mittel', 'mittel-schwer', 'schwer', 'alle');
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoStart'][0] = 'Start-Ort';
 $GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDestination'][0] = 'Ziel-Ort';
 

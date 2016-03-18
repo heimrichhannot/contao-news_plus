@@ -23,6 +23,7 @@ $GLOBALS['TL_LANG']['MSC']['trailDistance']		= 'Länge';
 $GLOBALS['TL_LANG']['MSC']['trailDuration']		= 'Dauer';
 $GLOBALS['TL_LANG']['MSC']['trailAltitude']		= 'Höhenmeter';
 $GLOBALS['TL_LANG']['MSC']['trailDifficulty']	= 'Anspruch';
+$GLOBALS['TL_LANG']['MSC']['trailDifficulties']	= array('leicht', 'mittel', 'mittel-schwer', 'schwer');
 
 
 $GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['default'] = 'mehr';

@@ -108,6 +108,9 @@ tl_news:
 | **addTrailInfoStartDestination** | checkbox | add start and destination information | addTrailInfo |
 | trailInfoStart | text | start of the trail | addTrailInfoStartDestination |
 | trailInfoDestination | text | destination of the trail | addTrailInfoStartDestination |
+| **addTrailInfoKmlData** | checkbox | add KML data and show them as route on google maps | addTrailInfo |
+| trailInfoKmlData | fileTree | KML data | addTrailInfoKmlData |
+| trailInfoShowElevationProfile | checkbox | shows an elevation profile of the KML route | addTrailInfoKmlData |
 
 tl_news_archive:
 

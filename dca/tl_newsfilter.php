@@ -15,7 +15,7 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 	'palettes' => array
 	(
 		'default' => '{archive_legend},pid;{date_legend},startDate,endDate;{search_legend},q;{category_legend},cat;{submit_legend},submit',
-		'leisuretip' => 'trailInfoDistanceMin,trailInfoDistanceMax,trailInfoDurationMin,trailInfoDurationMax,trailInfoDifficultyMin,trailInfoDifficultyMax,trailInfoStart,trailInfoDestination'
+		'leisuretip' => 'trailInfoDistance,trailInfoDistanceMin,trailInfoDistanceMax,trailInfoDuration,trailInfoDurationMin,trailInfoDurationMax,trailInfoDifficulty,trailInfoDifficultyMin,trailInfoDifficultyMax,trailInfoStart,trailInfoDestination'
 
 	),
 	'fields'   => array
@@ -71,17 +71,19 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 		),
 
 		// leisuretip
+		'trailInfoDistance' =>array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistance'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistance'],
+			),
+		),
 		'trailInfoDistanceMin' => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMin'],
 			'inputType' => 'text',
 			'eval'      => array(
-				'slider' => array(
-					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceValue'),
-					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceMinValue'),
-					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceMaxValue'),
-					'step' => 1
-				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMin'],
 			),
 		),
@@ -90,13 +92,15 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDistanceMax'],
 			'inputType' => 'text',
 			'eval'      => array(
-				'slider' => array(
-					'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceValue'),
-					'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceMinValue'),
-					'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceMaxValue'),
-					'step' => 1
-				),
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDistanceMax'],
+			),
+		),
+		'trailInfoDuration' =>array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDuration'],
+			'inputType' => 'text',
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDuration'],
 			),
 		),
 		'trailInfoDurationMin' => array
@@ -127,11 +131,22 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDurationMax'],
 			),
 		),
+		'trailInfoDifficulty' =>array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulty'],
+			'inputType' => 'text',
+			'options'   => array(0, 1, 2, 3, 4),
+			'reference' => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulties'],
+			'eval'      => array(
+				'placeholder' => &$GLOBALS['TL_LANG']['tl_newsfilter']['placeholder']['trailInfoDifficulty'],
+			),
+		),
 		'trailInfoDifficultyMin' => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMin'],
 			'inputType' => 'select',
-			'options'   => array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+			'options'   => array(0, 1, 2, 3),
+			'reference' => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulties'],
 			'eval'      => array(
 				'includeBlankOption' => true,
 				'blankOptionLabel'   => &$GLOBALS['TL_LANG']['tl_newsfilter']['blankOptionLabel']['trailInfoDifficultyMin'],
@@ -141,7 +156,8 @@ $GLOBALS['TL_DCA']['tl_newsfilter'] = array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficultyMax'],
 			'inputType' => 'select',
-			'options'   => array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+			'options'   => array(0, 1, 2, 3),
+			'reference' => &$GLOBALS['TL_LANG']['tl_newsfilter']['trailInfoDifficulties'],
 			'eval'      => array(
 				'includeBlankOption' => true,
 				'blankOptionLabel'   => &$GLOBALS['TL_LANG']['tl_newsfilter']['blankOptionLabel']['trailInfoDifficultyMax'],

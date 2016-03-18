@@ -2,6 +2,11 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use HeimrichHannot\FieldPalette\FieldPaletteModel;
+use HeimrichHannot\Haste\Map\GoogleMap;
+use HeimrichHannot\Haste\Map\GoogleMapOverlay;
+use HeimrichHannot\Haste\Visualization\GoogleChartWrapper;
+
 abstract class ModuleNewsPlus extends \ModuleNews
 {
 	/**
@@ -9,6 +14,25 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	 * @var
 	 */
 	protected $activeNews = null;
+
+	/**
+	 * Template for google maps
+	 * @var string
+	 */
+	public $templateMaps = 'dlh_googlemaps_haste';
+
+	/**
+	 * Template for marker info in google maps
+	 * @var string
+	 */
+	public $templateMarkerInfo = 'dlh_infowindow';
+
+	/**
+	 * Default icon for markers
+	 * @var string
+	 */
+	public $strMarkerIcon = 'files/avv/theme/img/maps-marker.png';
+
 
 	/**
 	 * Sort out protected archives
@@ -70,7 +94,8 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
 		$arrData = $this->generateArticle($objNews, $blnAddArchive, $strClass, $intCount);
 
-		$objTemplate = new \FrontendTemplate($this->news_template);
+		$strTemplate = ($objNews->news_template) ? : $this->news_template;
+		$objTemplate = new \FrontendTemplate($strTemplate);
 		$objTemplate->setData($arrData);
 
 		$objTemplate->addImage = false;
@@ -112,6 +137,72 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		if ($objNews->addEnclosure)
 		{
 			$this->addEnclosuresToTemplate($objTemplate, $objNews->row());
+		}
+
+		// Add subnews
+		if ($objNews->addSubNews)
+		{
+			$this->addSubNewsToTemplate($objTemplate, $objNews->row());
+		}
+
+		// Add Google Maps with KML data
+		if ($objNews->addTrailInfo && $objNews->addTrailInfoKmlData)
+		{
+			$objMap = new GoogleMap();
+			$objMap->setInfoWindowUnique(true);
+
+			$objKml = new GoogleMapOverlay();
+			$objKml->setType(GoogleMapOverlay::TYPE_KML_GEOXML);
+			$objKml->setKmlUrl($objNews->trailInfoKmlData);
+
+			if ($objNews->addVenues && $objNews->venues !== null)
+			{
+				$objVenues = FieldPaletteModel::findMultipleByIds(deserialize($objNews->venues, true));
+
+				if ($objVenues !== null)
+				{
+					foreach ($objVenues as $objVenue)
+					{
+						$objMarker = new GoogleMapOverlay();
+						$objMarker->setPosition($objVenue->venueSingleCoords);
+						$objMarker->setMarkerType(GoogleMapOverlay::MARKERTYPE_ICON);
+						$objMarker->setIconSRC(($objNews->strMarkerIcon) ? : $this->strMarkerIcon);
+						$objMarker->setIconAnchor(array(0, 20, 'px'));
+						$objMarker->setIconSize(array(17, 30, 'px'));
+						$objMarker->setMarkerAction(GoogleMapOverlay::MARKERACTION_INFO);
+						$objMarkerInfoTemplate = new \FrontendTemplate(($objNews->templateMarkerInfo) ? : $this->templateMarkerInfo);
+						$objMarkerInfoTemplate->setData($objVenue->row());
+						$objMarker->setInfoWindow($objMarkerInfoTemplate->parse());
+						$objMarker->setInfoWindowAnchor(array(1, 22, 'px'));
+						$objMarker->setInfoWindowSize(array('auto', 'auto', 'px'));
+						$objMap->addOverlay($objMarker);
+					}
+				}
+			}
+
+			$objMap->addOverlay($objKml);
+
+			$objMap->initId();
+			$objTemplate->objMap = $objMap->generate(
+				array(
+					'mapSize' => array('100%', '480px', ''),
+					'zoom'    => 15,
+					'dlh_googlemap_template' => ($objNews->templateMaps) ? : $this->templateMaps,
+				)
+			);
+
+			if ($objNews->trailInfoShowElevationProfile)
+			{
+				$objChart = new GoogleChartWrapper();
+
+				$objChart->setMap($objMap->getId());
+				$objTemplate->objChart = $objChart->generate(
+					array(
+						'chartSize'    => array('100%', '', ''),
+						'google_chart_template' => 'google_chart_column',
+					)
+				);
+			}
 		}
 
 		// Add share
@@ -209,7 +300,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			$objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
         }
 
-
 		$objNextNews = NewsPlusModel::findOldPublishedByIds($objCurrentArticle->id, $objCurrentArticle->date, $arrIds, $this->news_navigation_infinite);
 
         // next only of not last item
@@ -221,4 +311,27 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
         return $objT->parse();
     }
+
+	/**
+	 * Add subnews to a template
+	 *
+	 * @param object $objTemplate The template object to add the subnews to
+	 * @param array  $arrItem     The element or module as array
+	 * @param string $strKey      The name of the field in $arrItem
+	 */
+	public function addSubNewsToTemplate($objTemplate, $arrItem, $strKey='subNews')
+	{
+		$arrSubnews = array();
+
+		$objNewsCollection = NewsPlusModel::findMultipleByIds(deserialize($arrItem[$strKey], true));
+		if ($objNewsCollection === null) return;
+
+		foreach ($objNewsCollection as $key => $objNews)
+		{
+			$objNews->news_template = $arrItem['subNewsTemplate'];
+			$arrSubnews[] = $this->parseArticle($objNews);
+		}
+
+		$objTemplate->parsedSubNews = $arrSubnews;
+	}
 }

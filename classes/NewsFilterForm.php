@@ -55,10 +55,37 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 			$this->dca['fields']['endDate']['default'] = $this->maxDate;
 		}
 
-		$this->dca['fields']['trailInfoDistanceMin']['inputType'] = 'slider';
-		$this->dca['fields']['trailInfoDistanceMax']['inputType'] = 'slider';
-		$this->dca['fields']['trailInfoDurationMin']['inputType'] = 'slider';
-		$this->dca['fields']['trailInfoDurationMax']['inputType'] = 'slider';
+		$this->dca['fields']['trailInfoDistance']['inputType'] = 'slider';
+		$this->dca['fields']['trailInfoDistance']['eval']['slider'] = array(
+			'type' => 'range',
+			'step' => 1,
+			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDistanceValue'),
+			'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDistanceMinValue'),
+			'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDistanceMaxValue'),
+			'tooltip' => 'hide',
+		);
+
+		$this->dca['fields']['trailInfoDuration']['inputType'] = 'slider';
+		$this->dca['fields']['trailInfoDuration']['eval']['slider'] = array(
+			'type' => 'range',
+			'step' => 0.5,
+			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDurationValue'),
+			'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDurationMinValue'),
+			'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDurationMaxValue'),
+			'tooltip' => 'hide',
+		);
+
+		$this->dca['fields']['trailInfoDifficulty']['inputType'] = 'slider';
+		$this->dca['fields']['trailInfoDifficulty']['eval']['slider'] = array(
+			'type' => 'range',
+			'step' => 1,
+			'ticks' => '['.implode(',',$this->dca['fields']['trailInfoDifficulty']['options']).']',
+			'ticks-labels' => '["'.implode('","',$this->dca['fields']['trailInfoDifficulty']['reference']).'"]',
+			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDifficultyValue'),
+			'min_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDifficultyMinValue'),
+			'max_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDifficultyMaxValue'),
+			'tooltip' => 'hide',
+		);
 
 		$this->dca['fields']['trailInfoStart']['inputType'] = 'select';
 		$this->dca['fields']['trailInfoStart']['eval']['chosen'] = true;

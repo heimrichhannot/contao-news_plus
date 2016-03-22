@@ -23,12 +23,12 @@ $GLOBALS['TL_LANG']['tl_news']['moreLinkText'][1]	= 'Wählen Sie den anzuzeigend
 // subNews
 $GLOBALS['TL_LANG']['tl_news']['addSubNews'][0] = 'Unternachrichten hinzufügen';
 $GLOBALS['TL_LANG']['tl_news']['addSubNews'][1] = 'Hier legen Sie fest, ob der Nachricht Unternachrichten zugewiesen werden können.';
-$GLOBALS['TL_LANG']['tl_news']['subNewsArchives'][0] = 'Nachrichten-Archive auswählen';
-$GLOBALS['TL_LANG']['tl_news']['subNewsArchives'][1] = 'Wählen Sie, aus welchen Nachrichten-Archiven die Unternachrichten stammen können.';
-$GLOBALS['TL_LANG']['tl_news']['subNews'][0] = 'Unternachrichten auswählen';
-$GLOBALS['TL_LANG']['tl_news']['subNews'][1] = 'Wählen Sie, welche Nachrichten dieser Nachricht untergeordnet werden sollen.';
-$GLOBALS['TL_LANG']['tl_news']['subNewsTemplate'][0] = 'Template auswählen';
-$GLOBALS['TL_LANG']['tl_news']['subNewsTemplate'][1] = 'Wählen Sie, welches Template für die Unternachrichten genutzt werden soll.';
+$GLOBALS['TL_LANG']['tl_news']['subNews'][0] = 'Unternachrichten';
+$GLOBALS['TL_LANG']['tl_news']['subNews'][1] = 'Unternachrichten können Sie hier verwaltet werden.';
+$GLOBALS['TL_LANG']['tl_news']['nid'][0] = 'Unternachrichte auswählen';
+$GLOBALS['TL_LANG']['tl_news']['nid'][1] = 'Wählen Sie eine Nachricht aus, die dieser Nachricht untergeordnet werden soll.';
+$GLOBALS['TL_LANG']['tl_news']['news_template'][0] = 'Template auswählen';
+$GLOBALS['TL_LANG']['tl_news']['news_template'][1] = 'Wählen Sie, welches Template für die Unternachrichten genutzt werden soll.';
 
 
 /**

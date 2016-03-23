@@ -92,6 +92,62 @@ class NewsPlusModel extends \NewsModel
 
 
 	/**
+	 * Find news items by their parent ID
+	 *
+	 * @param array   $arrPids    An array of news archive IDs
+	 * @param integer $intLimit   An optional limit
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|null A collection of models or null if there are no news
+	 */
+	public static function findByPids(array $arrPids=array(), $intLimit = 0, array $arrOptions = array())
+	{
+		$t    = static::$strTable;
+
+		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.date DESC";
+		}
+
+		if ($intLimit > 0) {
+			$arrOptions['limit'] = $intLimit;
+		}
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
+
+	/**
+	 * Find published news items by their IDs
+	 *
+	 * @param array   $arrIds     An array of news ids
+	 * @param integer $intLimit   An optional limit
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|null A collection of models or null if there are no news
+	 */
+	public static function findPublishedByIds(array $arrIds = array(), $intLimit = 0, array $arrOptions = array())
+	{
+		$time = time();
+		$t    = static::$strTable;
+
+		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+
+		$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+
+		if (!isset($arrOptions['order'])) {
+			$arrOptions['order'] = "$t.date DESC";
+		}
+
+		if ($intLimit > 0) {
+			$arrOptions['limit'] = $intLimit;
+		}
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
+
+	/**
 	 * Find published news items by their parent ID
 	 *
 	 * @param integer $intId      The news archive ID

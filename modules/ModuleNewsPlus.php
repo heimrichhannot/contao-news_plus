@@ -323,12 +323,24 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	{
 		$arrSubnews = array();
 
-		$objNewsCollection = NewsPlusModel::findMultipleByIds(deserialize($arrItem[$strKey], true));
-		if ($objNewsCollection === null) return;
+		$objFieldpalette = \HeimrichHannot\FieldPalette\FieldPaletteModel::findPublishedByIds(deserialize($arrItem[$strKey], true));
 
-		foreach ($objNewsCollection as $key => $objNews)
+		if($objFieldpalette === null)
 		{
-			$objNews->news_template = $arrItem['subNewsTemplate'];
+			return $arrSubnews;
+		}
+
+
+		while($objFieldpalette->next())
+		{
+			$objNews = NewsPlusModel::findPublishedByIds(array($objFieldpalette->nid));
+
+			if($objNews === null)
+			{
+				continue;
+			}
+
+			$objNews->news_template = $objFieldpalette->news_template;
 			$arrSubnews[] = $this->parseArticle($objNews);
 		}
 

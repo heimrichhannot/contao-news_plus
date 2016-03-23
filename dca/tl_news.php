@@ -88,8 +88,9 @@ $arrFields = array
 			(
 				'label' => array
 				(
-					'fields' => array('venueName', 'venueStreet', 'venuePostal', 'venueCity'),
-					'format' => '%s <span style="color:#b3b3b3;padding-left:3px">[%s, %s %s]</span>',
+					'fields'         => array('nid', 'news_template'),
+					'format'         => '%s <span style="color:#b3b3b3;padding-left:3px">[%s]</span>',
+					'label_callback' => array('tl_news_plus', 'getSubNewsLabel'),
 				),
 			),
 			'palettes' => array
@@ -98,23 +99,25 @@ $arrFields = array
 			),
 			'fields'   => array
 			(
-				'nid' => array
+				'nid'           => array
 				(
 					'label'            => &$GLOBALS['TL_LANG']['tl_news']['nid'],
 					'exclude'          => true,
 					'search'           => true,
 					'inputType'        => 'select',
+					'foreignKey'       => 'tl_news.title',
+					'relation'         => array('type' => 'hasMany', 'load' => 'eager'),
 					'options_callback' => array('tl_news_plus', 'getNewsGroupedByArchive'),
 					'eval'             => array('tl_class' => 'long', 'mandatory' => true, 'includeBlankOption' => true),
 					'sql'              => "int(10) unsigned NOT NULL default '0'",
 				),
-				'news_template'   => array
+				'news_template' => array
 				(
 					'label'            => &$GLOBALS['TL_LANG']['tl_news']['news_template'],
 					'default'          => 'news_subnews_default',
 					'exclude'          => true,
 					'inputType'        => 'select',
-					'options_callback' => array('tl_news_plus', 'getSubNewsTemplates'),
+					'options_callback' => array('tl_news_plus', 'getNewsTemplates'),
 					'eval'             => array('tl_class' => 'w50'),
 					'sql'              => "varchar(64) NOT NULL default ''",
 				),
@@ -168,20 +171,47 @@ class tl_news_plus extends Backend
 		}
 	}
 
-	public function getNewsGroupedByArchive()
+	public function getNewsGroupedByArchive(DataContainer $dc)
 	{
 		$arrOptions = array();
+		
+		$objCurrentNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findByPk($dc->activeRecord->pid);
 
-		$objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findAll();
+		if($objCurrentNews === null)
+		{
+			return $arrOptions;
+		}
 
-		if ($objNews === null) {
+		if(($objCurrentNewsArchive = $objCurrentNews->getRelated('pid')) === null)
+		{
+			return $arrOptions;
+		}
+
+		$arrPids = array();
+
+		if($objCurrentNewsArchive->limitSubNews)
+		{
+			$arrPids = deserialize($objCurrentNewsArchive->subNewsArchives, true);
+		}
+
+
+		if(empty($arrPids))
+		{
+			$objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findAll();
+		}
+		else
+		{
+			$objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findByPids($arrPids);
+		}
+
+		if ($objNews === null)
+		{
 			return $arrOptions;
 		}
 
 		while ($objNews->next())
 		{
-			if (($objArchive = $objNews->getRelated('pid')) === null)
-			{
+			if (($objArchive = $objNews->getRelated('pid')) === null) {
 				continue;
 			}
 
@@ -191,45 +221,25 @@ class tl_news_plus extends Backend
 		return $arrOptions;
 	}
 
-	public function getSubNewsArchives()
+	public function getSubNewsLabel($row, $label, $dc=null, $imageAttribute='', $blnReturnImage=false, $blnProtected=false)
 	{
-		$arrNewsArchives = array();
+		$objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findByPk($row['nid']);
 
-		$objNewsArchives = \NewsArchiveModel::findAll();
-		if ($objNewsArchives === null) {
-			return $arrNewsArchives;
+		if($objNews === null)
+		{
+			return $label;
 		}
 
-		foreach ($objNewsArchives as $objNewsArchive) {
-			$arrNewsArchives[$objNewsArchive->id] = $objNewsArchive->title;
-		}
-
-		return $arrNewsArchives;
+		return sprintf('%s <span style="color:#b3b3b3;padding-left:3px">[%s]</span>', $objNews->headline, $row['news_template']);
 	}
 
-	public function getSubNews(\DataContainer $dc)
+	/**
+	 * Return all news templates as array
+	 *
+	 * @return array
+	 */
+	public function getNewsTemplates()
 	{
-		$arrNews = array();
-		
-		print '<pre>';
-		print_r($dc->activeRecord);
-		print '</pre>';
-
-		$objNewsCollection = \HeimrichHannot\NewsPlus\NewsPlusModel::findPublishedByPid(deserialize($dc->activeRecord->subNewsArchives, true));
-		
-		if ($objNewsCollection === null) {
-			return $arrNews;
-		}
-
-		foreach ($objNewsCollection as $objNews) {
-			$arrNews[$objNews->id] = $objNews->headline;
-		}
-
-		return $arrNews;
-	}
-
-	public function getSubNewsTemplates()
-	{
-		return \Controller::getTemplateGroup('news_');
+		return $this->getTemplateGroup('news_');
 	}
 }

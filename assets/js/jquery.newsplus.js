@@ -1,51 +1,26 @@
 (function ($) {
 
-    var NewsPlus = {
-        onReady: function () {
-            this.showNewsInModal();
-            this.closeNewsModal();
-            this.changeUrl();
-        },
-        showNewsInModal: function () {
-            $('body').on('click', '[data-news="modal"]', function (e) {
-                e.preventDefault();
-                var $this = $(this),
-                    $modal = $($this.data('target')),
-                    $replace = $modal.find('.modal-dialog');
+	var NewsPlus = {
+		onReady: function () {
+			this.showNewsInModal();
+		},
+		showNewsInModal: function () {
+			$('body').on('click', '[data-news="modal"]', function (e) {
+				e.preventDefault();
+				var $modal = $($(this).data('target'));
 
-                // change history base
-                if (!$modal.hasClass('in')) {
-                    $modal.data('history-base-filtered', window.location);
-                }
-                
-                $replace.load($this.attr('href'), function (responseText, textStatus, jqXHR) {
-                    $replace.html(responseText);
-                    history.pushState(null, null, $this.attr('href'));
-                    $modal.modal('show');
-                });
-            });
-        },
-        changeUrl: function () {
-        },
-        closeNewsModal: function () {
-            $('.mod_newsreader_plus').on('hide.bs.modal', function (e) {
-
-                var $this = $(this);
-
-                // back
-                if($this.data('history-base-filtered')){
-                    window.history.go(-1);
-                } else {
-                    history.pushState(null, null, $this.data('history-base-filtered') ? $this.data('history-base-filtered') : $this.data('history-base'));
-                }
-            });
-        }
-    }
+				// change history base
+				if (!$modal.hasClass('in')) {
+					$modal.data('history-base-filtered', window.location.href);
+				}
+			});
+		}
+	}
 
 
-    $(document).ready(function () {
-        NewsPlus.onReady()
-    });
+	$(document).ready(function () {
+		NewsPlus.onReady()
+	});
 
 
 })(jQuery);

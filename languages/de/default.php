@@ -30,3 +30,7 @@ $GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['default'] = 'mehr';
 $GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['moreLong'] = 'mehr erfahren';
 $GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['download'] = 'herunterladen';
 $GLOBALS['TL_LANG']['MSC']['news']['morelinktext']['order'] = 'bestellen';
+
+
+$GLOBALS['TL_LANG']['MSC']['news_plus']['emptyNewsList']['default'] = 'Zurzeit sind keine Nachrichten vorhanden.';
+$GLOBALS['TL_LANG']['MSC']['news_plus']['emptyNewsList']['tour'] = 'Es wurde keine passende Tour gefunden.';

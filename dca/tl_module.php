@@ -26,7 +26,7 @@ $dc['palettes']['newsfilter'] = '
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
-                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid,news_pagination_overwrite;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid,news_pagination_overwrite,news_empty_overwrite;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
                                     {media_legend},media_template,media_posterSRC;
@@ -67,7 +67,7 @@ $dc['palettes']['newsmenu_plus'] = '
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 $dc['palettes']['__selector__'][] = 'news_addNavigation';
 $dc['palettes']['__selector__'][] = 'news_pagination_overwrite';
-
+$dc['palettes']['__selector__'][] = 'news_empty_overwrite';
 
 
 /**
@@ -75,8 +75,9 @@ $dc['palettes']['__selector__'][] = 'news_pagination_overwrite';
  */
 
 $dc['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
-$dc['subpalettes']['news_addNavigation'] = 'news_navigation_infinite,news_navigation_template';
-$dc['subpalettes']['news_pagination_overwrite'] = 'pagination_template,pagination_hash';
+$dc['subpalettes']['news_addNavigation']                = 'news_navigation_infinite,news_navigation_template';
+$dc['subpalettes']['news_pagination_overwrite']         = 'pagination_template,pagination_hash';
+$dc['subpalettes']['news_empty_overwrite']              = 'news_empty_label';
 
 /**
  * Fields
@@ -186,17 +187,18 @@ $dc['fields'] = array_merge
 			'exclude'    => true,
 			'inputType'  => 'treePicker',
 			'foreignKey' => 'tl_news_category.title',
-			'eval'       => array('multiple'     => true,
-								  'fieldType'    => 'checkbox',
-								  'foreignTable' => 'tl_news_category',
-								  'titleField'   => 'title',
-								  'searchField'  => 'title',
-								  'managerHref'  => 'do=news&table=tl_news_category',
-								  'tl_class'     => 'clr',
+			'eval'       => array(
+				'multiple'     => true,
+				'fieldType'    => 'checkbox',
+				'foreignTable' => 'tl_news_category',
+				'titleField'   => 'title',
+				'searchField'  => 'title',
+				'managerHref'  => 'do=news&table=tl_news_category',
+				'tl_class'     => 'clr',
 			),
 			'sql'        => "blob NULL",
 		),
-		'news_addNavigation' => array
+		'news_addNavigation'        => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_addNavigation'],
 			'exclude'   => true,
@@ -204,17 +206,17 @@ $dc['fields'] = array_merge
 			'eval'      => array('tl_class' => 'clr', 'submitOnChange' => true),
 			'sql'       => "char(1) NOT NULL default ''",
 		),
-		'news_navigation_template'               => array
+		'news_navigation_template'  => array
 		(
 			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_navigation_template'],
 			'exclude'          => true,
-			'default'		   => 'newsnav_default',
+			'default'          => 'newsnav_default',
 			'inputType'        => 'select',
 			'options_callback' => array('tl_module_news_plus', 'getNewsNavigationTemplates'),
 			'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
 			'sql'              => "varchar(64) NOT NULL default ''",
 		),
-		'news_navigation_infinite' => array
+		'news_navigation_infinite'  => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_navigation_infinite'],
 			'exclude'   => true,
@@ -229,27 +231,42 @@ $dc['fields'] = array_merge
 			'inputType' => 'checkbox',
 			'eval'      => array('tl_class' => 'clr', 'submitOnChange' => true),
 			'sql'       => "char(1) NOT NULL default ''",
-		)
-		,
-		'pagination_template' => array
+		),
+		'pagination_template'       => array
 		(
 			'label'            => &$GLOBALS['TL_LANG']['tl_module']['pagination_template'],
 			'exclude'          => true,
-			'default'		   => 'pagination',
+			'default'          => 'pagination',
 			'inputType'        => 'select',
 			'options_callback' => array('tl_module_news_plus', 'getPaginationTemplates'),
 			'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
 			'sql'              => "varchar(64) NOT NULL default ''",
 		),
-		'pagination_hash' => array
+		'pagination_hash'           => array
 		(
-			'label'            => &$GLOBALS['TL_LANG']['tl_module']['pagination_hash'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['pagination_hash'],
+			'exclude'   => true,
+			'inputType' => 'text',
+			'eval'      => array('tl_class' => 'w50'),
+			'sql'       => "varchar(255) NOT NULL default ''",
+		),
+		'news_empty_overwrite'      => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_module']['news_empty_overwrite'],
+			'exclude'   => true,
+			'inputType' => 'checkbox',
+			'eval'      => array('tl_class' => 'clr', 'submitOnChange' => true),
+			'sql'       => "char(1) NOT NULL default ''",
+		),
+		'news_empty_label'          => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_module']['news_empty_label'],
 			'exclude'          => true,
-			'inputType'        => 'text',
-			'eval'             => array('tl_class' => 'w50'),
+			'inputType'        => 'select',
+			'options_callback' => array('HeimrichHannot\NewsPlus\Backend\Module', 'getEmptyLabel'),
+			'eval'             => array('tl_class' => 'w50 clr', 'mandatory' => true),
 			'sql'              => "varchar(255) NOT NULL default ''",
 		),
-
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()
 );

@@ -88,7 +88,15 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         }
 
         $this->Template->articles = array();
-        $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
+
+		$strEmpty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
+
+		if($this->news_empty_overwrite && ($strLabel = $GLOBALS['TL_LANG']['MSC']['news_plus']['emptyNewsList'][$this->news_empty_label]) != '')
+		{
+			$strEmpty = $strLabel;
+		}
+
+        $this->Template->empty = $strEmpty;
 
 		// Get the total number of items
 		$intTotal = $this->countItems($blnFeatured);

@@ -106,6 +106,13 @@ class NewsArticle extends \Controller
 			}
 		}
 
+		$this->trailInfoDistanceMin = \System::getFormattedNumber($this->trailInfoDistanceMin);
+		$this->trailInfoDistanceMax = \System::getFormattedNumber($this->trailInfoDistanceMin);
+
+		$this->trailInfoDurationMin = \System::getFormattedNumber($this->trailInfoDurationMin);
+		$this->trailInfoDurationMax = \System::getFormattedNumber($this->trailInfoDurationMax);
+
+
 		// add tags
 		$this->showTags = $this->objConfig->news_showtags;
 

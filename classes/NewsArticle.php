@@ -107,7 +107,7 @@ class NewsArticle extends \Controller
 		}
 
 		$this->trailInfoDistanceMin = \System::getFormattedNumber($this->trailInfoDistanceMin);
-		$this->trailInfoDistanceMax = \System::getFormattedNumber($this->trailInfoDistanceMin);
+		$this->trailInfoDistanceMax = \System::getFormattedNumber($this->trailInfoDistanceMax);
 
 		$this->trailInfoDurationMin = \System::getFormattedNumber($this->trailInfoDurationMin);
 		$this->trailInfoDurationMax = \System::getFormattedNumber($this->trailInfoDurationMax);

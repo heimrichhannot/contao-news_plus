@@ -2,37 +2,22 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-use HeimrichHannot\FieldPalette\FieldPaletteModel;
-use HeimrichHannot\Haste\Map\GoogleMap;
-use HeimrichHannot\Haste\Map\GoogleMapOverlay;
-use HeimrichHannot\Haste\Visualization\GoogleChartWrapper;
+use NewsCategories\NewsCategoryModel;
 
 abstract class ModuleNewsPlus extends \ModuleNews
 {
-	/**
-	 * Active news, if list and reader module are on the same page
-	 * @var
-	 */
-	protected $activeNews = null;
 
 	/**
-	 * Template for google maps
-	 * @var string
+	 * URL cache array
+	 * @var array
 	 */
-	public $templateMaps = 'dlh_googlemaps_haste';
+	private static $arrUrlCache = array();
 
-	/**
-	 * Template for marker info in google maps
-	 * @var string
-	 */
-	public $templateMarkerInfo = 'dlh_infowindow';
-
-	/**
-	 * Default icon for markers
-	 * @var string
-	 */
-	public $strMarkerIcon = 'files/avv/theme/img/maps-marker.png';
-
+    /**
+     * News
+     * @var string
+     */
+    protected $news;
 
 	/**
 	 * Sort out protected archives
@@ -84,30 +69,170 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	 * @param integer
 	 * @return string
 	 */
-	protected function parseArticle($objNews, $blnAddArchive=false, $strClass='', $intCount=0)
+	protected function parseArticle($objArticle, $blnAddArchive=false, $strClass='', $intCount=0)
 	{
-		// add active class if current news is active news
-		if($this->activeNews !== null && $this->activeNews->id == $objNews->id)
+		global $objPage;
+
+		$arrCategories = deserialize($objArticle->categories, true);
+
+        $objTemplate = new \FrontendTemplate($this->news_template);
+		$objTemplate->setData($objArticle->row());
+		$objTemplate->class = (($objArticle->cssClass != '') ? ' ' . $objArticle->cssClass : '') . $strClass;
+		$objTemplate->newsHeadline = $objArticle->headline;
+		$objTemplate->subHeadline = $objArticle->subheadline;
+		$objTemplate->hasSubHeadline = $objArticle->subheadline ? true : false;
+		$objTemplate->linkHeadline = $this->generateLink($objArticle->headline, $objArticle, $blnAddArchive);
+		$objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objArticle, $blnAddArchive, true);
+        $objTemplate->link = $this->generateNewsUrl($objArticle, $blnAddArchive);
+		$objTemplate->linkTarget = ($objArticle->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : '');
+		$objTemplate->linkTitle = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true);
+		$objTemplate->count = $intCount; // see #5708
+		$objTemplate->text = '';
+		$objTemplate->hasText = false;
+		$objTemplate->hasTeaser = false;
+
+        // print pdf
+        if($this->news_pdfJumpTo) {
+            $objTemplate->showPdfButton = true;
+            $pdfPage = \PageModel::findByPk($this->news_pdfJumpTo);
+            $pdfArticle = \ArticleModel::findPublishedByPidAndColumn($this->news_pdfJumpTo, 'main');
+
+            $options = deserialize($pdfArticle->printable);
+            if(in_array('pdf', $options))
+                $objTemplate->pdfArticleId = $pdfArticle->id;
+
+            $strUrl = \Controller::generateFrontendUrl($pdfPage->row());
+            $objTemplate->pdfJumpTo = $strUrl;
+        }
+
+		$objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
+		$objTemplate->archive = $objArchive;
+
+        $objTemplate->archive->title = $objTemplate->archive->displayTitle ? $objTemplate->archive->displayTitle : $objTemplate->archive->title;
+        $objTemplate->archive->class = ModuleNewsListPlus::getArchiveClassFromTitle($objTemplate->archive->title, true);
+		$objTemplate->archiveTitle = $objTemplate->archive->title;
+
+		$arrCategoryTitles = array();
+
+		if($this->news_archiveTitleAppendCategories && !empty($arrCategories))
 		{
-			$strClass .= ($strClass ? ' active' : '');
+			$arrTitleCategories = array_intersect($arrCategories, deserialize($this->news_archiveTitleCategories, true));
+
+			if(!empty($arrTitleCategories))
+			{
+				$objTitleCategories = NewsCategoryModel::findPublishedByIds($arrTitleCategories);
+
+				if($objTitleCategories !== null)
+				{
+					while($objTitleCategories->next())
+					{
+						if($objTitleCategories->frontendTitle)
+						{
+							$arrCategoryTitles[$objTitleCategories->id] = $objTitleCategories->frontendTitle;
+							continue;
+						}
+
+						$arrCategoryTitles[$objTitleCategories->id] = $objTitleCategories->title;
+					}
+
+					$objTemplate->archiveTitle .= ' : ' . implode(' : ', $arrCategoryTitles);
+				}
+			}
 		}
 
-		$arrData = $this->generateArticle($objNews, $blnAddArchive, $strClass, $intCount);
+        // add tags
+        $objTemplate->showTags = $this->news_showtags;
+        if ($this->news_showtags && $this->news_template_modal && $this->Environment->isAjaxRequest)
+        {
+            $helper = new NewsPlusTagHelper();
+            $tagsandlist = $helper->getTagsAndTaglistForIdAndTable($objArticle->id, 'tl_news', $this->tag_jumpTo);
+            $tags = $tagsandlist['tags'];
+            $taglist = $tagsandlist['taglist'];
+            $objTemplate->showTagClass = $this->tag_named_class;
+            $objTemplate->tags = $tags;
+            $objTemplate->taglist = $taglist;
+            $objTemplate->news = 'IN';
+        }
 
-		$strTemplate = ($objNews->news_template) ? : $this->news_template;
-		$objTemplate = new \FrontendTemplate($strTemplate);
-		$objTemplate->setData($arrData);
+        // nav
+        $strUrl = '';
+        $objArchive = \NewsArchiveModel::findByPk($objArticle->pid);
+        if ($objArchive !== null && $objArchive->jumpTo && ($objTarget = $objArchive->getRelated('jumpTo')) !== null)
+        {
+            $strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/news/%s'));
+        }
+        $objTemplate->nav = static::generateArrowNavigation($objArticle, $strUrl, $this->news_readerModule);
+
+
+		// Clean the RTE output
+		if ($objArticle->teaser != '')
+		{
+			$objTemplate->hasTeaser = true;
+
+			if ($objPage->outputFormat == 'xhtml')
+			{
+				$objTemplate->teaser = \String::toXhtml($objArticle->teaser);
+			}
+			else
+			{
+				$objTemplate->teaser = \String::toHtml5($objArticle->teaser);
+			}
+
+			$objTemplate->teaser = \String::encodeEmail($objTemplate->teaser);
+		}
+
+		// Display the "read more" button for external/article links
+		if ($objArticle->source != 'default')
+		{
+			$objTemplate->text = true;
+			$objTemplate->hasText = true;
+		}
+
+		// Compile the news text
+		else
+		{
+			$id = $objArticle->id;
+
+			$objTemplate->text = function () use ($id)
+			{
+				$strText = '';
+				$objElement = \ContentModel::findPublishedByPidAndTable($id, 'tl_news');
+
+				if ($objElement !== null)
+				{
+					while ($objElement->next())
+					{
+						$strText .= $this->getContentElement($objElement->current());
+					}
+				}
+
+				return $strText;
+			};
+
+			$objTemplate->hasText = (\ContentModel::findPublishedByPidAndTable($objArticle->id, 'tl_news') !== null);
+		}
+
+		$arrMeta = $this->getMetaFields($objArticle);
+
+		// Add the meta information
+		$objTemplate->date = $arrMeta['date'];
+		$objTemplate->hasMetaFields = !empty($arrMeta);
+		$objTemplate->numberOfComments = $arrMeta['ccount'];
+		$objTemplate->commentCount = $arrMeta['comments'];
+		$objTemplate->timestamp = $objArticle->date;
+		$objTemplate->author = $arrMeta['author'];
+		$objTemplate->datetime = date('Y-m-d\TH:i:sP', $objArticle->date);
 
 		$objTemplate->addImage = false;
 
 		// Add an image
-		if ($objNews->addImage && $objNews->singleSRC != '')
+		if ($objArticle->addImage && $objArticle->singleSRC != '')
 		{
-			$objModel = \FilesModel::findByUuid($objNews->singleSRC);
+			$objModel = \FilesModel::findByUuid($objArticle->singleSRC);
 
 			if ($objModel === null)
 			{
-				if (!\Validator::isUuid($objNews->singleSRC))
+				if (!\Validator::isUuid($objArticle->singleSRC))
 				{
 					$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 				}
@@ -115,7 +240,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			elseif (is_file(TL_ROOT . '/' . $objModel->path))
 			{
 				// Do not override the field now that we have a model registry (see #6303)
-				$arrArticle = $objNews->row();
+				$arrArticle = $objArticle->row();
 
 				// Override the default image size
 				if ($this->imgSize != '')
@@ -133,118 +258,39 @@ abstract class ModuleNewsPlus extends \ModuleNews
 			}
 		}
 
+		$objTemplate->enclosure = array();
+
 		// Add enclosures
-		if ($objNews->addEnclosure)
+		if ($objArticle->addEnclosure)
 		{
-			$this->addEnclosuresToTemplate($objTemplate, $objNews->row());
+			$this->addEnclosuresToTemplate($objTemplate, $objArticle->row());
 		}
 
-		// Add subnews
-		if ($objNews->addSubNews)
-		{
-			$this->addSubNewsToTemplate($objTemplate, $objNews->row());
-		}
-
-		// Add Google Maps with KML data
-		if ($objNews->addTrailInfo && $objNews->addTrailInfoKmlData)
-		{
-			$objMap = new GoogleMap();
-			$objMap->setInfoWindowUnique(true);
-
-			$objKml = new GoogleMapOverlay();
-			$objKml->setType(GoogleMapOverlay::TYPE_KML_GEOXML);
-			$objKml->setKmlUrl($objNews->trailInfoKmlData);
-
-			if ($objNews->addVenues && $objNews->venues !== null)
-			{
-				$objVenues = FieldPaletteModel::findMultipleByIds(deserialize($objNews->venues, true));
-
-				if ($objVenues !== null)
-				{
-					foreach ($objVenues as $objVenue)
-					{
-						$objMarker = new GoogleMapOverlay();
-						$objMarker->setPosition($objVenue->venueSingleCoords);
-						$objMarker->setMarkerType(GoogleMapOverlay::MARKERTYPE_ICON);
-						$objMarker->setIconSRC(($objNews->strMarkerIcon) ? : $this->strMarkerIcon);
-						$objMarker->setIconAnchor(array(0, 20, 'px'));
-						$objMarker->setIconSize(array(17, 30, 'px'));
-						$objMarker->setMarkerAction(GoogleMapOverlay::MARKERACTION_INFO);
-						$objMarkerInfoTemplate = new \FrontendTemplate(($objNews->templateMarkerInfo) ? : $this->templateMarkerInfo);
-						$objMarkerInfoTemplate->setData($objVenue->row());
-						$objMarker->setInfoWindow($objMarkerInfoTemplate->parse());
-						$objMarker->setInfoWindowAnchor(array(1, 22, 'px'));
-						$objMarker->setInfoWindowSize(array('auto', 'auto', 'px'));
-						$objMap->addOverlay($objMarker);
-					}
-				}
-			}
-
-			$objMap->addOverlay($objKml);
-
-			$objMap->initId();
-			$objTemplate->objMap = $objMap->generate(
-				array(
-					'mapSize' => array('100%', '480px', ''),
-					'zoom'    => 15,
-					'dlh_googlemap_template' => ($objNews->templateMaps) ? : $this->templateMaps,
-				)
-			);
-
-			if ($objNews->trailInfoShowElevationProfile)
-			{
-				$objChart = new GoogleChartWrapper();
-
-				$objChart->setMap($objMap->getId());
-				$objTemplate->objChart = $objChart->generate(
-					array(
-						'chartSize'    => array('100%', '', ''),
-						'google_chart_template' => 'google_chart_column',
-					)
-				);
-			}
-		}
-
-		// Add share
 		if(in_array('share', \ModuleLoader::getActive()))
 		{
-			$objNews->title = $objNews->headline;
-			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objNews);
+			$objArticle->title = $objArticle->headline;
+			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objArticle);
 			$objTemplate->share = $objShare->generate();
 		}
 
-		if($this->news_addNavigation)
-		{
-			$objTemplate->nav = $this->generateNavigation($objNews, $arrData['link'], $this->news_readerModule);
-		}
-		
+        // Modal
+        if($this->news_showInModal && $objArticle->source == 'default' && $this->news_readerModule)
+        {
+            $objTemplate->modal = true;
+            $objTemplate->modalTarget = '#' . NewsPlusHelper::getCSSModalID($this->news_readerModule);
+        }
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['parseArticles']) && is_array($GLOBALS['TL_HOOKS']['parseArticles']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['parseArticles'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($objTemplate, $objNews->row(), $this);
+				$this->$callback[0]->$callback[1]($objTemplate, $objArticle->row(), $this);
 			}
 		}
 
 		return $objTemplate->parse();
-	}
-
-
-	/**
-	 * Generate the article data and return it as array
-	 * @param object
-	 * @param boolean
-	 * @param string
-	 * @param integer
-	 * @return array
-	 */
-	protected function generateArticle($objNews, $blnAddArchive=false, $strClass='', $intCount=0)
-	{
-		$objArticle = new NewsArticle($objNews, $this, $blnAddArchive, $strClass, $intCount);
-
-		return $objArticle->getData();
 	}
 
 
@@ -271,79 +317,187 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		return $arrArticles;
 	}
 
-    protected function generateNavigation($objCurrentArticle, $strUrl, $modalId)
-    {
-        $objT = new \FrontendTemplate($this->news_navigation_template);
+/**
+	 * Generate a URL and return it as string
+	 * @param object
+	 * @param boolean
+	 * @return string
+	 */
+	protected function generateNewsUrl($objItem, $blnAddArchive=false)
+	{
+        $strCacheKey = 'id_' . $objItem->id;
 
-		// get ids from newslist
-		$arrIds = \Session::getInstance()->get(NewsPlusHelper::getKeyForSessionNewsIds($this->objModel));
-	
-		// if no list context, aquire news ids from news_archive
-        if(count($arrIds) < 1)
+		// Load the URL from cache
+		if (isset(self::$arrUrlCache[$strCacheKey]))
 		{
-			$objNews = NewsPlusModel::findPublishedByPid($objCurrentArticle->pid);
-
-			if($objNews == null)
-			{
-				return '';
-			}
-
-			$arrIds = $objNews->fetchEach('id');
+			return self::$arrUrlCache[$strCacheKey];
 		}
 
-		$objPrevNews = NewsPlusModel::findNewPublishedByIds($objCurrentArticle->id, $objCurrentArticle->date, $arrIds, $this->news_navigation_infinite);
+		// Initialize the cache
+		self::$arrUrlCache[$strCacheKey] = null;
 
-        // prev only if not first item
-        if($objPrevNews !== null)
+		switch ($objItem->source)
+		{
+			// Link to an external page
+			case 'external':
+				if (substr($objItem->url, 0, 7) == 'mailto:')
+				{
+					self::$arrUrlCache[$strCacheKey] = \String::encodeEmail($objItem->url);
+				}
+				else
+				{
+					self::$arrUrlCache[$strCacheKey] = ampersand($objItem->url);
+				}
+				break;
+
+			// Link to an internal page
+			case 'internal':
+				if (($objTarget = $objItem->getRelated('jumpTo')) !== null)
+				{
+					self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objTarget->row()));
+				}
+				break;
+
+			// Link to an article
+			case 'article':
+				if (($objArticle = \ArticleModel::findByPk($objItem->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+				{
+					self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id)));
+				}
+				break;
+		}
+
+		// Link to the default page
+		if (self::$arrUrlCache[$strCacheKey] === null)
+		{
+            if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+
+			if ($objPage === null)
+			{
+				self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'), true);
+			}
+			else
+			{
+				self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPage->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objItem->alias != '') ? $objItem->alias : $objItem->id)));
+			}
+
+			// Add the current archive parameter (news archive)
+			if ($blnAddArchive && \Input::get('month') != '')
+			{
+				self::$arrUrlCache[$strCacheKey] .= (\Config::get('disableAlias') ? '&amp;' : '?') . 'month=' . \Input::get('month');
+			}
+		}
+		return self::$arrUrlCache[$strCacheKey];
+	}
+
+
+    /**
+     * Parse the template
+     * @return string
+     */
+    public function generate()
+    {
+        if ($this->arrData['space'][0] != '')
         {
-			$objT->prev = $this->generateArticle($objPrevNews);
-			$objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
+            $this->arrStyle[] = 'margin-top:'.$this->arrData['space'][0].'px;';
         }
 
-		$objNextNews = NewsPlusModel::findOldPublishedByIds($objCurrentArticle->id, $objCurrentArticle->date, $arrIds, $this->news_navigation_infinite);
+        if ($this->arrData['space'][1] != '')
+        {
+            $this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
+        }
+
+        $this->Template = new \FrontendTemplate($this->strTemplate);
+        $this->Template->setData($this->arrData);
+
+        $this->compile();
+
+        // print to pdf
+        $this->Template->pdfJumpTo = $this->news_pdfJumpTo;
+
+        // Do not change this order (see #6191)
+        $this->Template->style = !empty($this->arrStyle) ? implode(' ', $this->arrStyle) : '';
+        $this->Template->class = trim('mod_' . $this->type . ' ' . $this->cssID[1]);
+        $this->Template->cssID = ($this->cssID[0] != '') ? ' id="' . $this->cssID[0] . '"' : '';
+
+        $this->Template->inColumn = $this->strColumn;
+
+        if ($this->Template->headline == '')
+        {
+            $this->Template->headline = $this->headline;
+        }
+
+        if ($this->Template->hl == '')
+        {
+            $this->Template->hl = $this->hl;
+        }
+
+        if (!empty($this->objModel->classes) && is_array($this->objModel->classes))
+        {
+            $this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
+        }
+
+        return $this->Template->parse();
+    }
+
+
+    protected static function generateArrowNavigation($objCurrentArchive, $strUrl, $modalId)
+    {
+        $objT = new \FrontendTemplate('navigation_arrows');
+
+        // get ids from NewsPlus::getAllNews
+        $session = \Session::getInstance()->getData();
+        $arrIds = $session[NEWSPLUS_SESSION_NEWS_IDS];
+
+        if(count($arrIds) < 1) return '';
+
+        $prevID = null;
+        $nextID = null;
+
+        $currentIndex = array_search($objCurrentArchive->id, $arrIds);
+
+        // prev only of not first item
+        if(isset($arrIds[$currentIndex - 1]))
+        {
+            $prevID = $arrIds[$currentIndex - 1];
+
+            $objNews = NewsPlusModel::findByPk($prevID, array());
+            if($objNews !== null)
+            {
+                $objT->prev = static::getNewsDetails($objNews, $strUrl, $modalId);
+                $objT->prevLink = $GLOBALS['TL_LANG']['news_plus']['prevLink'];
+            }
+        }
 
         // next only of not last item
-        if($objNextNews !== null)
+        if(isset($arrIds[$currentIndex + 1]))
         {
-			$objT->next = $this->generateArticle($objNextNews);
-			$objT->nextLink = $GLOBALS['TL_LANG']['news_plus']['nextLink'];
+            $nextID = $arrIds[$currentIndex + 1];
+            $objNews = NewsPlusModel::findByPk($nextID, array());
+
+            if($objNews !== null)
+            {
+                $objT->next = static::getNewsDetails($objNews, $strUrl, $modalId);
+                $objT->nextLink = $GLOBALS['TL_LANG']['news_plus']['nextLink'];
+            }
         }
 
         return $objT->parse();
     }
 
-	/**
-	 * Add subnews to a template
-	 *
-	 * @param object $objTemplate The template object to add the subnews to
-	 * @param array  $arrItem     The element or module as array
-	 * @param string $strKey      The name of the field in $arrItem
-	 */
-	public function addSubNewsToTemplate($objTemplate, $arrItem, $strKey='subNews')
-	{
-		$arrSubnews = array();
+    protected static function getNewsDetails($objNews, $strUrl, $modalId)
+    {
+        $arrNews['modal'] = true;
+        $arrNews['modalTarget'] = '#' . NewsPlusHelper::getCSSModalID($modalId);
+        $arrNews['title'] = specialchars($objNews->headline, true);
 
-		$objFieldpalette = \HeimrichHannot\FieldPalette\FieldPaletteModel::findPublishedByIds(deserialize($arrItem[$strKey], true));
+        //$session = \Session::getInstance()->getData();
+        //if($session[NEWSPLUS_SESSION_URL_PARAM]) $strUrlParam = '&'.$session[NEWSPLUS_SESSION_URL_PARAM];
 
-		if($objFieldpalette === null)
-		{
-			return $arrSubnews;
-		}
+        $arrNews['href'] = ampersand(sprintf($strUrl, ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id))) . $strUrlParam;
+        $arrEvent['link'] = $objNews->title;
+        $arrEvent['target'] = '';
 
-
-		while($objFieldpalette->next())
-		{
-			$objNews = NewsPlusModel::findPublishedByIds(array($objFieldpalette->nid));
-
-			if($objNews === null)
-			{
-				continue;
-			}
-
-			$objNews->news_template = $objFieldpalette->news_template;
-			$arrSubnews[] = $this->parseArticle($objNews);
-		}
-
-		$objTemplate->parsedSubNews = $arrSubnews;
-	}
+        return $arrNews;
+    }
 }

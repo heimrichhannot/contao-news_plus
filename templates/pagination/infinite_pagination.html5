@@ -1,0 +1,4 @@
+<div class="pagination infinitescroll">
+<a href="<?= $this->next['href']?>" class="next btn btn-framed btn-dark"><?= $this->triggerText?></a>
+	<div class="backToTop"></div>
+</div>

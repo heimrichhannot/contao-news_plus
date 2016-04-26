@@ -78,7 +78,6 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $objTemplate = new \FrontendTemplate($this->news_template);
 		$objTemplate->setData($objArticle->row());
 		$objTemplate->class = (($objArticle->cssClass != '') ? ' ' . $objArticle->cssClass : '') . $strClass;
-        // $objTemplate->archiveTitle = $this->getArchiveTitle($objArticle->title);
 		$objTemplate->newsHeadline = $objArticle->headline;
 		$objTemplate->subHeadline = $objArticle->subheadline;
 		$objTemplate->hasSubHeadline = $objArticle->subheadline ? true : false;

@@ -1,13 +1,15 @@
-<?php $this->extend('block_unsearchable'); ?>
+<?php $this->extend('block_unsearchable', array("cssID" => $this->id)); ?>
 
 <?php $this->block('content'); ?>
+  <?php if($this->news_useInfiniteScroll):?> <div class="jscroll_element_<?= $this->id ?>" data-autotrigger="<?= $this->news_useAutoTrigger ? 'true':'false' ?>"><?php endif; ?>
   <?php if (empty($this->articles)): ?>
     <p class="empty"><?php echo $this->empty; ?></p>
-  <?php else: ?>
+    <?php else: ?>
     <?php echo implode('', $this->articles); ?>
     <?php echo $this->pagination; ?>
-  <?php endif; ?>
-
+    <?php endif; ?>
+  <?php if($this->news_useInfiniteScroll):?></div><?php endif; ?>
 <?php $this->endblock(); ?>
 
-<?php echo '<pre>' . $this->showTemplateVars() . '</pre>'; ?>
+<?php // echo '<pre>' . $this->showTemplateVars() . '</pre>'; ?>
+

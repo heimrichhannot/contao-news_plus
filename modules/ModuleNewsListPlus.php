@@ -95,9 +95,14 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $this->filterActive = true;
             $this->filterSearch = true;
         }
-
         return parent::generate();
     }
+
+    public function generateAjax()
+    {
+        return $this->id;
+    }
+
 
     /**
      * Generate the module
@@ -158,7 +163,6 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 			$total = min($limit, $total);
 		}
 
-
         // Split the results
         if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage)) {
             // Get the current page
@@ -212,9 +216,16 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 				return;
 			}
 
+            // load specific pagination template if infiniteScroll is used
+            // otherwise keep standard pagination
+            $objT = $this->news_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
+
+            if(!is_null($objT))$objT->triggerText = $this->news_changeTriggerText ? $this->news_triggerText : $GLOBALS['TL_LANG']['news_plus']['loadMore'];
+
 			// Add the pagination menu
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
-			$this->Template->pagination = $objPagination->generate("\n  ");
+            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+
+            $this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
         // Add the articles
@@ -222,6 +233,8 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             $this->Template->articles = $this->parseArticles($objArticles);
         }
         $this->Template->archives = $this->news_archives;
+        // add triggerText for infiniteScroll
+
     }
 
     protected function findNewsInSearchIndex()

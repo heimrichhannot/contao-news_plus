@@ -23,7 +23,7 @@ $dc['palettes']['newsfilter'] = '
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
-                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid, news_useInfiniteScroll;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
                                     {media_legend},media_template,media_posterSRC;
@@ -53,13 +53,15 @@ $dc['palettes']['newsreader_plus'] = '
                                     {expert_legend:hide},guests,cssID,space';
 
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
-
+$dc['palettes']['__selector__'][] = 'news_useInfiniteScroll';
+$dc['palettes']['__selector__'][] = 'news_changeTriggerText';
 /**
  * SubPalettes
  */
 
 $dc['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
-
+$dc['subpalettes']['news_useInfiniteScroll'] = 'news_useAutoTrigger, news_changeTriggerText';
+$dc['subpalettes']['news_changeTriggerText'] = 'news_triggerText';
 /**
  * Fields
  */
@@ -195,6 +197,38 @@ $dc['fields'] = array_merge
 								  'managerHref'  => 'do=news&table=tl_news_category',
 			),
 			'sql'        => "blob NULL",
+		),
+		'news_useInfiniteScroll'	=> array
+		(
+			'label'		=> &$GLOBALS['TL_LANG']['tl_module']['news_useInfiniteScroll'],
+			'exclude'	=> true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'clr', 'submitOnChange' => true),
+			'sql'       => "char(1) NOT NULL default ''"
+		),
+		'news_useAutoTrigger'	=> array
+		(
+			'label'		=> &$GLOBALS['TL_LANG']['tl_module']['news_useAutoTrigger'],
+			'exclude'	=> true,
+			'inputType' => 'checkbox',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "char(1) NOT NULL default ''"
+		),
+		'news_changeTriggerText'	=> array
+		(
+				'label'		=> &$GLOBALS['TL_LANG']['tl_module']['news_changeTriggerText'],
+				'exclude'	=> true,
+				'inputType' => 'checkbox',
+				'eval'		=> array('tl_class' => 'w50', 'submitOnChange' => true),
+				'sql'       => "char(1) NOT NULL default ''"
+		),
+		'news_triggerText'	=> array
+		(
+			'label'			=> &$GLOBALS['TL_LANG']['tl_module']['news_triggerText'],
+			'exclude'	=> true,
+			'inputType' => 'text',
+			'eval'		=> array('tl_class' => 'w50'),
+			'sql'       => "varchar(64) NOT NULL default ''"
 		)
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()

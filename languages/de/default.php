@@ -12,3 +12,4 @@ $GLOBALS['TL_LANG']['news_plus']['filterLabel'] = 'Filter';
 $GLOBALS['TL_LANG']['news_plus']['resetFilterLabel'] = 'Filter zurücksetzen';
 $GLOBALS['TL_LANG']['news_plus']['prevLink'] = 'Vorheriger';
 $GLOBALS['TL_LANG']['news_plus']['nextLink'] = 'Nächster';
+$GLOBALS['TL_LANG']['news_plus']['loadMore'] = 'mehr laden';

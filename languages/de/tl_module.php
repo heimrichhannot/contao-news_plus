@@ -37,3 +37,7 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'] = array('Nac
 $GLOBALS['TL_LANG']['tl_module']['news_filterModule'] = array('Nachrichtenfilter', 'Bitte wählen Sie einen Nachrichtenfilter um die Filtereingrenzungen für die Liste bereitzustellen.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleAppendCategories'] = array('Kategorien-Titel an Archiv-Titel anhängen', 'Fügt die Kategorien getrennt an den Archiv-Titel an.');
 $GLOBALS['TL_LANG']['tl_module']['news_archiveTitleCategories'] = array('Anzuhängende Kategorien', 'Bitte wählen Sie die Kategorien aus, die an den Titel Ihrer Nachrichtenarchive angehangen werden sollen.');
+$GLOBALS['TL_LANG']['tl_module']['news_useInfiniteScroll'] = array('InifiniteScroll nutzen', '');
+$GLOBALS['TL_LANG']['tl_module']['news_useAutoTrigger'] = array('AutoTrigger aktivieren', 'Wenn aktiviert wird Liste automatisch beim Scrollen nachgeladen. Andernfalls erfolgt das Nachladen mittels Button');
+$GLOBALS['TL_LANG']['tl_module']['news_changeTriggerText'] = array('Triggertext ändern', 'Ermöglicht die Individualisierung des Triggertextes');
+$GLOBALS['TL_LANG']['tl_module']['news_triggerText'] = array('Triggertext', 'Tragen Sie hier den individiuellen Triggertext ein.');

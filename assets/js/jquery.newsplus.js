@@ -18,7 +18,7 @@
         },
         initInfiniteScroll: function(){
             var arrInfiniteElem = $(document).find('[class^=jscroll_element]'),
-                loadHtml = "<div class='loading'><div class='inside'><div class='spinner'><div class='rect1'></div><div class='rect2'></div><div class='rect3'></div><div class='rect4'></div><div class='rect5'></div></div> Weitere Urteile werden geladen.</div></div>";
+                loadHtml = "<div class='loading'><div class='inside'><div class='spinner'><div class='rect1'></div><div class='rect2'></div><div class='rect3'></div><div class='rect4'></div><div class='rect5'></div></div>Daten werden geladen.</div></div>";
 
             $.each(arrInfiniteElem, function(){
                 var infiniteElementSelector = $(this).attr('class'),

@@ -204,6 +204,15 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         }
 
         $objArchive = $objArticle->getRelated('pid');
+
+		if ($objArticle->teaser != '' && $objArchive->addDescriptionPrefixOnArchived)
+		{
+			if (time() > $objArticle->date + $objArchive->archivedInterval * 60 * 60 * 24)
+			{
+				$objPage->description = $objArchive->descriptionPrefixOnArchived . ' ' . $objPage->description;
+			}
+		}
+
         $this->Template->allowComments = $objArchive->allowComments;
 
         // Comments are not allowed

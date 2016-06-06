@@ -22,18 +22,22 @@ $dc['list']['sorting']['fields'] = array('root', 'title');
 $dc['palettes']['__selector__'][] = 'addDummyImage';
 $dc['palettes']['__selector__'][] = 'replaceNewsPalette';
 $dc['palettes']['__selector__'][] = 'limitSubNews';
+$dc['palettes']['__selector__'][] = 'addDescriptionPrefixOnArchived';
+
 $dc['palettes']['default']        = str_replace('title', 'title,displayTitle', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{palette_legend},replaceNewsPalette;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{subnews_legend},limitSubNews;', $dc['palettes']['default']);
+$dc['palettes']['default']        = str_replace('jumpTo', 'jumpTo,addDescriptionPrefixOnArchived', $dc['palettes']['default']);
 
 /**
  * Subpalettes
  */
-$dc['subpalettes']['addDummyImage']      = 'dummyImageSingleSRC';
+$dc['subpalettes']['addDummyImage'] = 'dummyImageSingleSRC';
 $dc['subpalettes']['replaceNewsPalette'] = 'newsPalette';
-$dc['subpalettes']['limitSubNews']       = 'subNewsArchives';
+$dc['subpalettes']['limitSubNews'] = 'subNewsArchives';
+$dc['subpalettes']['addDescriptionPrefixOnArchived'] = 'descriptionPrefixOnArchived,archivedInterval';
 
 $arrFields = array
 (
@@ -101,6 +105,30 @@ $arrFields = array
 		'options_callback' => array('tl_news_archive_plus', 'getSubNewsArchives'),
 		'eval'             => array('multiple' => true, 'mandatory' => true),
 		'sql'              => "blob NULL",
+	),
+	'addDescriptionPrefixOnArchived'        => array
+	(
+		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['addDescriptionPrefixOnArchived'],
+		'exclude'   => true,
+		'inputType' => 'checkbox',
+		'eval'      => array('submitOnChange' => true),
+		'sql'       => "char(1) NOT NULL default ''",
+	),
+	'descriptionPrefixOnArchived' => array(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_news_archive']['descriptionPrefixOnArchived'],
+		'exclude'                 => true,
+		'search'                  => true,
+		'inputType'               => 'text',
+		'eval'                    => array('maxlength' => 255, 'tl_class' => 'w50'),
+		'sql'                     => "varchar(255) NOT NULL default ''"
+	),
+	'archivedInterval' => array(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_news_archive']['archivedInterval'],
+		'exclude'                 => true,
+		'inputType'               => 'text',
+		'default'                 => 365,
+		'eval'                    => array('rgxp' => 'digit', 'tl_class' => 'w50'),
+		'sql'                     => "int(10) unsigned NOT NULL default '0'"
 	),
 );
 

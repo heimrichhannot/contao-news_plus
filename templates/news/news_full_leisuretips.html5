@@ -1,0 +1,148 @@
+<div class="news_full news_full_leisuretip block <?= $this->class ?>">
+
+	<!-- indexer::stop -->
+	<?php echo $this->nav; ?>
+	<!-- indexer::continue -->
+
+	<h1><?= $this->headline; ?></h1>
+
+	<?php if ($this->addGallery): ?>
+		<div class="col-full">
+			<?= $this->gallery; ?>
+		</div>
+	<?php endif; ?>
+
+
+	<?php if (!$this->hasText): ?>
+		<div class="teaser lead text-primary"><?= $this->teaser ?></div>
+	<?php endif; ?>
+
+	<?php if ($this->hasSubHeadline): ?>
+		<h2><?= $this->subHeadline ?></h2>
+	<?php endif; ?>
+
+	<?php if ($this->hasText): ?>
+		<?= $this->text ?>
+	<?php endif; ?>
+	<?php if (!empty($this->tickets)): ?>
+		<?= implode('', $this->tickets); ?>
+	<?php endif; ?>
+	<?php if ($this->addVenue): ?>
+		<div class="venue-info block">
+			<h4>Adresse</h4>
+			<?= $this->venueName ? $this->venueName . '<br />' : ''; ?>
+			<?= $this->venueStreet ? $this->venueStreet . '<br />' : ''; ?>
+			<?php if ($this->venuePostal && $this->venueCity): ?>
+				<?= $this->venuePostal . ' ' . $this->venueCity . '<br />'; ?>
+			<?php elseif ($this->venueCity): ?>
+				<?= $this->venueCity . '<br />'; ?>
+			<?php endif; ?>
+			<?php if ($this->venuePhone): ?>
+				Telefon: <?= $this->venuePhone; ?><br/>
+			<?php endif; ?>
+			<?php if ($this->venueFax): ?>
+				Fax: <?= $this->venueFax; ?><br/>
+			<?php endif; ?>
+			<?php if ($this->venueEmail): ?>
+				<br/>{{email::<?= $this->venueEmail; ?>}}
+			<?php endif; ?>
+			<?php if ($this->venueWebsite): ?>
+				<br/><a href="<?= \HeimrichHannot\Haste\Util\Url::addScheme($this->venueWebsite); ?>" target="_blank"
+						class="more"><?= $this->venueWebsite; ?></a><br/>
+			<?php endif; ?>
+			<?= $this->venueText ? '<br />' . $this->venueText . '<br />' : ''; ?>
+		</div>
+	<?php endif; ?>
+	<?php if ($this->addTouristInfo): ?>
+		<div class="tourist-info block">
+			<h4>Tourist-Information</h4>
+			<?= $this->touristInfoName ? $this->touristInfoName . '<br />' : ''; ?>
+			<?php if ($this->touristInfoPhone): ?>
+				Telefon: <?= $this->touristInfoPhone; ?><br/>
+			<?php endif; ?>
+			<?php if ($this->touristInfoFax): ?>
+				Fax: <?= $this->touristInfoFax; ?><br/>
+			<?php endif; ?>
+			<?php if ($this->touristInfoEmail): ?>
+				<br/>E-Mail:<br/> {{email::<?= $this->touristInfoEmail; ?>}}<br/>
+			<?php endif; ?>
+			<?php if ($this->touristInfoWebsite): ?>
+				<br/>Weitere Informationen:<br/> <a href="<?= \HeimrichHannot\Haste\Util\Url::addScheme($this->touristInfoWebsite); ?>"
+													target="_blank" class="more"><?= $this->touristInfoWebsite; ?></a><br/>
+			<?php endif; ?>
+
+		</div>
+	<?php endif; ?>
+	<?php if ($this->addOpeningHours): ?>
+		<div class="opening-hours block">
+			<h4>Öffnungszeiten</h4>
+			<?= $this->openingHoursText; ?>
+		</div>
+	<?php endif; ?>
+	<?php if ($this->addEnclosure || $this->addTicketPrice): ?>
+		<div class="infos block">
+			<h4>Informationen</h4>
+			<?php if ($this->addTicketPrice): ?>
+				<div class="ticket-prices">
+					<a class="more collapsed" href="#news_tickerprice_<?= $this->id; ?>" data-toggle="collapse">Eintrittspreise</a>
+					<div class="collapse" id="news_tickerprice_<?= $this->id; ?>">
+						<div class="inner"><?= $this->ticketPriceText; ?></div>
+					</div>
+				</div>
+			<?php endif; ?>
+			<?php if ($this->addEnclosure && is_array($this->enclosure)): ?>
+				<div class="downloads">
+					<a class="more collapsed" href="#news_enclosure_<?= $this->id; ?>" data-toggle="collapse">Downloads</a>
+					<div class="collapse" id="news_enclosure_<?= $this->id; ?>">
+						<ul class="enclosure inner">
+							<?php foreach ($this->enclosure as $enclosure): ?>
+								<li><a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><span class="icon"></span><span
+											class="text"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>
+												)</span></span></a></li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				</div>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
+	<?= $this->share; ?>
+
+	<?php if ($this->addArrivalInfo): ?>
+		<div class="arrival-info">
+			<h3>Anreise</h3>
+			<?= $this->arrivalName ? $this->arrivalName . '<br />' : ''; ?>
+			<?= $this->arrivalStreet ? $this->arrivalStreet . '<br />' : ''; ?>
+			<?php if ($this->arrivalPostal && $this->arrivalCity): ?>
+				<?= $this->arrivalPostal . ' ' . $this->arrivalCity . '<br />'; ?>
+			<?php elseif ($this->arrivalCity): ?>
+				<?= $this->arrivalCity . '<br />'; ?>
+			<?php endif; ?>
+			<?= $this->arrivalText ? '<br />' . $this->arrivalText . '<br />' : ''; ?>
+		</div>
+	<?php endif; ?>
+
+	<?php if ($this->addVenues && is_array($this->venues)): ?>
+		<div class="map">
+			<?php $objMap = \HeimrichHannot\Haste\Map\GoogleMap::getInstance(); ?>
+			<?php foreach ($this->venues as $arrVenue): ?>
+				<?php $objMap->setCenter($arrVenue['venueSingleCoords']); ?>
+				<?php $objMarker = new \HeimrichHannot\Haste\Map\GoogleMapMarker(); ?>
+				<?php $objMarker->setPosition($arrVenue['venueSingleCoords']); ?>
+				<?php $objMarker->setTitle($arrVenue['venueName']); ?>
+				<?php $objMap->addMarker($objMarker); ?>
+			<?php endforeach; ?>
+
+			<?= $objMap->generate(
+				array(
+					'mapSize' => array('100%', '400px', ''),
+					'zoom'    => 13,
+				)
+			); ?>
+		</div>
+
+
+	<?php endif; ?>
+
+</div>
+

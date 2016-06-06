@@ -11,5 +11,3 @@
   <?php if($this->news_useInfiniteScroll):?></div><?php endif; ?>
 <?php $this->endblock(); ?>
 
-<?php // echo '<pre>' . $this->showTemplateVars() . '</pre>'; ?>
-

@@ -51,36 +51,47 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             return $objTemplate->parse();
         }
 
-        global $objPage;
-
+        // modal news
         if($this->news_template_modal)
         {
-            $this->strTemplate = 'mod_news_modal';
-            $this->news_template = $this->news_template_modal;
-
-            // list config
-            $this->news_showInModal = true;
-            $this->news_readerModule = $this->id;
-
-            // set modal css ID for generateModal() and parent::generate()
-            $arrCss = deserialize($this->cssID, true);
-            $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
-            $this->cssID = $arrCss;
-            $this->base = \Controller::generateFrontendUrl($objPage->row());
-
-            if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
-            {
-                $this->strTemplate = 'mod_news_modal_ajax';
-                $this->generateAjax();
-            }
-
-            if(!$this->checkConditions())
-            {
-                return $this->generateModal();
-            }
+            return $this->generateInModal();
+        }
+        // default news
+        else if($this->checkConditions())
+        {
+            return parent::generate();
         }
 
-        return parent::generate();
+        return '';
+    }
+
+    protected function generateInModal()
+    {
+        global $objPage;
+
+        $this->strTemplate = 'mod_news_modal';
+        $this->news_template = $this->news_template_modal;
+
+        // list config
+        $this->news_showInModal = true;
+        $this->news_readerModule = $this->id;
+
+        // set modal css ID for generateModal() and parent::generate()
+        $arrCss = deserialize($this->cssID, true);
+        $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
+        $this->cssID = $arrCss;
+        $this->base = \Controller::generateFrontendUrl($objPage->row());
+
+        if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
+        {
+            $this->strTemplate = 'mod_news_modal_ajax';
+            $this->generateAjax();
+        }
+
+        if(!$this->checkConditions())
+        {
+            return $this->generateModal();
+        }
     }
 
     protected function generateAjax()
@@ -151,7 +162,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the news item
-        $objArticle = \NewsModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
+        $objArticle = NewsPlusModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
 
         if ($objArticle === null)
         {
@@ -163,6 +174,11 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             header('HTTP/1.1 404 Not Found');
             $this->Template->articles = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')) . '</p>';
             return;
+        }
+
+        if($objArticle->source !== 'default')
+        {
+            $this->forwardNews($objArticle);
         }
 
         $arrArticle = $this->parseArticle($objArticle);
@@ -229,6 +245,43 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         $objConfig->moderate = $objArchive->moderate;
 
         $this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_news', $objArticle->id, $arrNotifies);
+    }
+
+    /**
+     * Redirect if news source is not 'default'
+     * @param $objArticle
+     */
+    protected function forwardNews($objArticle)
+    {
+        switch($objArticle->source)
+        {
+            case 'internal':
+                if($objArticle->jumpTo >0 & ($objTarget = \PageModel::findByPk($objArticle->jumpTo)) !== null)
+                {
+                    \Controller::redirect(\Controller::generateFrontendUrl($objTarget->row(), null, null, true));
+                }
+            break;
+            case 'article':
+                if (($objArticle = \ArticleModel::findByPk($objArticle->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+                {
+                    \Controller::redirect(ampersand(\Controller::generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id))));
+                }
+            break;
+            case 'external':
+
+                $strUrl = $objArticle->url;
+
+                if (version_compare(VERSION, '3.5.6', '<='))
+                {
+                    $strUrl = NewsPlusHelper::replaceInserttagsAndFixDomain($strUrl);
+                }
+
+                if($strUrl != '')
+                {
+                    \Controller::redirect($strUrl);
+                }
+            break;
+        }
     }
 
     protected function isSearchIndexer()

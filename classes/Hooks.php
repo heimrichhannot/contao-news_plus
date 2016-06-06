@@ -11,12 +11,30 @@
 namespace HeimrichHannot\NewsPlus;
 
 
+use HeimrichHannot\FieldPalette\FieldPalette;
+
 class Hooks extends \Controller
 {
     public function parseArticlesHook(&$objTemplate, $arrArticle, $objModule)
     {
         $this->addDummyImage($objTemplate, $arrArticle, $objModule);
         $this->sortEnclosures($objTemplate, $arrArticle, $objModule);
+        $this->addVenues($objTemplate, $arrArticle, $objModule);
+    }
+
+    protected function addVenues(&$objTemplate, $arrArticle, $objModule)
+    {
+        if($arrArticle['addVenues'])
+        {
+            $objVenues = \HeimrichHannot\FieldPalette\FieldPaletteModel::findPublishedByPidAndTableAndField($arrArticle['id'], 'tl_news', 'venues');
+
+            if($objVenues === null)
+            {
+                return false;
+            }
+
+            $objTemplate->venues = $objVenues->fetchAll();
+        }
     }
 
     protected function addDummyImage(&$objTemplate, $arrArticle, $objModule)

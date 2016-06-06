@@ -1,0 +1,51 @@
+<div class="news_subnews news_subnews_default block <?= $this->class ?>">
+
+	<!-- indexer::stop -->
+	<?php echo $this->nav; ?>
+	<!-- indexer::continue -->
+
+	<h1 class="h2"><?php echo $this->headline; ?></h1>
+	<?php if ($this->hasSubHeadline): ?>
+		<h2 class="h2-sub"><?php echo $this->subHeadline; ?></h2>
+	<?php endif; ?>
+
+	<div class="row">
+		<?php if ($this->addYouTube): ?>
+			<?php echo $this->youtubeVideo; ?>
+		<?php elseif($this->addMedia): ?>
+			<?php echo $this->mediaPlayer; ?>
+		<?php endif; ?>
+
+		<?php if ($this->text): ?>
+			<?php echo $this->text; ?>
+		<?php else: ?>
+			<div class="ce_text block">
+				<?php echo $this->teaser; ?>
+			</div>
+		<?php endif; ?>
+
+		<p class="info">
+			<?php if ($this->hasMetaFields): ?>
+				<span><?php echo $type[0]; ?> vom <time datetime="<?php echo $this->datetime; ?>"><?php echo $this->date; ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></span>
+			<?php endif; ?>
+		</p>
+
+		<?php if ($this->enclosure): ?>
+			<?php foreach ($this->enclosure as $enclosure): ?>
+				<a href="<?php echo $enclosure['href']; ?>" title="<?php echo $enclosure['title']; ?>" class="btn btn-default-download"><?php echo $enclosure['link']; ?> <span class="size">(<?php echo $enclosure['filesize']; ?>)</span></a>
+			<?php endforeach; ?>
+		<?php endif; ?>
+
+		<?php if(is_array($this->tags) && !empty($this->tags)): ?>
+			<div class="tags"><div>Mehr zu </div>
+				<ul class="tag-chain">
+					<?php $counter = 0; foreach ($this->tags as $tag): ?>
+						<li><?php echo $tag; ?></li>
+						<?php $counter++; endforeach; ?>
+				</ul>
+			</div>
+		<?php endif; ?>
+	</div>
+
+</div>
+

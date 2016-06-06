@@ -200,8 +200,6 @@ class NewsFilterRegistry
 			$arrColumns['ids_exclude'] = "$t.id NOT IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIdsExclude))) . ")";
 		}
 
-		dump($arrColumns);
-
 		return $arrColumns;
 	}
 

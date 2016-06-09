@@ -31,7 +31,6 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
      */
     protected $strTemplate = 'mod_newsreader_plus';
 
-
     /**
      * Display a wildcard in the back end
      * @return string
@@ -51,47 +50,36 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             return $objTemplate->parse();
         }
 
-        // modal news
-        if($this->news_template_modal)
-        {
-            return $this->generateInModal();
-        }
-        // default news
-        else if($this->checkConditions())
-        {
-            return parent::generate();
-        }
+		global $objPage;
 
-        return '';
-    }
+		if($this->news_template_modal)
+		{
+			$this->strTemplate = 'mod_news_modal';
+			$this->news_template = $this->news_template_modal;
 
-    protected function generateInModal()
-    {
-        global $objPage;
+			// list config
+			$this->news_showInModal = true;
+			$this->news_readerModule = $this->id;
 
-        $this->strTemplate = 'mod_news_modal';
-        $this->news_template = $this->news_template_modal;
+			// set modal css ID for generateModal() and parent::generate()
+			$arrCss = deserialize($this->cssID, true);
+			$arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
+			$this->cssID = $arrCss;
+			$this->base = \Controller::generateFrontendUrl($objPage->row());
 
-        // list config
-        $this->news_showInModal = true;
-        $this->news_readerModule = $this->id;
+			if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
+			{
+				$this->strTemplate = 'mod_news_modal_ajax';
+				$this->generateAjax();
+			}
 
-        // set modal css ID for generateModal() and parent::generate()
-        $arrCss = deserialize($this->cssID, true);
-        $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
-        $this->cssID = $arrCss;
-        $this->base = \Controller::generateFrontendUrl($objPage->row());
+			if(!$this->checkConditions())
+			{
+				return $this->generateModal();
+			}
+		}
 
-        if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
-        {
-            $this->strTemplate = 'mod_news_modal_ajax';
-            $this->generateAjax();
-        }
-
-        if(!$this->checkConditions())
-        {
-            return $this->generateModal();
-        }
+		return parent::generate();
     }
 
     protected function generateAjax()

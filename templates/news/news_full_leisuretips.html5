@@ -12,7 +12,6 @@
 		</div>
 	<?php endif; ?>
 
-
 	<?php if (!$this->hasText): ?>
 		<div class="teaser lead text-primary"><?= $this->teaser ?></div>
 	<?php endif; ?>
@@ -70,6 +69,11 @@
 				<br/>Weitere Informationen:<br/> <a href="<?= \HeimrichHannot\Haste\Util\Url::addScheme($this->touristInfoWebsite); ?>"
 													target="_blank" class="more"><?= $this->touristInfoWebsite; ?></a><br/>
 			<?php endif; ?>
+			<?php if ($this->touristInfoText): ?>
+				<div>
+					<?= $this->touristInfoText; ?>
+				</div>
+			<?php endif; ?>
 
 		</div>
 	<?php endif; ?>
@@ -124,7 +128,7 @@
 
 	<?php if ($this->addVenues && is_array($this->venues)): ?>
 		<div class="map">
-			<?php $objMap = \HeimrichHannot\Haste\Map\GoogleMap::getInstance(); ?>
+			<?php $objMap = new \HeimrichHannot\Haste\Map\GoogleMap(); ?>
 			<?php foreach ($this->venues as $arrVenue): ?>
 				<?php $objMap->setCenter($arrVenue['venueSingleCoords']); ?>
 				<?php $objMarker = new \HeimrichHannot\Haste\Map\GoogleMapMarker(); ?>
@@ -140,8 +144,6 @@
 				)
 			); ?>
 		</div>
-
-
 	<?php endif; ?>
 
 </div>

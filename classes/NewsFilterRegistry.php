@@ -219,6 +219,11 @@ class NewsFilterRegistry
 					return null;
 				}
 
+				if (!is_array($this->news_categories))
+				{
+					$this->news_categories = array($this->news_categories);
+				}
+
 				$arrNewsIds = $this->getNewsFromCategories($this->news_categories);
 
 				// preserve ids beside to users selection

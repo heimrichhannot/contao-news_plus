@@ -27,6 +27,14 @@ array_insert(
 	)
 );
 
+array_insert(
+		$GLOBALS['FE_MOD']['news'],
+		1,
+		array(
+				'newslist_map' => 'HeimrichHannot\NewsPlus\ModuleNewsListMap',
+		)
+);
+
 $GLOBALS['FE_MOD']['news']['newsfilter'] = 'HeimrichHannot\NewsPlus\ModuleNewsFilter';
 
 

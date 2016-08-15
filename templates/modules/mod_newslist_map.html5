@@ -1,0 +1,12 @@
+<?php $this->extend('block_unsearchable', array("cssID" => $this->id)); ?>
+
+<?php $this->block('content'); ?>
+	<?php if (!$this->map): ?>
+		<p class="empty"><?php echo $this->empty; ?></p>
+	<?php else: ?>
+		<div class="map">
+			<?= $this->map; ?>
+		</div>
+	<?php endif; ?>
+<?php $this->endblock(); ?>
+

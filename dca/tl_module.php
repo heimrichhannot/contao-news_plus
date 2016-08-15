@@ -25,7 +25,7 @@ $dc['palettes']['newsfilter'] = '
 
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
-                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
+                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve,news_archiveTitleAppendCategories, numberOfItems,news_featured,perPage,skipFirst;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid,news_pagination_overwrite,news_empty_overwrite,news_useInfiniteScroll;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
@@ -64,13 +64,24 @@ $dc['palettes']['newsmenu_plus'] = '
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
 
+$dc['palettes']['newslist_map'] = '
+                                    {title_legend},name,headline,type;
+                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve, news_archiveTitleAppendCategories, news_featured, skipFirst;
+                                    {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,news_empty_overwrite;
+                                    {map_config},mapWidth,mapHeight,mapZoom,customMarkerIcon;
+                                    {image_legend:hide},imgSize;
+                                    {youtube_legend},youtube_template;
+                                    {media_legend},media_template,media_posterSRC;
+                                    {protected_legend:hide},protected;
+                                    {expert_legend:hide},guests,cssID,space';
+
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 $dc['palettes']['__selector__'][] = 'news_addNavigation';
 $dc['palettes']['__selector__'][] = 'news_pagination_overwrite';
 $dc['palettes']['__selector__'][] = 'news_empty_overwrite';
 $dc['palettes']['__selector__'][] = 'news_useInfiniteScroll';
 $dc['palettes']['__selector__'][] = 'news_changeTriggerText';
-
+$dc['palettes']['__selector__'][] = 'customMarkerIcon';
 
 /**
  * SubPalettes
@@ -82,7 +93,7 @@ $dc['subpalettes']['news_pagination_overwrite']         = 'pagination_template,p
 $dc['subpalettes']['news_empty_overwrite']              = 'news_empty_label';
 $dc['subpalettes']['news_useInfiniteScroll']            = 'news_useAutoTrigger, news_changeTriggerText';
 $dc['subpalettes']['news_changeTriggerText']            = 'news_triggerText';
-
+$dc['subpalettes']['customMarkerIcon']            	  	= 'markerIcon,markerWidth,markerHeight';
 /**
  * Fields
  */
@@ -303,6 +314,64 @@ $dc['fields'] = array_merge
 			'eval'      => array('tl_class' => 'w50'),
 			'sql'       => "varchar(64) NOT NULL default ''",
 		),
+		'mapWidth' => array
+		(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['mapWidth'],
+				'inputType'               => 'text',
+				'exclude'                 => true,
+				'default'				  => '100%',
+				'eval'                    => array( 'nospace'=>true, 'tl_class'=>'clr w50'),
+				'sql'                     => "varchar(10) NULL"
+		),
+		'mapHeight' => array
+		(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['mapHeight'],
+				'inputType'               => 'text',
+				'exclude'                 => true,
+				'default'				  => '400px',
+				'eval'                    => array('nospace'=>true, 'tl_class'=>'w50'),
+				'sql'                     => "varchar(10) NULL"
+		),
+		'mapZoom' => array
+		(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['mapZoom'],
+				'inputType'               => 'text',
+				'exclude'                 => true,
+				'default'				  => '15',
+				'eval'                    => array('nospace'=>true, 'tl_class'=>'w50'),
+				'sql'                     => "int(3) NULL"
+		),
+		'customMarkerIcon' =>  array(
+				'label'     => &$GLOBALS['TL_LANG']['tl_module']['customMarkerIcon'],
+				'exclude'   => true,
+				'inputType' => 'checkbox',
+				'eval'      => array('tl_class' => 'clr w50', 'submitOnChange' => true),
+				'sql'       => "char(1) NOT NULL default ''",
+		),
+		'markerIcon' => array(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['markerIcon'],
+				'exclude'                 => true,
+				'inputType'               => 'fileTree',
+				'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr w50'),
+				'sql'                     => "binary(16) NULL"
+		),
+		'markerWidth' => array
+		(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['markerWidth'],
+				'inputType'               => 'text',
+				'exclude'                 => true,
+				'eval'                    => array('rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'clr w50'),
+				'sql'                     => "int(10) NULL"
+		),
+		'markerHeight' => array
+		(
+				'label'                   => &$GLOBALS['TL_LANG']['tl_module']['markerHeight'],
+				'inputType'               => 'text',
+				'exclude'                 => true,
+				'eval'                    => array('rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'),
+				'sql'                     => "int(10) NULL"
+		),
+
 	),
 	is_array($dc['fields']) ? $dc['fields'] : array()
 );

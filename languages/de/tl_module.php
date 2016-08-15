@@ -15,13 +15,14 @@ $GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Nachrichtenliste Plus', 'Li
 $GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Nachrichtenleser Plus', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
 $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Nachrichtenfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Nachrichtenliste manipuliert.');
 $GLOBALS['TL_LANG']['FMD']['newsmenu_plus'] = array('Nachrichtenarchiv-Menü Plus', 'Erzeugt ein erweitertes Nachrichtenarchiv-Menü.');
-
+$GLOBALS['TL_LANG']['FMD']['newslist_map'] = array('Nachrichtenliste als GoogleMap', 'Stellt die Nachrichten-Beiträge anhand der Koordinaten des jeweiligen Veranstaltungsortes in einer GoogleMap dar.');
 /**
  * Legends
  */
 
 $GLOBALS['TL_LANG']['tl_module']['filter_legend'] = 'Filtereinstellungen';
 $GLOBALS['TL_LANG']['tl_module']['navigation_legend'] = 'Navigation-Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['map_config'] = 'Karteneinstellung';
 
 /**
  * Fields
@@ -52,3 +53,12 @@ $GLOBALS['TL_LANG']['tl_module']['news_useInfiniteScroll'] = array('InifiniteScr
 $GLOBALS['TL_LANG']['tl_module']['news_useAutoTrigger'] = array('AutoTrigger aktivieren', 'Wenn aktiviert wird Liste automatisch beim Scrollen nachgeladen. Andernfalls erfolgt das Nachladen mittels Button');
 $GLOBALS['TL_LANG']['tl_module']['news_changeTriggerText'] = array('Triggertext ändern', 'Ermöglicht die Individualisierung des Triggertextes');
 $GLOBALS['TL_LANG']['tl_module']['news_triggerText'] = array('Triggertext', 'Tragen Sie hier den individiuellen Triggertext ein.');
+$GLOBALS['TL_LANG']['tl_module']['markerIcon'] = array('Marker-Icon', 'Wählen Sie hier eine individuelle Grafik für die Darstellung der Marker auf der GoogleMap.');
+$GLOBALS['TL_LANG']['tl_module']['mapWidth'] = array('Kartenbreite', 'Tragen Sie hier die Breite der Karte mit Maßeinheit ein.');
+$GLOBALS['TL_LANG']['tl_module']['mapHeight'] = array('Kartenhöhe', 'Tragen Sie hier die Höhe der Karte mit Maßeinheit ein.');
+$GLOBALS['TL_LANG']['tl_module']['customMarkerIcon'] = array('Marker-Icon individualisieren', 'Eine individuelle Marker-Grafik nutzen.');
+$GLOBALS['TL_LANG']['tl_module']['markerWidth'] = array('Markerbreite', 'Tragen Sie hier die Breite des Markers in Pixel ein.');
+$GLOBALS['TL_LANG']['tl_module']['markerHeight'] = array('Markerbreite', 'Tragen Sie hier die Höhe des Markers in Pixel ein.');
+$GLOBALS['TL_LANG']['tl_module']['mapZoom'] = array('Zoom-Faktor', 'Geben Sie hier den Zoomfaktor für die GoogleMap an.');
+
+

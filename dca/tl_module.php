@@ -18,7 +18,7 @@ $dc['config']['onload_callback'][] = array('tl_module_news_plus', 'initDCA');
  */
 $dc['palettes']['newsfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},news_archives;
+									{config_legend},news_archives,formHybridUseCustomFormId;
 									{template_legend},formHybridPalette,formHybridEditable,formHybridTemplate,formHybridCustomSubTemplates;
 									{filter_legend},news_filterUseSearchIndex,news_filterFuzzySearch,news_filterSearchQueryType,news_filterNewsCategoryArchives,news_categoriesRoot,news_customCategories;
 									{expert_legend:hide},guests,cssID,space';
@@ -83,6 +83,7 @@ $dc['palettes']['__selector__'][] = 'news_useInfiniteScroll';
 $dc['palettes']['__selector__'][] = 'news_changeTriggerText';
 $dc['palettes']['__selector__'][] = 'customMarkerIcon';
 
+
 /**
  * SubPalettes
  */
@@ -93,7 +94,8 @@ $dc['subpalettes']['news_pagination_overwrite']         = 'pagination_template,p
 $dc['subpalettes']['news_empty_overwrite']              = 'news_empty_label';
 $dc['subpalettes']['news_useInfiniteScroll']            = 'news_useAutoTrigger, news_changeTriggerText';
 $dc['subpalettes']['news_changeTriggerText']            = 'news_triggerText';
-$dc['subpalettes']['customMarkerIcon']            	  	= 'markerIcon,markerWidth,markerHeight';
+$dc['subpalettes']['customMarkerIcon']                  = 'markerIcon,markerWidth,markerHeight';
+
 /**
  * Fields
  */

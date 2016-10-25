@@ -105,7 +105,7 @@ $arrFields = array
 					'exclude'          => true,
 					'search'           => true,
 					'inputType'        => 'select',
-					'foreignKey'       => 'tl_news.title',
+					'foreignKey'       => 'tl_news.headline',
 					'relation'         => array('type' => 'hasMany', 'load' => 'eager'),
 					'options_callback' => array('tl_news_plus', 'getNewsGroupedByArchive'),
 					'eval'             => array('tl_class' => 'long', 'mandatory' => true, 'includeBlankOption' => true),

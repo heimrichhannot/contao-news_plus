@@ -80,9 +80,10 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 		}
 
 		// default reader check
-        $this->checkConditions();
-
-		return parent::generate();
+        if($this->checkConditions())
+        {
+            return parent::generate();
+        }
     }
 
     protected function generateAjax()

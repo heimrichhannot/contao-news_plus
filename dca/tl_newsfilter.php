@@ -191,7 +191,7 @@ class tl_newsfilter extends Backend
 		$this->import('FrontendUser', 'User');
 	}
 
-	public function getNewsCategories($dc)
+	public function getNewsCategories(\HeimrichHannot\FormHybrid\DC_Hybrid $dc)
 	{
 		$arrOptions = array();
 
@@ -199,7 +199,7 @@ class tl_newsfilter extends Backend
 			return $arrOptions;
 		}
 
-		$objModule = \ModuleModel::findByPk($dc->id);
+		$objModule = $dc->getConfig()->getModule();
 
 		if ($objModule === null) {
 			return $arrOptions;
@@ -244,7 +244,7 @@ class tl_newsfilter extends Backend
 		return $arrOptions;
 	}
 
-	public function getNewsArchives($dc)
+	public function getNewsArchives(\HeimrichHannot\FormHybrid\DC_Hybrid $dc)
 	{
 		$arrOptions = array();
 
@@ -252,7 +252,7 @@ class tl_newsfilter extends Backend
 			return $arrOptions;
 		}
 
-		$objModule = \ModuleModel::findByPk($dc->id);
+		$objModule = $dc->getConfig()->getModule();
 
 		if ($objModule === null) {
 			return $arrOptions;

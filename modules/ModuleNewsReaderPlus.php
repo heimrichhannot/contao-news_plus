@@ -79,6 +79,9 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 			}
 		}
 
+		// default reader check
+        $this->checkConditions();
+
 		return parent::generate();
     }
 

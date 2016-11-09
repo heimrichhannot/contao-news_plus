@@ -34,7 +34,7 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterShowCategories'] = array('Nach Kate
 $GLOBALS['TL_LANG']['tl_module']['news_filterUseSearchIndex'] = array('Suchindex verwenden', 'Die Suche verwendet den Suchindex oder die Tabelle tl_news');
 $GLOBALS['TL_LANG']['tl_module']['news_filterFuzzySearch'] = array('Fuzzy-Suche verwenden', 'Schließe ähnliche Wörter in die Suche mit ein.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterSearchQueryType'] = array('Finde alle Wörter', 'Finde alle Wörter des Suchstrings.');
-$GLOBALS['TL_LANG']['tl_module']['news_showInModal'] = array('Nachrichtendetails im Modalfenster anzeigen', '<b>Achtung:</b> Der Nachrichtenleser muß entsprechend angegeben werden.');
+$GLOBALS['TL_LANG']['tl_module']['news_showInModal'] = array('Nachrichtendetails im Modalfenster anzeigen <span style="color: #c33">(Veraltet, verwenden Sie "Elemente im Modalfenstern anzeigen")</span>', '<b>Achtung:</b> Der Nachrichtenleser muß entsprechend angegeben werden.');
 $GLOBALS['TL_LANG']['tl_module']['news_pdfJumpTo'] = array('Seite für den PDF-Druck', 'Wählen Sie hier die Seite, die zur Ausgabe der PRINT-TO-PDF-Funktion verwendet werden soll.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterNewsCategoryArchives'] = array('Nachrichtenarchive mit Kategorien', 'Bitte wählen Sie ein oder mehrere Nachrichtenarchive aus für die Kategorien im Filter angezeigt werden sollen.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterModule'] = array('Nachrichtenfilter', 'Bitte wählen Sie einen Nachrichtenfilter um die Filtereingrenzungen für die Liste bereitzustellen.');

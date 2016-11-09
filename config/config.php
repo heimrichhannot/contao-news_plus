@@ -64,3 +64,11 @@ if (TL_MODE == 'FE') {
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('HeimrichHannot\NewsPlus\Hooks', 'parseArticlesHook');
+
+/**
+ * Modal module configuration
+ */
+$GLOBALS['MODAL_MODULES']['newslist_plus'] = array
+(
+    'invokePalette' => 'skipFirst;', // The modal palette will be invoked after the field customTpl; as example
+);

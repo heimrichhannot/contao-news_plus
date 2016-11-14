@@ -121,22 +121,41 @@ class ModuleNewsListMap extends ModuleNewsPlus
 		$this->Template->archives = $this->news_archives;
 
 		$arrArticles = $this->fetchItems($blnFeatured, $limit, $offset);
-		$this->Template->map = $this->generateMap($arrArticles);
+
+		$this->Template->map = $this->generateVenueMap($arrArticles);
     }
 
-	public function generateMap($arrArticles){
-		$objMap = new \HeimrichHannot\Haste\Map\GoogleMap();
+	public function generateVenueMap($arrArticles)
+	{
+		$arrVenues = array();
 
+		foreach($arrArticles as $objArticle)
+		{
+			if(!$objArticle->addVenues) continue;
+
+			$objField = FieldPaletteModel::findByPidAndTableAndField($objArticle->id, 'tl_news', 'venues');
+
+			if(!$objField->venueSingleCoords) continue;
+
+			$objVenue = $objField->current();
+			$objVenue->link = $this->getMarkerLink($objArticle);
+
+			$arrVenues[] = $objVenue;
+		}
+
+		if(empty($arrVenues))
+		{
+			return;
+		}
+
+		$objMap = new \HeimrichHannot\Haste\Map\GoogleMap();
 
 		$markerIcon = $this->customMarkerIcon ? FilesModel::findByUuid($this->markerIcon)->path : null;
 		$markerAction = $this->news_showInModal ? \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_MODAL : \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_LINK;
 
-
-		foreach($arrArticles as $article)
+		foreach($arrVenues as $objVenue)
 		{
-			$objField = FieldPaletteModel::findById(deserialize($article->venues)[0]);
-
-			$objMap->setCenter($objField->venueSingleCoords);
+			$objMap->setCenter($objVenue->venueSingleCoords);
 			$objMarker = new \HeimrichHannot\Haste\Map\GoogleMapOverlay();
 
 			if($this->customMarkerIcon)
@@ -147,10 +166,10 @@ class ModuleNewsListMap extends ModuleNewsPlus
 
 			$objMarker->setMarkerType(\HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERTYPE_ICON);
 			$objMarker->setMarkerAction($markerAction);
-			$objMarker->setUrl($this->getMarkerLink($article));
+			$objMarker->setUrl($objVenue->link);
 			$objMarker->setTarget("#modal_reader_".$this->news_readerModule);
-			$objMarker->setPosition($objField->venueSingleCoords);
-			$objMarker->setTitle($objField->venueName);
+			$objMarker->setPosition($objVenue->venueSingleCoords);
+			$objMarker->setTitle($objVenue->venueName);
 
 			$objMap->addOverlay($objMarker);
 		}

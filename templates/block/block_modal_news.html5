@@ -1,4 +1,4 @@
-<div class="modal fade <?php echo $this->class; ?><?php echo $this->articles ? ' in' : ''; ?>"<?php echo $this->cssID; ?> tabindex="-1" role="dialog" aria-hidden="false" data-history-base-title="{{page::pageTitle}} - {{page::rootTitle}}" data-history-base="<?php echo $this->base; ?>""<?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<div class="modal fade <?php echo $this->class; ?><?php echo $this->articles ? ' in' : ''; ?>"<?php echo $this->cssID; ?> tabindex="-1" role="dialog" aria-hidden="false" data-history-base-title="{{page::pageTitle}} - {{page::rootTitle}}" data-history-base="<?php echo $this->base; ?>"<?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
     <div class="modal-dialog modal-lg">
 		<?php $this->block('content'); ?>
 		<?php $this->endblock(); ?>

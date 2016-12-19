@@ -28,6 +28,15 @@ array_insert(
 );
 
 array_insert(
+    $GLOBALS['FE_MOD']['news'],
+    5,
+    array(
+        'newsarchive_plus' => 'HeimrichHannot\NewsPlus\ModuleNewsArchive',
+    )
+);
+
+
+array_insert(
 		$GLOBALS['FE_MOD']['news'],
 		1,
 		array(

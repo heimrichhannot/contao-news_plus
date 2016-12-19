@@ -15,46 +15,54 @@ namespace HeimrichHannot\NewsPlus;
 class ModuleNewsMenuPlus extends \ModuleNewsMenu
 {
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		parent::compile();
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        parent::compile();
 
-		$this->jumpToCurrent();
-	}
+        $this->jumpToCurrent();
+    }
 
-	protected function jumpToCurrent()
-	{
-		$arrItems = $this->Template->items;
-		
-		// do not jump to current, if year, month or day have been selected by user
-		if(!is_array($arrItems) || empty($arrItems) || isset($_GET['year']) || isset($_GET['month']) || isset($_GET['day']))
-		{
-			return false;
-		}
+    protected function jumpToCurrent()
+    {
+        $arrItems = $this->Template->items;
 
-		foreach($arrItems as $intPeriod => $arrItem)
-		{
-			if($this->news_format == 'news_year' && $intPeriod == date('Y'))
-			{
-				$arrItems[$intPeriod]['isActive'] = true;
-				break;
-			}
-			else if($this->news_format == 'news_month' && $intPeriod == date('Ym'))
-			{
-				$arrItems[$intPeriod]['isActive'] = true;
-				break;
-			}
-			else if($this->news_format == 'news_day'&& $intPeriod == date('Ymd'))
-			{
-				$arrItems[$intPeriod]['isActive'] = true;
-				break;
-			}
-		}
+        // do not jump to current, if year, month or day have been selected by user
+        if (!is_array($arrItems) || empty($arrItems) || isset($_GET['year']) || isset($_GET['month']) || isset($_GET['day']))
+        {
+            return false;
+        }
 
-		$this->Template->items = $arrItems;
-	}
+        $time = $this->news_format_reference ?: time();
+
+        foreach ($arrItems as $intPeriod => $arrItem)
+        {
+            if ($this->news_format == 'news_year' && $intPeriod == date('Y', $time))
+            {
+                $arrItems[$intPeriod]['isActive'] = true;
+                break;
+            }
+            else
+            {
+                if ($this->news_format == 'news_month' && $intPeriod == date('Ym', $time))
+                {
+                    $arrItems[$intPeriod]['isActive'] = true;
+                    break;
+                }
+                else
+                {
+                    if ($this->news_format == 'news_day' && $intPeriod == date('Ymd' , $time))
+                    {
+                        $arrItems[$intPeriod]['isActive'] = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $this->Template->items = $arrItems;
+    }
 
 }

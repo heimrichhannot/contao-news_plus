@@ -294,15 +294,103 @@ class NewsFilterRegistry
 				return "$t.trailInfoDestination RLIKE '$search'";
 
 			case 'q':
-				if(($arrNewsIds = $this->findNewsInSearchIndex($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
-				{
-					return "($t.id IN(" . implode(',', array_map('intval', array_unique($arrNewsIds))) . "))";
-				}
+				 if(!$this->objFilter->news_filterUseSearchIndex && ($arrNewsIds = $this->findNewsIds($this->q,($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
+                {
+                    return "($t.id IN(" . implode(',', array_map('intval', array_unique($arrNewsIds))) . "))";
+                }
+
+                if($this->objFilter->news_filterUseSearchIndex && ($arrNewsIds = $this->findNewsInSearchIndex($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
+                {
+                    return "($t.id IN(" . implode(',', array_map('intval', array_unique($arrNewsIds))) . "))";
+                }
 				return null;
 		}
 
 		return null;
 	}
+
+	/**
+     * search for items directly in tl_news
+     * 
+     * @param      $strKeywords
+     * @param bool $blnOrSearch
+     * @param bool $blnFuzzy
+     *
+     * @return array|int
+     * @throws \Exception
+     */
+    protected function findNewsIds($strKeywords,$blnOrSearch=false, $blnFuzzy=false)
+    {
+        // Clean the keywords
+        $strKeywords = utf8_strtolower($strKeywords);
+        $strKeywords = \StringUtil::decodeEntities($strKeywords);
+
+        if (function_exists('mb_eregi_replace'))
+        {
+            $strKeywords = mb_eregi_replace('[^[:alnum:] \*\+\'"\.:,_-]|\. |\.$|: |:$|, |,$', ' ', $strKeywords);
+        }
+        else
+        {
+            $strKeywords = preg_replace(array('/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\w\' *+".:,-]/u'), ' ', $strKeywords);
+        }
+
+        // Check keyword string
+        if (!strlen($strKeywords))
+        {
+            throw new \Exception('Empty keyword string');
+        }
+
+        // Split keywords
+        $arrChunks = array();
+        preg_match_all('/"[^"]+"|[\+\-]?[^ ]+\*?/', $strKeywords, $arrChunks);
+
+        
+        // Fuzzy search
+        if ($blnFuzzy)
+        {
+            $strKeywords = '%' . $strKeywords . '%';
+        }
+
+        $arrColumns = array('headline', 'alias', 'subheadline','teaser', 'alt');
+
+        $strQuery = "SELECT * FROM tl_news WHERE";
+
+        $strColumnsQuery = '';
+
+
+        foreach($arrColumns as $strColumn)
+        {
+            if($blnFuzzy)
+            {
+                $strColumnsQuery .= ($strColumnsQuery == '') ? " (" . $strColumn . " LIKE ?" : " OR " . $strColumn . " LIKE ?";
+            }
+            else{
+                $strColumnsQuery .= ($strColumnsQuery == '') ? " (" . $strColumn . " = ?" : " OR " . $strColumn . " = ?";
+            }
+        }
+
+
+        $strQuery .= $strColumnsQuery .")";
+
+
+        // add news archives
+        $strQuery .= " AND pid IN (".implode(',', $this->news_archives).")";
+
+        // only get published items
+        $strQuery .= " AND published=1 AND (stop='' OR stop >= ".time().")";
+
+        $arrValues = array_fill(0, count($arrColumns), $strKeywords);
+
+        $objNews = \Database::getInstance()->prepare($strQuery)->execute($arrValues);
+
+
+        if($objNews !== null)
+        {
+            return $objNews->fetchEach('id');
+        }
+
+        return 0;
+    }
 
 	/**
 	 * @param      $strKeywords

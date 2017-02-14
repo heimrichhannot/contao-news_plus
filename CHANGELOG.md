@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.12] - 2017-02-14
+
+### Added
+- useModal to palette to enable opening of linked news in modal-module
+
+### Fixed
+- multiple venues for one news article
+
 ## [2.4.11] - 2017-02-09
 
 ### Added

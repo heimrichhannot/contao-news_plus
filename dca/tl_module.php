@@ -67,6 +67,7 @@ $dc['palettes']['newsmenu_plus'] = '
 $dc['palettes']['newslist_map'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterDefaultExclude,news_filterPreserve, news_archiveTitleAppendCategories, news_featured, skipFirst;
+				    {modal_legend}, useModal;	
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,news_empty_overwrite;
                                     {map_config},mapWidth,mapHeight,mapZoom,customMarkerIcon;
                                     {image_legend:hide},imgSize;

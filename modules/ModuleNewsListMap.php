@@ -129,18 +129,23 @@ class ModuleNewsListMap extends ModuleNewsPlus
 	{
 		$arrVenues = array();
 
+
 		foreach($arrArticles as $objArticle)
 		{
 			if(!$objArticle->addVenues) continue;
 
+
 			$objField = FieldPaletteModel::findByPidAndTableAndField($objArticle->id, 'tl_news', 'venues');
 
-			if(!$objField->venueSingleCoords) continue;
+            while($objField->next())
+            {
+                if(!$objField->venueSingleCoords) continue;
 
-			$objVenue = $objField->current();
-			$objVenue->link = $this->getMarkerLink($objArticle);
+                $objVenue = $objField;
+                $objVenue->link = $this->getMarkerLink($objArticle);
 
-			$arrVenues[] = $objVenue;
+                $arrVenues[] = $objVenue;
+            }
 		}
 
 		if(empty($arrVenues))
@@ -155,7 +160,7 @@ class ModuleNewsListMap extends ModuleNewsPlus
 
 		foreach($arrVenues as $objVenue)
 		{
-			$objMap->setCenter($objVenue->venueSingleCoords);
+            $objMap->setCenter($objVenue->venueSingleCoords);
 			$objMarker = new \HeimrichHannot\Haste\Map\GoogleMapOverlay();
 
 			if($this->customMarkerIcon)
@@ -186,9 +191,8 @@ class ModuleNewsListMap extends ModuleNewsPlus
 	{
 		$objNewsArchive = NewsArchiveModel::findById($article->pid);
 		$strPageAlias = PageModel::findPublishedById($objNewsArchive->jumpTo)->alias;
-		return $GLOBALS['TL_LANGUAGE'].'/'.$strPageAlias.'/'. $article->alias;
+		return $GLOBALS['TL_LANGUAGE'].'/'.$strPageAlias.'/'. $article->alias . $this->objModel->useModal ? '?as=ajax&ag=modal&aa=show': '';
 	}
-
 
 	/**
 	 * Fetch the matching items

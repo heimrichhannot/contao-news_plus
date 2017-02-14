@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.13] - 2017-02-14
+
+### Fixed
+- resolved error in link on map marker
+
 ## [2.4.12] - 2017-02-14
 
 ### Added

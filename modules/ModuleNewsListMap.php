@@ -191,7 +191,7 @@ class ModuleNewsListMap extends ModuleNewsPlus
 	{
 		$objNewsArchive = NewsArchiveModel::findById($article->pid);
 		$strPageAlias = PageModel::findPublishedById($objNewsArchive->jumpTo)->alias;
-		return $GLOBALS['TL_LANGUAGE'].'/'.$strPageAlias.'/'. $article->alias . $this->objModel->useModal ? '?as=ajax&ag=modal&aa=show': '';
+		return $GLOBALS['TL_LANGUAGE'].'/'.$strPageAlias.'/'. $article->alias . ($this->objModel->useModal ? '?as=ajax&ag=modal&aa=show': '');
 	}
 
 	/**

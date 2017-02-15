@@ -149,7 +149,7 @@ class ModuleNewsListMap extends ModuleNewsPlus
 
         $markerIcon   = $this->customMarkerIcon ? FilesModel::findByUuid($this->markerIcon)->path : null;
         $markerAction =
-            $this->news_showInModal ? \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_MODAL : \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_LINK;
+            ($this->news_showInModal || $this->useModal) ? \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_MODAL : \HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERACTION_LINK;
 
         foreach ($arrVenues as $objVenue)
         {
@@ -165,7 +165,10 @@ class ModuleNewsListMap extends ModuleNewsPlus
             $objMarker->setMarkerType(\HeimrichHannot\Haste\Map\GoogleMapOverlay::MARKERTYPE_ICON);
             $objMarker->setMarkerAction($markerAction);
             $objMarker->setUrl($objVenue->link);
-            $objMarker->setTarget("#modal_reader_" . $this->news_readerModule);
+             if(!$this->useModal)
+            {
+                $objMarker->setTarget("#modal_reader_" . $this->news_readerModule);
+            }
             $objMarker->setPosition($objVenue->venueSingleCoords);
             $objMarker->setTitle($objVenue->venueName);
 

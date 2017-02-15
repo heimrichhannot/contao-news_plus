@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.15] - 2017-02-15
+
+### Fixed
+- get correct marker action if useModal is active
+
 ## [2.4.14] - 2017-02-15
 
 ### Fixed

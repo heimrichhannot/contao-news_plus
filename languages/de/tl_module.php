@@ -14,6 +14,8 @@
 $GLOBALS['TL_LANG']['FMD']['newslist_plus'] = array('Erweiterte Nachrichtenliste', 'Listet alle Nachrichten eines bestimmten Zeitraums auf, mit erweiterten Konfigurationsmöglichkeiten.');
 $GLOBALS['TL_LANG']['FMD']['newsreader_plus'] = array('Erweiterter Nachrichtenleser', 'Stellt eine einzelne Nachricht dar mit erweiterten Konfigurationsmöglichkeiten.');
 $GLOBALS['TL_LANG']['FMD']['newsfilter'] = array('Nachrichtenfilter', 'Zeigt einen Filter an, der die Ausgabe der erweiterten Nachrichtenliste manipuliert.');
+$GLOBALS['TL_LANG']['FMD']['newsmenu_plus'] = array('Nachrichtenarchiv-Menü Plus', 'Erzeugt ein erweitertes Nachrichtenarchiv-Menü.');
+$GLOBALS['TL_LANG']['FMD']['newsarchive_plus'] = array('Nachrichtenarchiv Plus', 'Erzeugt ein erweitertes Nachrichtenarchiv.');
 
 /**
  * Legends
@@ -24,6 +26,7 @@ $GLOBALS['TL_LANG']['tl_module']['filter_legend'] = 'Filtereinstellungen';
 /**
  * Fields
  */
+$GLOBALS['TL_LANG']['tl_module']['news_format_reference'] = array('Zeitraum-Referenz', 'Vergeben Sie eine statische Referenz für den gewählten Zeitraum des Archivs.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterTemplate'] = array('Filtertemplate', 'Legen Sie das Template des Nachrichtenfilters fest.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategoryTemplate'] = array('Kategorietemplate', 'Legen Sie das Template des Kategoriefilters fest.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterShowSearch'] = array('Suche anzeigen', 'Soll die Suchfunktion im Filter aktiviert werden?');

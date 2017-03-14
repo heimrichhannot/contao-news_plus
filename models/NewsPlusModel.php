@@ -292,4 +292,39 @@ class NewsPlusModel extends \NewsModel
 
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
+	
+	/**
+     * Find the latest published news item by their parent ID
+     *
+     * @param array $arrPids    An array of news archive IDs
+     * @param array $arrOptions An optional options array
+     *
+     * @return \NewsModel|null A news models or null if there are no news
+     */
+    public static function findLatestPublishedByPids($arrPids, array $arrOptions = [])
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
+
+        $t          = static::$strTable;
+        $arrColumns = ["$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")"];
+
+        if (!BE_USER_LOGGED_IN)
+        {
+            $time         = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.date DESC";
+        }
+
+        $arrOptions['limit']  = 1;
+        $arrOptions['return'] = 'Model';
+
+        return static::findBy($arrColumns, [], $arrOptions);
+    }
 }

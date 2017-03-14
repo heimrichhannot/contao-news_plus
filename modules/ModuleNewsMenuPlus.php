@@ -37,6 +37,20 @@ class ModuleNewsMenuPlus extends \ModuleNewsMenu
 
         $time = $this->news_format_reference ?: time();
 
+        // Get the total number of items
+        $intTotal = \NewsModel::countPublishedFromToByPids($this->intBegin, $this->intEnd, $this->news_archives);
+
+        // set time interval from latest news
+        if ($intTotal === 0 && $this->news_jumpToCurrent == 'show_current')
+        {
+            $objLatestNews = NewsPlusModel::findLatestPublishedByPids($this->news_archives);
+
+            if ($objLatestNews !== null)
+            {
+                $time = $objLatestNews->date;
+            }
+        }
+
         foreach ($arrItems as $intPeriod => $arrItem)
         {
             if ($this->news_format == 'news_year' && $intPeriod == date('Y', $time))

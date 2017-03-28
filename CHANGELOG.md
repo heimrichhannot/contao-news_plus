@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.17] - 2017-03-28
+
+### Fixed
+- handling of q-field needed array as return value, int was given -> this caused an error when no result to a q was found
+
 ## [2.4.16] - 2017-03-14
 
 ### Changed

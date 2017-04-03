@@ -10,6 +10,8 @@
 
 $dc = &$GLOBALS['TL_DCA']['tl_news'];
 
+$dc['config']['onload_callback'][] = ['HeimrichHannot\NewsPlus\Backend\News', 'modifyDC'];
+
 $dc['fields']['enclosure']['eval']['orderField']  = 'orderEnclosureSRC';
 
 $arrFields = array

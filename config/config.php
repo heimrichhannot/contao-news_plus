@@ -77,7 +77,14 @@ define('NEWSPLUS_SESSION_NEWS_IDS', 'NEWS_PLUS_NEWS_IDS');
 if (TL_MODE == 'FE') {
 	$GLOBALS['TL_JAVASCRIPT']['infinitescroll'] = '/system/modules/news_plus/assets/js/jscroll/jquery.jscroll.min.js';
     $GLOBALS['TL_JAVASCRIPT']['newsplus'] = '/system/modules/news_plus/assets/js/jquery.newsplus.js';
+}
 
+/**
+ * Add jquery to backend
+ */
+if (TL_MODE == 'BE')
+{
+    $GLOBALS['TL_JAVASCRIPT']['be_news_plus'] = '/system/modules/news_plus/assets/js/be_news_plus.min.js|static';
 }
 
 /**

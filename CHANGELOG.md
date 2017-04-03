@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.42] - 2017-04-03
+
+### Added
+- limit headline, subheadline and teaser input length by archive restrictions
+
 ## [1.0.41] - 2017-03-14
 
 ### Changed

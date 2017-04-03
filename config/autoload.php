@@ -40,6 +40,7 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\NewsPlus\Hooks'                   => 'system/modules/news_plus/classes/Hooks.php',
 	'HeimrichHannot\NewsPlus\NewsPlusHelper'          => 'system/modules/news_plus/classes/NewsPlusHelper.php',
 	'HeimrichHannot\NewsPlus\NewsPlus'                => 'system/modules/news_plus/classes/NewsPlus.php',
+	'HeimrichHannot\NewsPlus\Backend\News'            => 'system/modules/news_plus/classes/backend/News.php',
 ));
 
 

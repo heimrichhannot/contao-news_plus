@@ -33,6 +33,12 @@ $GLOBALS['TL_LANG']['tl_news_archive']['descriptionPrefixOnArchived'][0] = 'Prä
 $GLOBALS['TL_LANG']['tl_news_archive']['descriptionPrefixOnArchived'][1] = 'Geben Sie hier den gewünschten präfix ein, der bspw. bei Google zu sehen ist.';
 $GLOBALS['TL_LANG']['tl_news_archive']['archivedInterval'][0] = 'Archivierungsintervall';
 $GLOBALS['TL_LANG']['tl_news_archive']['archivedInterval'][1] = 'Geben Sie hier ein Zeitintervall in Tagen an.';
+$GLOBALS['TL_LANG']['tl_news_archive']['limitInputCharacterLength'][0] = 'Zeichenlänge für Eingabefelder begrenzen';
+$GLOBALS['TL_LANG']['tl_news_archive']['limitInputCharacterLength'][1] = 'Limitieren Sie die maximale Zeichenlänge für z.B. Überschrift, Teaser.';
+$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths'][0] = 'Zeichenlänge für Eingabefelder ';
+$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths'][1] = 'Wählen Sie die Eingabefelder aus und legen Sie die maximale Zeichenlänge fest.';
+$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths']['field'][0] = 'Eingabefeld';
+$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths']['length'][0] = 'Zeichenanzahl';
 
 /**
  * Legends
@@ -41,6 +47,7 @@ $GLOBALS['TL_LANG']['tl_news_archive']['root_legend'] = 'Zugehörigkeit';
 $GLOBALS['TL_LANG']['tl_news_archive']['image_legend'] = 'Bildkonfiguration';
 $GLOBALS['TL_LANG']['tl_news_archive']['palette_legend'] = 'Paletten-Einstellungen';
 $GLOBALS['TL_LANG']['tl_news_archive']['subnews_legend'] = 'Unternachrichten-Einstellungen';
+$GLOBALS['TL_LANG']['tl_news_archive']['input_legend'] = 'Eingabefelder-Einstellungen';
 
 /**
  * Buttons

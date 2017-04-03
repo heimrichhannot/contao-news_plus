@@ -23,12 +23,14 @@ $dc['palettes']['__selector__'][] = 'addDummyImage';
 $dc['palettes']['__selector__'][] = 'replaceNewsPalette';
 $dc['palettes']['__selector__'][] = 'limitSubNews';
 $dc['palettes']['__selector__'][] = 'addDescriptionPrefixOnArchived';
+$dc['palettes']['__selector__'][] = 'limitInputCharacterLength';
 
 $dc['palettes']['default']        = str_replace('title', 'title,displayTitle', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{palette_legend},replaceNewsPalette;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{subnews_legend},limitSubNews;', $dc['palettes']['default']);
+$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{input_legend},limitInputCharacterLength;', $dc['palettes']['default']);
 $dc['palettes']['default']        = str_replace('jumpTo', 'jumpTo,addDescriptionPrefixOnArchived', $dc['palettes']['default']);
 
 /**
@@ -38,6 +40,7 @@ $dc['subpalettes']['addDummyImage'] = 'dummyImageSingleSRC';
 $dc['subpalettes']['replaceNewsPalette'] = 'newsPalette';
 $dc['subpalettes']['limitSubNews'] = 'subNewsArchives';
 $dc['subpalettes']['addDescriptionPrefixOnArchived'] = 'descriptionPrefixOnArchived,archivedInterval';
+$dc['subpalettes']['limitInputCharacterLength'] = 'inputCharacterLengths';
 
 $arrFields = array
 (
@@ -130,6 +133,39 @@ $arrFields = array
 		'eval'                    => array('rgxp' => 'digit', 'tl_class' => 'w50'),
 		'sql'                     => "int(10) unsigned NOT NULL default '0'"
 	),
+	'limitInputCharacterLength' => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['limitInputCharacterLength'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => ['submitOnChange' => true],
+        'sql'       => "char(1) NOT NULL default ''",
+    ],
+    'inputCharacterLengths'     => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths'],
+        'exclude'   => true,
+        'inputType' => 'multiColumnEditor',
+        'eval'      => [
+            'tl_class'          => 'clr',
+            'multiColumnEditor' => [
+                'minRowCount' => 0,
+                'fields'      => [
+                    'field'  => [
+                        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths']['field'],
+                        'options'   => ['headline', 'subheadline', 'teaser'],
+                        'reference' => &$GLOBALS['TL_LANG']['tl_news'],
+                        'inputType' => 'select',
+                        'eval'      => ['chosen' => true, 'style' => 'width: 250px'],
+                    ],
+                    'length' => [
+                        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths']['length'],
+                        'inputType' => 'text',
+                        'eval'      => ['style' => 'width: 250px', 'rgxp' => 'digit'],
+                    ],
+                ],
+            ],
+        ],
+        'sql'       => "blob NULL",
+    ],
 );
 
 $dc['fields'] = array_merge($dc['fields'], $arrFields);

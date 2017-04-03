@@ -15,6 +15,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_news'];
  * Config
  */
 $dc['config']['onload_callback'][] = array('tl_news_plus', 'initDefaultPalette');
+$dc['config']['onload_callback'][] = array('HeimrichHannot\NewsPlus\Backend\News', 'modifyDC');
 
 /**
  * Selectors

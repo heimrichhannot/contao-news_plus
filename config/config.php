@@ -79,9 +79,6 @@ if (TL_MODE == 'FE') {
     $GLOBALS['TL_JAVASCRIPT']['newsplus'] = '/system/modules/news_plus/assets/js/jquery.newsplus.js';
 }
 
-/**
- * Add jquery to backend
- */
 if (TL_MODE == 'BE')
 {
     $GLOBALS['TL_JAVASCRIPT']['be_news_plus'] = '/system/modules/news_plus/assets/js/be_news_plus.min.js|static';

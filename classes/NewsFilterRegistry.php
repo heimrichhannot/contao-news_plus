@@ -384,12 +384,12 @@ class NewsFilterRegistry
         $objNews = \Database::getInstance()->prepare($strQuery)->execute($arrValues);
 
 
-        if($objNews !== null)
+       if($objNews->numRows > 0)
         {
             return $objNews->fetchEach('id');
         }
 
-        return 0;
+        return [0];
     }
 
 	/**

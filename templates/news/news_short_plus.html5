@@ -19,10 +19,10 @@
 					); ?></time> <?php echo $this->author; ?> <?php echo $this->commentCount; ?></p>
 		<?php endif ?>
 
-		<h3><?php echo \String::substr($this->headline, 68); ?></h3>
+		<h3><?php echo \StringUtil::substr($this->headline, 68); ?></h3>
 
 		<div class="teaser">
-			<?php echo \String::substr($this->teaser, 180); ?>
+			<?php echo \StringUtil::substr($this->teaser, 180); ?>
 		</div>
 	</a>
 </div>

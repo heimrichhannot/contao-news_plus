@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.43] - 2017-04-06
+
+### Changed
+- added php7 support. fixed contao.core dependency
+- changed "String" to "StringUtil" and "->$callback[0]" to "->{callback[0]}"
+
 ## [1.0.42] - 2017-04-03
 
 ### Added

@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.20] - 2017-04-13
+
+### Fixed
+- fixed maxlength limit for html teaser
+
 ## [2.4.19] - 2017-04-13
 
 ### Changed

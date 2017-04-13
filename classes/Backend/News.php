@@ -45,6 +45,7 @@ class News extends \Backend
                     if ($arrData['eval']['allowHtml'] || strlen($arrData['eval']['rte']) || $arrData['eval']['preserveTags'])
                     {
                         $arrData['eval']['rgxp'] = 'maxlength::' . $intLength;
+                        $arrData['eval']['data-maxlength'] = $intLength;
                     }
                     else
                     {

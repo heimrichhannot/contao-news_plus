@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.45] - 2017-04-13
+
+### Changed
+
+- removed .idea folder
+
 ## [1.0.44] - 2017-04-12
 - created new tag
 

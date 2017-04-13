@@ -40,12 +40,20 @@ class News extends \Backend
 
                 if ($intLength > 0 && isset($arrDca['fields'][$strField]))
                 {
-                    $arrDca['fields'][$strField]['eval']['maxlength']             = $intLength;
-                    $arrDca['fields'][$strField]['eval']['data-count-characters'] = true;
-
-                    if ($arrDca['fields'][$strField]['eval']['rte'])
+                    $arrData = &$arrDca['fields'][$strField];
+                    // use custom html maxlength rgxp
+                    if ($arrData['eval']['allowHtml'] || strlen($arrData['eval']['rte']) || $arrData['eval']['preserveTags'])
                     {
-                        $arrDca['fields'][$strField]['eval']['rte'] = '../modules/news_plus/config/tinyMCE';
+                        $arrData['eval']['rgxp'] = 'maxlength::' . $intLength;
+                    }
+                    else
+                    {
+                        $arrData['eval']['maxlength'] = $intLength;
+                    }
+                    $arrData['eval']['data-count-characters'] = true;
+                    if ($arrData['eval']['rte'])
+                    {
+                        $arrData['eval']['rte'] = '../modules/news_plus/config/tinyMCE';
                     }
                 }
             }

@@ -19,7 +19,7 @@
     "require": {
         "contao/core": ">=3.3,<4-dev",
         "codefog/contao-news_categories": ">=2.0.0,<3-dev",
-        "heimrichhannot/contao-haste_plus": ">=1.4.21,<2-dev",
+        "heimrichhannot/contao-haste_plus": "^1.6.52",
         "heimrichhannot/contao-fieldpalette": ">=1.0.0,<2-dev",
         "heimrichhannot/contao-formhybrid": "^2.5.49",
         "heimrichhannot/contao-modal": "^1.2.5"

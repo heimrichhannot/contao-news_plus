@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.19] - 2017-04-13
+
+### Changed
+- fixed maxlength limit for html input length by archive restrictions
+
 ## [2.4.18] - 2017-04-03
 
 ### Added

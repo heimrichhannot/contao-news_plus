@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.47] - 2017-04-13
+
+### Changed
+
+- fixed maxlength limit for teaser rte input
+
 ## [1.0.46] - 2017-04-13
 
 ### Changed

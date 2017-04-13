@@ -11,7 +11,7 @@ function CharacterCounter(field, options) {
     }
 
     var info = field.parentNode.querySelector('.tl_tip'),
-        maxLength = field.getAttribute('maxlength');
+        maxLength = field.getAttribute('maxlength') || field.getAttribute('data-maxlength');
 
     if (maxLength < 1 || typeof info == 'undefined') return;
 

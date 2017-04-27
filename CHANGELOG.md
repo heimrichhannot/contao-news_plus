@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.21] - 2017-04-27
+
+### Changed
+- varchar lengths to reduce db size
+
 ## [2.4.20] - 2017-04-13
 
 ### Fixed

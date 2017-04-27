@@ -25,122 +25,114 @@ $dc['palettes']['__selector__'][] = 'limitSubNews';
 $dc['palettes']['__selector__'][] = 'addDescriptionPrefixOnArchived';
 $dc['palettes']['__selector__'][] = 'limitInputCharacterLength';
 
-$dc['palettes']['default']        = str_replace('title', 'title,displayTitle', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{palette_legend},replaceNewsPalette;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{subnews_legend},limitSubNews;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{input_legend},limitInputCharacterLength;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo', 'jumpTo,addDescriptionPrefixOnArchived', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('title', 'title,displayTitle', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{palette_legend},replaceNewsPalette;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{subnews_legend},limitSubNews;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{input_legend},limitInputCharacterLength;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo', 'jumpTo,addDescriptionPrefixOnArchived', $dc['palettes']['default']);
 
 /**
  * Subpalettes
  */
-$dc['subpalettes']['addDummyImage'] = 'dummyImageSingleSRC';
-$dc['subpalettes']['replaceNewsPalette'] = 'newsPalette';
-$dc['subpalettes']['limitSubNews'] = 'subNewsArchives';
+$dc['subpalettes']['addDummyImage']                  = 'dummyImageSingleSRC';
+$dc['subpalettes']['replaceNewsPalette']             = 'newsPalette';
+$dc['subpalettes']['limitSubNews']                   = 'subNewsArchives';
 $dc['subpalettes']['addDescriptionPrefixOnArchived'] = 'descriptionPrefixOnArchived,archivedInterval';
-$dc['subpalettes']['limitInputCharacterLength'] = 'inputCharacterLengths';
+$dc['subpalettes']['limitInputCharacterLength']      = 'inputCharacterLengths';
 
-$arrFields = array
-(
-	'displayTitle'        => array
-	(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['displayTitle'],
-		'exclude'   => true,
-		'search'    => true,
-		'inputType' => 'text',
-		'eval'      => array('maxlength' => 255),
-		'sql'       => "varchar(255) NOT NULL default ''",
-	),
-	'root'                => array
-	(
-		'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['root'],
-		'inputType'        => 'select',
-		'options_callback' => array('tl_news_archive_plus', 'getRootPages'),
-		'eval'             => array('includeBlankOption' => true),
-		'sql'              => "int(10) unsigned NOT NULL default '0'",
-	),
-	'addDummyImage'       => array(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['addDummyImage'],
-		'exclude'   => true,
-		'inputType' => 'checkbox',
-		'eval'      => array('submitOnChange' => true),
-		'sql'       => "char(1) NOT NULL default ''",
-	),
-	'dummyImageSingleSRC' => array(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['dummyImageSingleSRC'],
-		'exclude'   => true,
-		'inputType' => 'fileTree',
-		'eval'      => array('filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'tl_class' => 'clr'),
-		'sql'       => "binary(16) NULL",
-	),
-	'replaceNewsPalette'  => array
-	(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['replaceNewsPalette'],
-		'exclude'   => true,
-		'inputType' => 'checkbox',
-		'eval'      => array('submitOnChange' => true),
-		'sql'       => "char(1) NOT NULL default ''",
-	),
-	'newsPalette'         => array
-	(
-		'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['newsPalette'],
-		'exclude'          => true,
-		'inputType'        => 'select',
-		'eval'             => array('mandatory' => true, 'includeBlankOption' => true),
-		'options_callback' => array('tl_news_archive_plus', 'getNewsPalettes'),
-		'sql'              => "varchar(255) NOT NULL default ''",
-	),
-	'limitSubNews'        => array
-	(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['limitSubNews'],
-		'exclude'   => true,
-		'inputType' => 'checkbox',
-		'eval'      => array('submitOnChange' => true),
-		'sql'       => "char(1) NOT NULL default ''",
-	),
-	'subNewsArchives'     => array
-	(
-		'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['subNewsArchives'],
-		'exclude'          => true,
-		'inputType'        => 'checkboxWizard',
-		'options_callback' => array('tl_news_archive_plus', 'getSubNewsArchives'),
-		'eval'             => array('multiple' => true, 'mandatory' => true),
-		'sql'              => "blob NULL",
-	),
-	'addDescriptionPrefixOnArchived'        => array
-	(
-		'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['addDescriptionPrefixOnArchived'],
-		'exclude'   => true,
-		'inputType' => 'checkbox',
-		'eval'      => array('submitOnChange' => true),
-		'sql'       => "char(1) NOT NULL default ''",
-	),
-	'descriptionPrefixOnArchived' => array(
-		'label'                   => &$GLOBALS['TL_LANG']['tl_news_archive']['descriptionPrefixOnArchived'],
-		'exclude'                 => true,
-		'search'                  => true,
-		'inputType'               => 'text',
-		'eval'                    => array('maxlength' => 255, 'tl_class' => 'w50'),
-		'sql'                     => "varchar(255) NOT NULL default ''"
-	),
-	'archivedInterval' => array(
-		'label'                   => &$GLOBALS['TL_LANG']['tl_news_archive']['archivedInterval'],
-		'exclude'                 => true,
-		'inputType'               => 'text',
-		'default'                 => 365,
-		'eval'                    => array('rgxp' => 'digit', 'tl_class' => 'w50'),
-		'sql'                     => "int(10) unsigned NOT NULL default '0'"
-	),
-	'limitInputCharacterLength' => [
+$arrFields = array(
+    'displayTitle'                   => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['displayTitle'],
+        'exclude'   => true,
+        'search'    => true,
+        'inputType' => 'text',
+        'eval'      => array('maxlength' => 255),
+        'sql'       => "varchar(255) NOT NULL default ''",
+    ),
+    'root'                           => array(
+        'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['root'],
+        'inputType'        => 'select',
+        'options_callback' => array('tl_news_archive_plus', 'getRootPages'),
+        'eval'             => array('includeBlankOption' => true),
+        'sql'              => "int(10) unsigned NOT NULL default '0'",
+    ),
+    'addDummyImage'                  => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['addDummyImage'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => array('submitOnChange' => true),
+        'sql'       => "char(1) NOT NULL default ''",
+    ),
+    'dummyImageSingleSRC'            => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['dummyImageSingleSRC'],
+        'exclude'   => true,
+        'inputType' => 'fileTree',
+        'eval'      => array('filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'tl_class' => 'clr'),
+        'sql'       => "binary(16) NULL",
+    ),
+    'replaceNewsPalette'             => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['replaceNewsPalette'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => array('submitOnChange' => true),
+        'sql'       => "char(1) NOT NULL default ''",
+    ),
+    'newsPalette'                    => array(
+        'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['newsPalette'],
+        'exclude'          => true,
+        'inputType'        => 'select',
+        'eval'             => array('mandatory' => true, 'includeBlankOption' => true),
+        'options_callback' => array('tl_news_archive_plus', 'getNewsPalettes'),
+        'sql'              => "varchar(128) NOT NULL default ''",
+    ),
+    'limitSubNews'                   => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['limitSubNews'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => array('submitOnChange' => true),
+        'sql'       => "char(1) NOT NULL default ''",
+    ),
+    'subNewsArchives'                => array(
+        'label'            => &$GLOBALS['TL_LANG']['tl_news_archive']['subNewsArchives'],
+        'exclude'          => true,
+        'inputType'        => 'checkboxWizard',
+        'options_callback' => array('tl_news_archive_plus', 'getSubNewsArchives'),
+        'eval'             => array('multiple' => true, 'mandatory' => true),
+        'sql'              => "blob NULL",
+    ),
+    'addDescriptionPrefixOnArchived' => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['addDescriptionPrefixOnArchived'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => array('submitOnChange' => true),
+        'sql'       => "char(1) NOT NULL default ''",
+    ),
+    'descriptionPrefixOnArchived'    => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['descriptionPrefixOnArchived'],
+        'exclude'   => true,
+        'search'    => true,
+        'inputType' => 'text',
+        'eval'      => array('maxlength' => 128, 'tl_class' => 'w50'),
+        'sql'       => "varchar(128) NOT NULL default ''",
+    ),
+    'archivedInterval'               => array(
+        'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['archivedInterval'],
+        'exclude'   => true,
+        'inputType' => 'text',
+        'default'   => 365,
+        'eval'      => array('rgxp' => 'digit', 'tl_class' => 'w50'),
+        'sql'       => "int(10) unsigned NOT NULL default '0'",
+    ),
+    'limitInputCharacterLength'      => [
         'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['limitInputCharacterLength'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['submitOnChange' => true],
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'inputCharacterLengths'     => [
+    'inputCharacterLengths'          => [
         'label'     => &$GLOBALS['TL_LANG']['tl_news_archive']['inputCharacterLengths'],
         'exclude'   => true,
         'inputType' => 'multiColumnEditor',
@@ -173,75 +165,79 @@ $dc['fields'] = array_merge($dc['fields'], $arrFields);
 class tl_news_archive_plus extends Backend
 {
 
-	/**
-	 * Import the back end user object
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->import('BackendUser', 'User');
-	}
+    /**
+     * Import the back end user object
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->import('BackendUser', 'User');
+    }
 
-	/**
-	 * Get all news archives and return them as array
-	 *
-	 * @return array
-	 */
-	public function getSubNewsArchives(DataContainer $dc)
-	{
-		$arrArchives = array();
+    /**
+     * Get all news archives and return them as array
+     *
+     * @return array
+     */
+    public function getSubNewsArchives(DataContainer $dc)
+    {
+        $arrArchives = array();
 
-		if (!$this->User->isAdmin && !is_array($this->User->news))
-		{
-			return $arrArchives;
-		}
+        if (!$this->User->isAdmin && !is_array($this->User->news))
+        {
+            return $arrArchives;
+        }
 
-		$objArchives = \NewsArchiveModel::findAll(array('order' => 'title'));
+        $objArchives = \NewsArchiveModel::findAll(array('order' => 'title'));
 
-		while ($objArchives->next())
-		{
-			if ($this->User->hasAccess($objArchives->id, 'news'))
-			{
-				$arrArchives[$objArchives->id] = $objArchives->title;
-			}
-		}
+        while ($objArchives->next())
+        {
+            if ($this->User->hasAccess($objArchives->id, 'news'))
+            {
+                $arrArchives[$objArchives->id] = $objArchives->title;
+            }
+        }
 
-		return $arrArchives;
-	}
+        return $arrArchives;
+    }
 
-	public function getNewsPalettes(DataContainer $dc)
-	{
-		$arrOptions = array();
+    public function getNewsPalettes(DataContainer $dc)
+    {
+        $arrOptions = array();
 
-		\Controller::loadDataContainer('tl_news');
+        \Controller::loadDataContainer('tl_news');
 
-		$arrPalettes = $GLOBALS['TL_DCA']['tl_news']['palettes'];
+        $arrPalettes = $GLOBALS['TL_DCA']['tl_news']['palettes'];
 
-		if (!is_array($arrPalettes)) {
-			return $arrOptions;
-		}
+        if (!is_array($arrPalettes))
+        {
+            return $arrOptions;
+        }
 
-		foreach ($arrPalettes as $strName => $strPalette) {
-			if (in_array($strName, array('__selector__', 'internal', 'external', 'default'))) {
-				continue;
-			}
-			
-			$arrOptions[$strName] = $strName;
-		}
+        foreach ($arrPalettes as $strName => $strPalette)
+        {
+            if (in_array($strName, array('__selector__', 'internal', 'external', 'default')))
+            {
+                continue;
+            }
 
-		return $arrOptions;
-	}
+            $arrOptions[$strName] = $strName;
+        }
 
-	public function getRootPages(DataContainer $dc)
-	{
-		$arrOptions = array();
+        return $arrOptions;
+    }
 
-		$objPages = \PageModel::findBy('type', 'root');
+    public function getRootPages(DataContainer $dc)
+    {
+        $arrOptions = array();
 
-		if ($objPages === null) {
-			return $arrOptions;
-		}
+        $objPages = \PageModel::findBy('type', 'root');
 
-		return $objPages->fetchEach('title');
-	}
+        if ($objPages === null)
+        {
+            return $arrOptions;
+        }
+
+        return $objPages->fetchEach('title');
+    }
 }

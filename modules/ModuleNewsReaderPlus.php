@@ -4,20 +4,24 @@
  * Contao Open Source CMS
  *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package news_plus
- * @author Mathias Arzberger <develop@pdir.de>
+ * @author  Mathias Arzberger <develop@pdir.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
 namespace HeimrichHannot\NewsPlus;
+
 use Contao\NewsArchiveModel;
 use HeimrichHannot\CalendarPlus\EventsPlusHelper;
+use HeimrichHannot\Share\Share;
 
 
 /**
  * Class ModuleNewsReader
  *
  * Front end module "news reader".
+ *
  * @copyright  Leo Feyer 2005-2014
  * @author     Leo Feyer <https://contao.org>
  * @package    News
@@ -27,6 +31,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
     /**
      * Template
+     *
      * @var string
      */
     protected $strTemplate = 'mod_newsreader_plus';
@@ -34,6 +39,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
     /**
      * Display a wildcard in the back end
+     *
      * @return string
      */
     public function generate()
@@ -43,38 +49,49 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
             $objTemplate = new \BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['newsreader'][0]) . ' ###';
-            $objTemplate->title = $this->headline;
-            $objTemplate->id = $this->id;
-            $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->title    = $this->headline;
+            $objTemplate->id       = $this->id;
+            $objTemplate->link     = $this->name;
+            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 
             return $objTemplate->parse();
         }
 
         global $objPage;
 
-        if($this->news_template_modal)
+        if ($this->news_template_modal)
         {
-            $this->strTemplate = 'mod_news_modal';
+            $strOriginalTemplate = $this->strTemplate;
+            $this->strTemplate   = $this->customTpl ?: 'mod_news_modal';
+
+            // never render print view in modal
+            if ($this->addShare && in_array('share', \ModuleLoader::getActive()))
+            {
+                if (\Input::get(Share::SHARE_REQUEST_PARAMETER_PRINT) == $this->id)
+                {
+                    $this->strTemplate = $strOriginalTemplate;
+                }
+            }
+
             $this->news_template = $this->news_template_modal;
 
             // list config
-            $this->news_showInModal = true;
+            $this->news_showInModal  = true;
             $this->news_readerModule = $this->id;
 
             // set modal css ID for generateModal() and parent::generate()
-            $arrCss = deserialize($this->cssID, true);
-            $arrCss[0] = NewsPlusHelper::getCSSModalID($this->id);
+            $arrCss      = deserialize($this->cssID, true);
+            $arrCss[0]   = NewsPlusHelper::getCSSModalID($this->id);
             $this->cssID = $arrCss;
-            $this->base = \Controller::generateFrontendUrl($objPage->row());
+            $this->base  = \Controller::generateFrontendUrl($objPage->row());
 
-            if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
+            if ($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
             {
                 $this->strTemplate = 'mod_news_modal_ajax';
                 $this->generateAjax();
             }
 
-            if(!$this->checkConditions())
+            if (!$this->checkConditions())
             {
                 return $this->generateModal();
             }
@@ -85,7 +102,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
     protected function generateAjax()
     {
-        if($this->checkConditions())
+        if ($this->checkConditions())
         {
             parent::generate();
             die($this->replaceInsertTags($this->Template->output())); // use output, otherwise page will not be added to search index
@@ -105,7 +122,8 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         {
             global $objPage;
             $objPage->noSearch = 1;
-            $objPage->cache = 0;
+            $objPage->cache    = 0;
+
             return '';
         }
 
@@ -116,7 +134,8 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         {
             global $objPage;
             $objPage->noSearch = 1;
-            $objPage->cache = 0;
+            $objPage->cache    = 0;
+
             return '';
         }
 
@@ -129,7 +148,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         $this->Template->setData($this->arrData);
         $this->Template->class = trim('mod_' . $this->type . ' ' . $this->cssID[1]);
         $this->Template->cssID = ($this->cssID[0] != '') ? ' id="' . $this->cssID[0] . '"' : '';
-        $this->Template->base = $this->base;
+        $this->Template->base  = $this->base;
 
         if (!empty($this->objModel->classes) && is_array($this->objModel->classes))
         {
@@ -147,8 +166,8 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         global $objPage;
 
         $this->Template->articles = '';
-        $this->Template->referer = 'javascript:history.go(-1)';
-        $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
+        $this->Template->referer  = 'javascript:history.go(-1)';
+        $this->Template->back     = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the news item
         $objArticle = \NewsModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
@@ -157,15 +176,16 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         {
             // Do not index or cache the page
             $objPage->noSearch = 1;
-            $objPage->cache = 0;
+            $objPage->cache    = 0;
 
             // Send a 404 header
             header('HTTP/1.1 404 Not Found');
             $this->Template->articles = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')) . '</p>';
+
             return;
         }
 
-        $arrArticle = $this->parseArticle($objArticle);
+        $arrArticle               = $this->parseArticle($objArticle);
         $this->Template->articles = $arrArticle;
 
         // Overwrite the page title (see #2853 and #4955)
@@ -184,10 +204,11 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         if ($objArticle->noComments || !in_array('comments', \ModuleLoader::getActive()))
         {
             $this->Template->allowComments = false;
+
             return;
         }
 
-        $objArchive = $objArticle->getRelated('pid');
+        $objArchive                    = $objArticle->getRelated('pid');
         $this->Template->allowComments = $objArchive->allowComments;
 
         // Comments are not allowed
@@ -197,11 +218,11 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
         }
 
         // Adjust the comments headline level
-        $intHl = min(intval(str_replace('h', '', $this->hl)), 5);
+        $intHl               = min(intval(str_replace('h', '', $this->hl)), 5);
         $this->Template->hlc = 'h' . ($intHl + 1);
 
         $this->import('Comments');
-        $arrNotifies = array();
+        $arrNotifies = [];
 
         // Notify the system administrator
         if ($objArchive->notify != 'notify_author')
@@ -220,13 +241,13 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
         $objConfig = new \stdClass();
 
-        $objConfig->perPage = $objArchive->perPage;
-        $objConfig->order = $objArchive->sortOrder;
-        $objConfig->template = $this->com_template;
-        $objConfig->requireLogin = $objArchive->requireLogin;
+        $objConfig->perPage        = $objArchive->perPage;
+        $objConfig->order          = $objArchive->sortOrder;
+        $objConfig->template       = $this->com_template;
+        $objConfig->requireLogin   = $objArchive->requireLogin;
         $objConfig->disableCaptcha = $objArchive->disableCaptcha;
-        $objConfig->bbcode = $objArchive->bbcode;
-        $objConfig->moderate = $objArchive->moderate;
+        $objConfig->bbcode         = $objArchive->bbcode;
+        $objConfig->moderate       = $objArchive->moderate;
 
         $this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_news', $objArticle->id, $arrNotifies);
     }

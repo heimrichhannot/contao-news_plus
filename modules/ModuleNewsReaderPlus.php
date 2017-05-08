@@ -54,8 +54,19 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
 		if($this->news_template_modal)
 		{
-			$this->strTemplate = 'mod_news_modal';
-			$this->news_template = $this->news_template_modal;
+			$strOriginalTemplate = $this->strTemplate;
+            $this->strTemplate   = $this->customTpl ?: 'mod_news_modal';
+
+            // never render print view in modal
+            if ($this->addShare && in_array('share', \ModuleLoader::getActive()))
+            {
+                if (\Input::get(Share::SHARE_REQUEST_PARAMETER_PRINT) == $this->id)
+                {
+                    $this->strTemplate = $strOriginalTemplate;
+                }
+            }
+
+            $this->news_template = $this->news_template_modal;
 
 			// list config
 			$this->news_showInModal = true;

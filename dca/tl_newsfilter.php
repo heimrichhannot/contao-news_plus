@@ -12,8 +12,7 @@
 
 $GLOBALS['TL_DCA']['tl_newsfilter'] = array(
     'palettes' => array(
-        'default'    => '{archive_legend},pid;{date_legend},startDate,endDate;{search_legend},q;{category_legend},cat;{submit_legend},submit',
-        'leisuretip' => 'trailInfoDistance,trailInfoDistanceMin,trailInfoDistanceMax,trailInfoDuration,trailInfoDurationMin,trailInfoDurationMax,trailInfoDifficulty,trailInfoDifficultyMin,trailInfoDifficultyMax,trailInfoStart,trailInfoDestination',
+        'default'    => '{archive_legend},pid;{date_legend},startDate,endDate;{search_legend},q;{category_legend},cat;{leisure_tip},trailInfoDistance,trailInfoDistanceMin,trailInfoDistanceMax,trailInfoDuration,trailInfoDurationMin,trailInfoDurationMax,trailInfoDifficulty,trailInfoDifficultyMin,trailInfoDifficultyMax,trailInfoStart,trailInfoDestination;{submit_legend},submit',
 
     ),
     'fields'   => array(

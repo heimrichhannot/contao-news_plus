@@ -36,23 +36,23 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 		return !empty($arrSubmission) ? $arrSubmission : null;
 	}
 
-	public function modifyDC()
+	public function modifyDC(&$arrDca)
 	{
 		parent::modifyDC();
 		\Controller::loadLanguageFile('tl_news');
 
 		if ($this->minDate !== null) {
-			$this->dca['fields']['startDate']['eval']['minDate'] = $this->minDate;
-			$this->dca['fields']['startDate']['default']         = $this->minDate;
+			$arrDca['fields']['startDate']['eval']['minDate'] = $this->minDate;
+			$arrDca['fields']['startDate']['default']         = $this->minDate;
 		}
 
 		if ($this->maxDate !== null) {
-			$this->dca['fields']['endDate']['eval']['maxDate'] = $this->maxDate;
-			$this->dca['fields']['endDate']['default']         = $this->maxDate;
+			$arrDca['fields']['endDate']['eval']['maxDate'] = $this->maxDate;
+			$arrDca['fields']['endDate']['default']         = $this->maxDate;
 		}
 
-		$this->dca['fields']['trailInfoDistance']['inputType']      = 'slider';
-		$this->dca['fields']['trailInfoDistance']['eval']['slider'] = array(
+		$arrDca['fields']['trailInfoDistance']['inputType']      = 'slider';
+		$arrDca['fields']['trailInfoDistance']['eval']['slider'] = array(
 			'type'           => 'range',
 			'step'           => 1,
 			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDistanceValue'),
@@ -61,8 +61,8 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 			'tooltip'        => 'hide',
 		);
 
-		$this->dca['fields']['trailInfoDuration']['inputType']      = 'slider';
-		$this->dca['fields']['trailInfoDuration']['eval']['slider'] = array(
+		$arrDca['fields']['trailInfoDuration']['inputType']      = 'slider';
+		$arrDca['fields']['trailInfoDuration']['eval']['slider'] = array(
 			'type'           => 'range',
 			'step'           => 0.5,
 			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDurationValue'),
@@ -71,48 +71,48 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 			'tooltip'        => 'hide',
 		);
 
-		$this->dca['fields']['trailInfoDifficulty']['inputType']      = 'slider';
-		$this->dca['fields']['trailInfoDifficulty']['eval']['slider'] = array(
+		$arrDca['fields']['trailInfoDifficulty']['inputType']      = 'slider';
+		$arrDca['fields']['trailInfoDifficulty']['eval']['slider'] = array(
 			'type'           => 'range',
 			'step'           => 1,
-			'ticks'          => '[' . implode(',', $this->dca['fields']['trailInfoDifficulty']['options']) . ']',
-			'ticks-labels'   => '["' . implode('","', $this->dca['fields']['trailInfoDifficulty']['reference']) . '"]',
+			'ticks'          => '[' . implode(',', $arrDca['fields']['trailInfoDifficulty']['options']) . ']',
+			'ticks-labels'   => '["' . implode('","', $arrDca['fields']['trailInfoDifficulty']['reference']) . '"]',
 			'value_callback' => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDifficultyValue'),
 			'min_callback'   => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDifficultyMinValue'),
 			'max_callback'   => array('\HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDifficultyMaxValue'),
 			'tooltip'        => 'hide',
 		);
 
-		$this->dca['fields']['trailInfoStart']['inputType']                  = 'select';
-		$this->dca['fields']['trailInfoStart']['eval']['chosen']             = true;
-		$this->dca['fields']['trailInfoStart']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['trailInfoStart']['eval']['blankOptionLabel']   = $GLOBALS['TL_LANG']['tl_news']['trailInfoStart'][0];
-		$this->dca['fields']['trailInfoStart']['options_callback']           = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoStartsFromPublishedNews');
+		$arrDca['fields']['trailInfoStart']['inputType']                  = 'select';
+		$arrDca['fields']['trailInfoStart']['eval']['chosen']             = true;
+		$arrDca['fields']['trailInfoStart']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['trailInfoStart']['eval']['blankOptionLabel']   = $GLOBALS['TL_LANG']['tl_news']['trailInfoStart'][0];
+		$arrDca['fields']['trailInfoStart']['options_callback']           = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoStartsFromPublishedNews');
 
-		$this->dca['fields']['trailInfoDestination']['inputType']                  = 'select';
-		$this->dca['fields']['trailInfoDestination']['eval']['chosen']             = true;
-		$this->dca['fields']['trailInfoDestination']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['trailInfoDestination']['eval']['blankOptionLabel']   = $GLOBALS['TL_LANG']['tl_news']['trailInfoDestination'][0];
-		$this->dca['fields']['trailInfoDestination']['options_callback']           = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDestinationsFromPublishedNews');
+		$arrDca['fields']['trailInfoDestination']['inputType']                  = 'select';
+		$arrDca['fields']['trailInfoDestination']['eval']['chosen']             = true;
+		$arrDca['fields']['trailInfoDestination']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['trailInfoDestination']['eval']['blankOptionLabel']   = $GLOBALS['TL_LANG']['tl_news']['trailInfoDestination'][0];
+		$arrDca['fields']['trailInfoDestination']['options_callback']           = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoDestinationsFromPublishedNews');
 
-		$this->dca['fields']['trailInfoDifficultyMin']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDifficultyFromPublishedNews');
-		$this->dca['fields']['trailInfoDifficultyMax']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDifficultyFromPublishedNews');
+		$arrDca['fields']['trailInfoDifficultyMin']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMinDifficultyFromPublishedNews');
+		$arrDca['fields']['trailInfoDifficultyMax']['options_callback'] = array('HeimrichHannot\NewsPlus\NewsFilterFormHelper', 'getTrailInfoMaxDifficultyFromPublishedNews');
 
 		if ($this->minDate !== null) {
-			$this->dca['fields']['startDate']['eval']['minDate'] = $this->minDate;
-			$this->dca['fields']['startDate']['default']         = $this->minDate;
+			$arrDca['fields']['startDate']['eval']['minDate'] = $this->minDate;
+			$arrDca['fields']['startDate']['default']         = $this->minDate;
 		}
 
 		if ($this->maxDate !== null) {
-			$this->dca['fields']['endDate']['eval']['maxDate'] = $this->maxDate;
-			$this->dca['fields']['endDate']['default']         = $this->maxDate;
+			$arrDca['fields']['endDate']['eval']['maxDate'] = $this->maxDate;
+			$arrDca['fields']['endDate']['default']         = $this->maxDate;
 		}
 
 		// HOOK: modify dca
 		if (isset($GLOBALS['TL_HOOKS']['modifyNewsFilterDca']) && is_array($GLOBALS['TL_HOOKS']['modifyNewsFilterDca'])) {
 			foreach ($GLOBALS['TL_HOOKS']['modifyNewsFilterDca'] as $callback) {
 				$this->import($callback[0]);
-				$this->{$callback[0]}->{$callback[1]}($this->dca, $this);
+				$this->{$callback[0]}->{$callback[1]}($arrDca, $this);
 			}
 		}
 	}

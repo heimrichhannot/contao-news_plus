@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.23] - 2017-05-08
+
+### Fixed
+- slider issue (missing quared brackets)
+- palette issues for leisure tips
+
 ## [2.4.22] - 2017-05-08
 
 ### Added

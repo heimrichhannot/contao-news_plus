@@ -84,7 +84,7 @@ class NewsFilterFormHelper extends \Controller
 	{
 		if ($arrConfig['type'] == 'range')
 		{
-			return (Input::get('trailInfoDistance') != null) ? Input::get('trailInfoDistance') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+			return (Input::get('trailInfoDistance') != null) ? Input::get('trailInfoDistance') : '[' . NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX . ']';
 		}
 		else {
 			return (Input::get('trailInfoDistance') != null) ? Input::get('trailInfoDistance') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
@@ -143,7 +143,7 @@ class NewsFilterFormHelper extends \Controller
 	{
 		if ($arrConfig['type'] == 'range')
 		{
-			return (Input::get('trailInfoDuration') != null) ? Input::get('trailInfoDuration') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+			return (Input::get('trailInfoDuration') != null) ? Input::get('trailInfoDuration') : '[' . NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX . ']';
 		}
 		else {
 			return (Input::get('trailInfoDuration') != null) ? Input::get('trailInfoDuration') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN;
@@ -202,7 +202,7 @@ class NewsFilterFormHelper extends \Controller
 	{
 		if ($arrConfig['type'] == 'range')
 		{
-			return (Input::get('trailInfoDifficulty') != null) ? Input::get('trailInfoDifficulty') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;
+			return (Input::get('trailInfoDifficulty') != null) ? Input::get('trailInfoDifficulty') : '[' . NEWSPLUS_FILTER_SLIDER_DEFAULT_MIN.','.NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX . ']';
 		}
 		else {
 			return (Input::get('trailInfoDifficulty') != null) ? Input::get('trailInfoDifficulty') : NEWSPLUS_FILTER_SLIDER_DEFAULT_MAX;

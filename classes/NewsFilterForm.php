@@ -36,7 +36,7 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 		return !empty($arrSubmission) ? $arrSubmission : null;
 	}
 
-	public function modifyDC(&$arrDca)
+	public function modifyDC(&$arrDca = null)
 	{
 		parent::modifyDC();
 		\Controller::loadLanguageFile('tl_news');

@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.25] - 2017-05-09
+
+### Fixed
+- php 7 support
+
 ## [2.4.24] - 2017-05-09
 
 ### Fixed

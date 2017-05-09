@@ -135,14 +135,14 @@ class NewsArticle extends \Controller
 
 			if ($objPage->outputFormat == 'xhtml')
 			{
-				$this->teaser = \String::toXhtml($this->teaser);
+				$this->teaser = \StringUtil::toXhtml($this->teaser);
 			}
 			else
 			{
-				$this->teaser = \String::toHtml5($this->teaser);
+				$this->teaser = \StringUtil::toHtml5($this->teaser);
 			}
 
-			$this->teaser = \String::encodeEmail($this->teaser);
+			$this->teaser = \StringUtil::encodeEmail($this->teaser);
 		}
 
 		// Display the "read more" button for external/article links
@@ -272,7 +272,7 @@ class NewsArticle extends \Controller
 			case 'external':
 				if (substr($this->objNews->url, 0, 7) == 'mailto:')
 				{
-					self::$arrUrlCache[$strCacheKey] = \String::encodeEmail($this->objNews->url);
+					self::$arrUrlCache[$strCacheKey] = \StringUtil::encodeEmail($this->objNews->url);
 				}
 				else
 				{

@@ -17,7 +17,8 @@
         "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
     },
     "require": {
-        "contao/core": ">=3.3,<4-dev",
+        "php": "~5.4 || ~7.0",
+        "contao/core-bundle": "^3.5.1 || ~4.1",
         "codefog/contao-news_categories": ">=2.0.0,<3-dev",
         "heimrichhannot/contao-haste_plus": "^1.6.52",
         "heimrichhannot/contao-fieldpalette": ">=1.0.0,<2-dev",

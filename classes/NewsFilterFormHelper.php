@@ -307,15 +307,15 @@ class NewsFilterFormHelper extends \Controller
 		{
 			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDistance == '1')
 			{
-				$arrNews[$objNews->$field] = $objNews->$field;
+				$arrNews[$objNews->{$field}] = $objNews->{$field};
 			}
 			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDuration == '1')
 			{
-				$arrNews[$objNews->$field] = $objNews->$field;
+				$arrNews[$objNews->{$field}] = $objNews->{$field};
 			}
 			if ($objNews->addTrailInfo == '1' && $objNews->addTrailInfoDifficulty == '1')
 			{
-				$arrNews[$objNews->$field] = $objNews->$field;
+				$arrNews[$objNews->{$field}] = $objNews->{$field};
 			}
 		}
 		return $arrNews;

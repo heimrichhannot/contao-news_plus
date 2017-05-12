@@ -15,303 +15,331 @@ namespace HeimrichHannot\NewsPlus;
 
 class NewsFilterRegistry
 {
-	protected $arrData = array();
+    protected $arrData = [];
 
-	protected $arrFields = array();
+    protected $arrFields = [];
 
-	protected $arrSubmission = array();
+    protected $arrSubmission = [];
 
-	protected static $strTable = 'tl_news';
+    protected static $strTable = 'tl_news';
 
-	protected static $arrFieldAlias = array
-	(
-		'pid' => 'news_archives',
-		'cat' => 'news_categories',
-	);
+    protected static $arrFieldAlias = [
+        'pid' => 'news_archives',
+        'cat' => 'news_categories',
+    ];
 
-	protected $arrAllCategories = array();
+    protected $arrAllCategories = [];
 
-	protected $arrNewsIds = array();
+    protected $arrNewsIds = [];
 
-	protected $arrNewsIdsExclude = array();
+    protected $arrNewsIdsExclude = [];
 
-	/**
-	 * Object instances (Singleton)
-	 *
-	 * @var array
-	 */
-	protected static $arrInstances = array();
+    /**
+     * Object instances (Singleton)
+     *
+     * @var array
+     */
+    protected static $arrInstances = [];
 
-	/** @var  NewsFilterForm */
-	protected $objFilter;
+    /** @var  NewsFilterForm */
+    protected $objFilter;
 
-	protected function __construct(array $arrConfig)
-	{
-		// set defaults, to provide getWhereSql() functionality for news_list without filter
-		$this->arrData = \HeimrichHannot\Haste\Util\Arrays::filterByPrefixes($arrConfig, array('news_', 'root'));
-		$this->arrAllCategories = \NewsCategories\NewsModel::getCategoriesCache();
+    protected function __construct(array $arrConfig)
+    {
+        // set defaults, to provide getWhereSql() functionality for news_list without filter
+        $this->arrData          = \HeimrichHannot\Haste\Util\Arrays::filterByPrefixes($arrConfig, ['news_', 'root']);
+        $this->arrAllCategories = \NewsCategories\NewsModel::getCategoriesCache();
 
-		if ($this->news_filterCategories)
-		{
-			$this->initCategories();
-		}
+        if ($this->news_filterCategories)
+        {
+            $this->initCategories();
+        }
 
-		if (($objFilter = \ModuleModel::findByPk($arrConfig['news_filterModule'])) !== null) {
-			$this->objFilter        = new NewsFilterForm($objFilter);
-			$this->arrFields        = deserialize($objFilter->formHybridEditable, true);
-			$this->init();
-		}
-	}
-
-
-	public static function getInstance(array $arrConfig)
-	{
-		$strKey = $arrConfig['news_filterModule'] ? ('filter_' . $arrConfig['news_filterModule'])  : ('list_' . $arrConfig['id']);
-
-		if (!isset(static::$arrInstances[$strKey]))
-		{
-			static::$arrInstances[$strKey] = new static($arrConfig);
-		}
-
-		return static::$arrInstances[$strKey];
-	}
-
-	private function __clone()
-	{
-	}
-
-	protected function init()
-	{
-		$this->objFilter->generate();
-		$this->arrSubmission = $this->objFilter->getSubmission(false, true);
-		
-		if ($this->arrSubmission === null) {
-			return false;
-		}
-
-		foreach ($this->arrSubmission as $strName => $varValue) {
-			$strKey          = isset(static::$arrFieldAlias[$strName]) ? static::$arrFieldAlias[$strName] : $strName;
-			$this->{$strKey} = $varValue;
-		}
-	}
-
-	protected function initCategories()
-	{
-		if (!is_array($this->arrAllCategories))
-		{
-			return false;
-		}
-
-		$this->arrNewsIds        = array_merge($this->arrNewsIds, $this->getNewsFromCategories(deserialize($this->news_filterDefault, true)));
-		$this->arrNewsIdsExclude = array_merge($this->arrNewsIdsExclude, $this->getNewsFromCategories(deserialize($this->news_filterDefaultExclude, true)));
-	}
-
-	protected function getNewsFromCategories(array $arrCategories = array())
-	{
-		$arrNewsIds = array();
-
-		foreach ($arrCategories as $category) {
-			if (isset($this->arrAllCategories[$category])) {
-				$arrNewsIds = array_merge($this->arrAllCategories[$category], $arrNewsIds);
-			}
-		}
-
-		return $arrNewsIds;
-	}
-
-	/**
-	 * Set an object property
-	 *
-	 * @param string $strKey
-	 * @param mixed  $varValue
-	 */
-	public function __set($strKey, $varValue)
-	{
-		$this->arrData[$strKey] = $varValue;
-	}
+        if (($objFilter = \ModuleModel::findByPk($arrConfig['news_filterModule'])) !== null)
+        {
+            $this->objFilter = new NewsFilterForm($objFilter);
+            $this->arrFields = deserialize($objFilter->formHybridEditable, true);
+            $this->init();
+        }
+    }
 
 
-	/**
-	 * Return an object property
-	 *
-	 * @param string $strKey
-	 *
-	 * @return mixed
-	 */
-	public function __get($strKey)
-	{
-		if (isset($this->arrData[$strKey])) {
-			return $this->arrData[$strKey];
-		}
-	}
+    public static function getInstance(array $arrConfig)
+    {
+        $strKey = $arrConfig['news_filterModule'] ? ('filter_' . $arrConfig['news_filterModule']) : ('list_' . $arrConfig['id']);
+
+        if (!isset(static::$arrInstances[$strKey]))
+        {
+            static::$arrInstances[$strKey] = new static($arrConfig);
+        }
+
+        return static::$arrInstances[$strKey];
+    }
+
+    private function __clone()
+    {
+    }
+
+    protected function init()
+    {
+        $this->objFilter->generate();
+        $this->arrSubmission = $this->objFilter->getSubmission(false, true);
+
+        if ($this->arrSubmission === null)
+        {
+            return false;
+        }
+
+        foreach ($this->arrSubmission as $strName => $varValue)
+        {
+            $strKey          = isset(static::$arrFieldAlias[$strName]) ? static::$arrFieldAlias[$strName] : $strName;
+            $this->{$strKey} = $varValue;
+        }
+    }
+
+    protected function initCategories()
+    {
+        if (!is_array($this->arrAllCategories))
+        {
+            return false;
+        }
+
+        $this->arrNewsIds        = array_merge($this->arrNewsIds, $this->getNewsFromCategories(deserialize($this->news_filterDefault, true)));
+        $this->arrNewsIdsExclude = array_merge($this->arrNewsIdsExclude, $this->getNewsFromCategories(deserialize($this->news_filterDefaultExclude, true)));
+    }
+
+    protected function getNewsFromCategories(array $arrCategories = [])
+    {
+        $arrNewsIds = [];
+
+        foreach ($arrCategories as $category)
+        {
+            if (isset($this->arrAllCategories[$category]))
+            {
+                $arrNewsIds = array_merge($this->arrAllCategories[$category], $arrNewsIds);
+            }
+        }
+
+        return $arrNewsIds;
+    }
+
+    /**
+     * Set an object property
+     *
+     * @param string $strKey
+     * @param mixed  $varValue
+     */
+    public function __set($strKey, $varValue)
+    {
+        $this->arrData[$strKey] = $varValue;
+    }
 
 
-	/**
-	 * Check whether a property is set
-	 *
-	 * @param string $strKey
-	 *
-	 * @return boolean
-	 */
-	public function __isset($strKey)
-	{
-		return isset($this->arrData[$strKey]);
-	}
+    /**
+     * Return an object property
+     *
+     * @param string $strKey
+     *
+     * @return mixed
+     */
+    public function __get($strKey)
+    {
+        if (isset($this->arrData[$strKey]))
+        {
+            return $this->arrData[$strKey];
+        }
+    }
 
-	/**
-	 * Return the filter data
-	 */
-	public function getData()
-	{
-		return $this->arrData;
-	}
 
-	public function getWhereSql()
-	{
-		$t = static::$strTable;
+    /**
+     * Check whether a property is set
+     *
+     * @param string $strKey
+     *
+     * @return boolean
+     */
+    public function __isset($strKey)
+    {
+        return isset($this->arrData[$strKey]);
+    }
 
-		$arrColumns = array();
+    /**
+     * Return the filter data
+     */
+    public function getData()
+    {
+        return $this->arrData;
+    }
 
-		// archives
-		if(is_array($this->news_archives) && !empty($this->news_archives))
-		{
-			$arrColumns['news_archives'] = "$t.pid IN(" . implode(',', array_map('intval', $this->news_archives)) . ")";
-		}
+    public function getWhereSql()
+    {
+        $t = static::$strTable;
 
-		// iterate over all fields
-		foreach ($this->arrFields as $strName)
-		{
-			$strKey = isset(static::$arrFieldAlias[$strName]) ? static::$arrFieldAlias[$strName] : $strName;
+        $arrColumns = [];
 
-			if (($varValue = $this->createFieldSql($strKey)) !== null)
-			{
-				$arrColumns[$strKey] = $varValue;
-			}
-		}
+        // archives
+        if (is_array($this->news_archives) && !empty($this->news_archives))
+        {
+            $arrColumns['news_archives'] = "$t.pid IN(" . implode(',', array_map('intval', $this->news_archives)) . ")";
+        }
 
-		// news ids : first - add news ids that should be added to the result
-		if (is_array($this->arrNewsIds) && !empty($this->arrNewsIds))
-		{
-			$arrColumns['ids'] = "$t.id IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIds))) . ")";
-		}
+        // iterate over all fields
+        foreach ($this->arrFields as $strName)
+        {
+            $strKey = isset(static::$arrFieldAlias[$strName]) ? static::$arrFieldAlias[$strName] : $strName;
 
-		// news ids : second - remove news ids that should be excluded from the result
-		if (is_array($this->arrNewsIdsExclude) && !empty($this->arrNewsIdsExclude)) {
-			$arrColumns['ids_exclude'] = "$t.id NOT IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIdsExclude))) . ")";
-		}
+            if (($varValue = $this->createFieldSql($strKey)) !== null)
+            {
+                $arrColumns[$strKey] = $varValue;
+            }
+        }
 
-		return $arrColumns;
-	}
+        // news ids : first - add news ids that should be added to the result
+        if (is_array($this->arrNewsIds) && !empty($this->arrNewsIds))
+        {
+            $arrColumns['ids'] = "$t.id IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIds))) . ")";
+        }
 
-	protected function createFieldSql($strName)
-	{
-		if ($this->arrData[$strName] == '') {
-			return null;
-		}
+        // news ids : second - remove news ids that should be excluded from the result
+        if (is_array($this->arrNewsIdsExclude) && !empty($this->arrNewsIdsExclude))
+        {
+            $arrColumns['ids_exclude'] = "$t.id NOT IN(" . implode(',', array_map('intval', array_unique($this->arrNewsIdsExclude))) . ")";
+        }
 
-		$t = static::$strTable;
+        return $arrColumns;
+    }
 
-		switch ($strName) {
-			case 'news_categories':
+    protected function createFieldSql($strName)
+    {
+        if ($this->arrData[$strName] == '')
+        {
+            return null;
+        }
 
-				if (!$this->news_filterCategories)
-				{
-					return null;
-				}
+        $t = static::$strTable;
 
-				if (!is_array($this->news_categories))
-				{
-					$this->news_categories = array($this->news_categories);
-				}
+        switch ($strName)
+        {
+            case 'news_categories':
 
-				$arrNewsIds = $this->getNewsFromCategories($this->news_categories);
+                if (!$this->news_filterCategories)
+                {
+                    return null;
+                }
 
-				// preserve ids beside to users selection
-				if ($this->news_filterPreserve)
-				{
-					$this->arrNewsIds = array_merge($this->arrNewsIds, $arrNewsIds);
-					return null;
-				}
+                if (!is_array($this->news_categories))
+                {
+                    $this->news_categories = [$this->news_categories];
+                }
 
-				$this->arrNewsIds = $arrNewsIds;
-				return null;
-			case 'startDate':
-				return "$t.date >= " . strtotime($this->startDate . ' 00:00:00');
+                $arrNewsIds = $this->getNewsFromCategories($this->news_categories);
 
-			case 'endDate':
-				return "$t.date <= " . strtotime($this->endDate . ' 23:59:59');
+                // preserve ids beside to users selection
+                if ($this->news_filterPreserve)
+                {
+                    $this->arrNewsIds = array_merge($this->arrNewsIds, $arrNewsIds);
 
-			case 'trailInfoDistance':
-				$arrMinMax = explode(',', $this->trailInfoDistance);
-				$strMin = str_replace(',', '.', $arrMinMax[0]);
-				$strMax = str_replace(',', '.', $arrMinMax[1]);
-				return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMin>=$strMin AND $t.trailInfoDistanceMax<=$strMax)";
+                    return null;
+                }
 
-			case 'trailInfoDistanceMin':
-				$strMin = str_replace(',', '.', $this->trailInfoDistanceMin);
-				return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMax>=$strMin)";
+                $this->arrNewsIds = $arrNewsIds;
 
-			case 'trailInfoDistanceMax':
-				$strMax = str_replace(',', '.', $this->trailInfoDistanceMax);
-				return "($t.addTrailInfoDistance=1 AND ($t.trailInfoDistanceMax<=$strMax OR ($t.trailInfoDistanceMin>0.0 AND $t.trailInfoDistanceMin<=$strMax)))";
+                return null;
+            case 'startDate':
+                return "$t.date >= " . strtotime($this->startDate . ' 00:00:00');
 
-			case 'trailInfoDuration':
-				$arrMinMax = explode(',', $this->trailInfoDuration);
-				$strMin = str_replace(',', '.', $arrMinMax[0]);
-				$strMax = str_replace(',', '.', $arrMinMax[1]);
-				return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMin>=$strMin AND $t.trailInfoDurationMax<=$strMax)";
+            case 'endDate':
+                return "$t.date <= " . strtotime($this->endDate . ' 23:59:59');
 
-			case 'trailInfoDurationMin':
-				$strMin = str_replace(',', '.', $this->trailInfoDurationMin);
-				return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMax>=$strMin)";
+            case 'trailInfoDistance':
+                $arrMinMax = explode(',', $this->trailInfoDistance);
+                $strMin    = str_replace(',', '.', $arrMinMax[0]);
+                $strMax    = str_replace(',', '.', $arrMinMax[1]);
 
-			case 'trailInfoDurationMax':
-				$strMax = str_replace(',', '.', $this->trailInfoDurationMax);
-				return "($t.addTrailInfoDuration=1 AND ($t.trailInfoDurationMax<=$strMax OR ($t.trailInfoDurationMin>0.0 AND $t.trailInfoDurationMax<=$strMax)))";
+                return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMin>=$strMin AND $t.trailInfoDistanceMax<=$strMax)";
 
-			case 'trailInfoDifficulty':
-				$arrMinMax = explode(',', $this->trailInfoDifficulty);
-				$strMin = str_replace(',', '.', $arrMinMax[0]);
-				$strMax = str_replace(',', '.', $arrMinMax[1]);
-				return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMin>=$strMin AND $t.trailInfoDifficultyMax<=$strMax)";
+            case 'trailInfoDistanceMin':
+                $strMin = str_replace(',', '.', $this->trailInfoDistanceMin);
 
-			case 'trailInfoDifficultyMin':
-				$strMin = str_replace(',', '.', $this->trailInfoDifficultyMin);
-				return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMax>=$strMin)";
+                return "($t.addTrailInfoDistance=1 AND $t.trailInfoDistanceMax>=$strMin)";
 
-			case 'trailInfoDifficultyMax':
-				$strMax = str_replace(',', '.', $this->trailInfoDifficultyMax);
-				return "($t.addTrailInfoDifficulty=1 AND ($t.trailInfoDifficultyMax<=$strMax OR ($t.trailInfoDifficultymin>0.0 AND $t.trailInfoDifficultyMin<=$strMax)))";
+            case 'trailInfoDistanceMax':
+                $strMax = str_replace(',', '.', $this->trailInfoDistanceMax);
 
-			case 'trailInfoStart':
-				// support inserttags in names like {{br}}
-				$search = implode('({{br}})? ', trimsplit(' ', $this->trailInfoStart));
-				return "$t.trailInfoStart RLIKE '$search'";
+                return "($t.addTrailInfoDistance=1 AND ($t.trailInfoDistanceMax<=$strMax OR ($t.trailInfoDistanceMin>0.0 AND $t.trailInfoDistanceMin<=$strMax)))";
 
-			case 'trailInfoDestination':
-				// support inserttags in names like {{br}}
-				$search = implode('({{br}})? ', trimsplit(' ', $this->trailInfoDestination));
-				return "$t.trailInfoDestination RLIKE '$search'";
+            case 'trailInfoDuration':
+                $arrMinMax = explode(',', $this->trailInfoDuration);
+                $strMin    = str_replace(',', '.', $arrMinMax[0]);
+                $strMax    = str_replace(',', '.', $arrMinMax[1]);
 
-			case 'q':
-				 if(!$this->objFilter->news_filterUseSearchIndex && ($arrNewsIds = $this->findNewsIds($this->q,($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
+                return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMin>=$strMin AND $t.trailInfoDurationMax<=$strMax)";
+
+            case 'trailInfoDurationMin':
+                $strMin = str_replace(',', '.', $this->trailInfoDurationMin);
+
+                return "($t.addTrailInfoDuration=1 AND $t.trailInfoDurationMax>=$strMin)";
+
+            case 'trailInfoDurationMax':
+                $strMax = str_replace(',', '.', $this->trailInfoDurationMax);
+
+                return "($t.addTrailInfoDuration=1 AND ($t.trailInfoDurationMax<=$strMax OR ($t.trailInfoDurationMin>0.0 AND $t.trailInfoDurationMax<=$strMax)))";
+
+            case 'trailInfoDifficulty':
+                $arrMinMax = explode(',', $this->trailInfoDifficulty);
+                $strMin    = str_replace(',', '.', $arrMinMax[0]);
+                $strMax    = str_replace(',', '.', $arrMinMax[1]);
+
+                return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMin>=$strMin AND $t.trailInfoDifficultyMax<=$strMax)";
+
+            case 'trailInfoDifficultyMin':
+                $strMin = str_replace(',', '.', $this->trailInfoDifficultyMin);
+
+                return "($t.addTrailInfoDifficulty=1 AND $t.trailInfoDifficultyMax>=$strMin)";
+
+            case 'trailInfoDifficultyMax':
+                $strMax = str_replace(',', '.', $this->trailInfoDifficultyMax);
+
+                return "($t.addTrailInfoDifficulty=1 AND ($t.trailInfoDifficultyMax<=$strMax OR ($t.trailInfoDifficultymin>0.0 AND $t.trailInfoDifficultyMin<=$strMax)))";
+
+            case 'trailInfoStart':
+                // support inserttags in names like {{br}}
+                $search = implode('({{br}})? ', trimsplit(' ', $this->trailInfoStart));
+
+                return "$t.trailInfoStart RLIKE '$search'";
+
+            case 'trailInfoDestination':
+                // support inserttags in names like {{br}}
+                $search = implode('({{br}})? ', trimsplit(' ', $this->trailInfoDestination));
+
+                return "$t.trailInfoDestination RLIKE '$search'";
+
+            case 'q':
+                if (!$this->objFilter->news_filterUseSearchIndex
+                    && ($arrNewsIds = $this->findNewsIds($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true)))
+                       !== null
+                )
                 {
                     return "($t.id IN(" . implode(',', array_map('intval', array_unique($arrNewsIds))) . "))";
                 }
 
-                if($this->objFilter->news_filterUseSearchIndex && ($arrNewsIds = $this->findNewsInSearchIndex($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null)
+                if ($this->objFilter->news_filterUseSearchIndex
+                    && ($arrNewsIds =
+                        $this->findNewsInSearchIndex($this->q, ($this->objFilter->news_filterSearchQueryType != true), ($this->objFilter->news_filterFuzzySearch == true))) !== null
+                )
                 {
                     return "($t.id IN(" . implode(',', array_map('intval', array_unique($arrNewsIds))) . "))";
                 }
-				return null;
-		}
 
-		return null;
-	}
+                return null;
+        }
 
-	/**
+        return null;
+    }
+
+    /**
      * search for items directly in tl_news
-     * 
+     *
      * @param      $strKeywords
      * @param bool $blnOrSearch
      * @param bool $blnFuzzy
@@ -319,7 +347,7 @@ class NewsFilterRegistry
      * @return array|int
      * @throws \Exception
      */
-    protected function findNewsIds($strKeywords,$blnOrSearch=false, $blnFuzzy=false)
+    protected function findNewsIds($strKeywords, $blnOrSearch = false, $blnFuzzy = false)
     {
         // Clean the keywords
         $strKeywords = utf8_strtolower($strKeywords);
@@ -331,7 +359,7 @@ class NewsFilterRegistry
         }
         else
         {
-            $strKeywords = preg_replace(array('/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\w\' *+".:,-]/u'), ' ', $strKeywords);
+            $strKeywords = preg_replace(['/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\w\' *+".:,-]/u'], ' ', $strKeywords);
         }
 
         // Check keyword string
@@ -341,50 +369,51 @@ class NewsFilterRegistry
         }
 
         // Split keywords
-        $arrChunks = array();
+        $arrChunks = [];
         preg_match_all('/"[^"]+"|[\+\-]?[^ ]+\*?/', $strKeywords, $arrChunks);
 
-        
+
         // Fuzzy search
         if ($blnFuzzy)
         {
             $strKeywords = '%' . $strKeywords . '%';
         }
 
-        $arrColumns = array('headline', 'alias', 'subheadline','teaser', 'alt');
+        $arrColumns = ['headline', 'alias', 'subheadline', 'teaser', 'alt'];
 
         $strQuery = "SELECT * FROM tl_news WHERE";
 
         $strColumnsQuery = '';
 
 
-        foreach($arrColumns as $strColumn)
+        foreach ($arrColumns as $strColumn)
         {
-            if($blnFuzzy)
+            if ($blnFuzzy)
             {
                 $strColumnsQuery .= ($strColumnsQuery == '') ? " (" . $strColumn . " LIKE ?" : " OR " . $strColumn . " LIKE ?";
             }
-            else{
+            else
+            {
                 $strColumnsQuery .= ($strColumnsQuery == '') ? " (" . $strColumn . " = ?" : " OR " . $strColumn . " = ?";
             }
         }
 
 
-        $strQuery .= $strColumnsQuery .")";
+        $strQuery .= $strColumnsQuery . ")";
 
 
         // add news archives
-        $strQuery .= " AND pid IN (".implode(',', $this->news_archives).")";
+        $strQuery .= " AND pid IN (" . implode(',', $this->news_archives) . ")";
 
         // only get published items
-        $strQuery .= " AND published=1 AND (stop='' OR stop >= ".time().")";
+        $strQuery .= " AND published=1 AND (stop='' OR stop >= " . time() . ")";
 
         $arrValues = array_fill(0, count($arrColumns), $strKeywords);
 
         $objNews = \Database::getInstance()->prepare($strQuery)->execute($arrValues);
 
 
-       if($objNews->numRows > 0)
+        if ($objNews->numRows > 0)
         {
             return $objNews->fetchEach('id');
         }
@@ -392,62 +421,68 @@ class NewsFilterRegistry
         return [0];
     }
 
-	/**
-	 * @param      $strKeywords
-	 * @param bool $blnOrSearch
-	 * @param bool $blnFuzzy
-	 *
-	 * @return array|int|null Return an array of news ids, or 0 if nothing was found, or null if something went wrong
-	 */
-	protected function findNewsInSearchIndex($strKeywords,$blnOrSearch=false, $blnFuzzy=false)
-	{
-		global $objPage;
+    /**
+     * @param      $strKeywords
+     * @param bool $blnOrSearch
+     * @param bool $blnFuzzy
+     *
+     * @return array|int|null Return an array of news ids, or 0 if nothing was found, or null if something went wrong
+     */
+    protected function findNewsInSearchIndex($strKeywords, $blnOrSearch = false, $blnFuzzy = false)
+    {
+        global $objPage;
 
-		$t = static::$strTable;
+        $t = static::$strTable;
 
-		$intRoot = $this->rootPage > 0 ? $this->rootPage : $objPage->rootId;
+        $intRoot = $this->rootPage > 0 ? $this->rootPage : $objPage->rootId;
 
-		$arrPages = \Database::getInstance()->getChildRecords($intRoot, 'tl_page');
+        $arrPages = \Database::getInstance()->getChildRecords($intRoot, 'tl_page');
 
-		try
-		{
-			$objSearch = \Search::searchFor($strKeywords, $blnOrSearch, $arrPages, null, null, $blnFuzzy);
+        try
+        {
+            $objSearch = \Search::searchFor($strKeywords, $blnOrSearch, $arrPages, null, null, $blnFuzzy);
 
-			if($objSearch->numRows < 1)
-			{
-				return 0;
-			}
+            if ($objSearch->numRows < 1)
+            {
+                return 0;
+            }
 
-			$arrUrls = $objSearch->fetchEach('url');
-			$strKeyWordColumns = "";
-			$n = 0;
+            $arrUrls           = $objSearch->fetchEach('url');
+            $strKeyWordColumns = "";
+            $n                 = 0;
 
-			foreach($arrUrls as $i => $strAlias)
-			{
-				$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
-				$arrValues[] = basename($strAlias);
-				$n++;
-			}
-			
-			$arrColumns[] = "($strKeyWordColumns)";
+            foreach ($arrUrls as $i => $strAlias)
+            {
+                $strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
+                $arrValues[] = basename($strAlias);
+                $n++;
+            }
 
-			$objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
-			
-			if($objNews !== null)
-			{
-				return $objNews->fetchEach('id');
-			}
+            $arrColumns[] = "($strKeyWordColumns)";
 
-			return 0;
-		}
-		catch (\Exception $e)
-		{
-			\System::log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
-			return null;
-		}
+            $objNews = \HeimrichHannot\NewsPlus\NewsPlusModel::findBy($arrColumns, $arrValues);
 
-		return null;
-	}
+            if ($objNews !== null)
+            {
+                return $objNews->fetchEach('id');
+            }
+
+            return 0;
+        } catch (\Exception $e)
+        {
+            \System::log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
+
+            return null;
+        }
+
+        return null;
+    }
+
+    public function addField($strName)
+    {
+        $this->arrFields[] = $strName;
+        $this->arrFields   = array_unique($this->arrFields);
+    }
 
 
 }

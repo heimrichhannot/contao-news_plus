@@ -1,38 +1,46 @@
 {
-    "name": "heimrichhannot/contao-news_plus",
-    "description":"A collection of enhancements for the contao news module.",
-    "keywords":["contao", "news", "filter", "modal"],
-    "type": "contao-module",
-    "homepage":"https://github.com/heimrichhannot/contao-news_plus",
-    "license":"LGPL-3.0+",
-    "authors":[
-        {
-            "name":"Heimrich & Hannot",
-            "email":"digitales@heimrich-hannot.de",
-            "homepage":"http://www.heimrich-hannot.de",
-            "role":"Developer"
-        }
-    ],
-    "support":{
-        "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
-    },
-    "require": {
-        "php": "~5.4 || ~7.0",
-        "contao/core-bundle": "^3.5.1 || ~4.1",
-        "codefog/contao-news_categories": ">=2.0.0,<3-dev",
-        "heimrichhannot/contao-haste_plus": "^1.6.52",
-        "heimrichhannot/contao-fieldpalette": ">=1.0.0,<2-dev",
-        "heimrichhannot/contao-formhybrid": "^2.5.49",
-        "heimrichhannot/contao-modal": "^1.2.5"
-    },
-    "autoload": {
-        "classmap": [""]
-    },
-    "extra": {
-        "contao": {
-            "sources": {
-                "": "system/modules/news_plus"
-            }
-        }
+  "name": "heimrichhannot/contao-news_plus",
+  "description": "A collection of enhancements for the contao news module.",
+  "keywords": [
+    "contao",
+    "news",
+    "filter",
+    "modal"
+  ],
+  "type": "contao-module",
+  "homepage": "https://github.com/heimrichhannot/contao-news_plus",
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Heimrich & Hannot",
+      "email": "digitales@heimrich-hannot.de",
+      "homepage": "http://www.heimrich-hannot.de",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "issues": "https://github.com/heimrichhannot/contao-news_plus/issues"
+  },
+  "require": {
+    "php": "~5.4 || ~7.0",
+    "contao/core-bundle": "^3.5.1 || ~4.1",
+    "codefog/contao-news_categories": ">=2.0.0,<3-dev",
+    "heimrichhannot/contao-haste_plus": "^1.6.52",
+    "heimrichhannot/contao-fieldpalette": ">=1.0.0,<2-dev",
+    "heimrichhannot/contao-formhybrid": "^2.5.49",
+    "heimrichhannot/contao-modal": "^1.2.5",
+    "heimrichhannot/contao-request": "^1.1.3"
+  },
+  "autoload": {
+    "classmap": [
+      ""
+    ]
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/news_plus"
+      }
+    }
+  }
 }

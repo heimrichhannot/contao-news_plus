@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.26] - 2017-05-09
+
+### Fixed
+- news_list_plus does now provide support to news_categories url filter if no filter module is present within list module configuration 
+
 ## [2.4.25] - 2017-05-09
 
 ### Fixed

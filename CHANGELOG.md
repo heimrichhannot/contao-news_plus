@@ -1,5 +1,10 @@
-# Change Log
+# Changelog
 All notable changes to this project will be documented in this file.
+
+## [2.4.27] - 2017-05-15
+
+### Fixed
+- NewsFilterForm::afterSubmitCallback signature
 
 ## [2.4.26] - 2017-05-09
 

@@ -122,7 +122,7 @@ class NewsFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$this->Template->resetTitle = $GLOBALS['TL_LANG']['tl_newsfilter']['resetTitle'];
 	}
 
-	protected function afterSubmitCallback($dc)
+	protected function afterSubmitCallback(\DataContainer $dc)
 	{
 		// HOOK: modify dca
 		if (isset($GLOBALS['TL_HOOKS']['afterNewsFilterSubmitCallback']) && is_array($GLOBALS['TL_HOOKS']['afterNewsFilterSubmitCallback'])) {

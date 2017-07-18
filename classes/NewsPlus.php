@@ -104,7 +104,7 @@ abstract class NewsPlus extends ModuleNewsPlus
 
     public static function getAllPublishedNews($archives, $arrCategories)
     {
-        $objAllArticles = NewsPlusModel::findPublishedByPids($archives, $arrCategories);
+        $objAllArticles = NewsPlusModel::findPublishedByPidsAndCategories($archives, $arrCategories);
         foreach($objAllArticles as $article){
             $arrIds[] = $article->id;
         }

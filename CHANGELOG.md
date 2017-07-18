@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.49] - 2017-07-18
+
+### Changed
+- Renamed `NewsPlusModel::findPublishedByPids` to `NewsPlusModel::findPublishedByPidsAndCategories`
+- Renamed `NewsPlusModel::countPublishedByPids` to `NewsPlusModel::countPublishedByPidsAndCategories`
+
 ## [1.0.48] - 2017-05-08
 
 ### Added

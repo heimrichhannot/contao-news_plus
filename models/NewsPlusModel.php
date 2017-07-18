@@ -166,7 +166,7 @@ class NewsPlusModel extends \NewsModel
      *
      * @return \Model\Collection|null A collection of models or null if there are no news
      */
-    public static function findPublishedByPids(
+    public static function findPublishedByPidsAndCategories(
         $arrPids,
         $arrCategories,
         array $arrIds = [],
@@ -231,7 +231,7 @@ class NewsPlusModel extends \NewsModel
     }
 
     /**
-     * Count published news items by their parent ID
+     * Count published news items by their parent ID and categories
      *
      * @param array     $arrPids       An array of news archive IDs
      * @param bool|null $arrCategories An array of news category IDs
@@ -243,7 +243,7 @@ class NewsPlusModel extends \NewsModel
      *
      * @return integer The number of news items
      */
-    public static function countPublishedByPids(
+    public static function countPublishedByPidsAndCategories(
         $arrPids,
         $arrCategories,
         array $arrIds = [],

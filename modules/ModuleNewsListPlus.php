@@ -149,7 +149,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
 		}
 
 		// Get the total number of items
-		$intTotal = NewsPlusModel::countPublishedByPids($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, array(), $this->startDate, $this->endDate);
+		$intTotal = NewsPlusModel::countPublishedByPidsAndCategories($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, array(), $this->startDate, $this->endDate);
 
 		if ($intTotal < 1 && !$this->filterSearch)
 		{
@@ -180,7 +180,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
             }
         }
 
-		$objArticles = NewsPlusModel::findPublishedByPids($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
+		$objArticles = NewsPlusModel::findPublishedByPidsAndCategories($this->news_archives, $this->news_categories, $arrIds, $blnFeatured, ($limit ?: 0), $offset, array(),  $this->startDate, $this->endDate);
 
         // store all events ids in session
         $arrUrlParam = array();

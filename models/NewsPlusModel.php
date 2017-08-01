@@ -12,6 +12,8 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use HeimrichHannot\Haste\Database\QueryHelper;
+
 
 /**
  * Class NewsPlusModel
@@ -639,5 +641,96 @@ class NewsPlusModel extends \NewsModel
         $arrOptions['return'] = 'Model';
 
         return static::findBy($arrColumns, [], $arrOptions);
+    }
+
+    /**
+     * Count published news items by their parent ID
+     *
+     * @param array   $arrPids     An array of news archive IDs
+     * @param array   $intMemberAuthor A member ID
+     * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return integer The number of news items
+     */
+    public static function countPublishedByPidsAndMemberAuthor($arrPids, $intMemberAuthor, $blnFeatured=null, array $arrOptions=array())
+    {
+        if (!is_array($arrPids) || empty($arrPids) || !$intMemberAuthor)
+        {
+            return 0;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+        if ($blnFeatured === true)
+        {
+            $arrColumns[] = "$t.featured='1'";
+        }
+        elseif ($blnFeatured === false)
+        {
+            $arrColumns[] = "$t.featured=''";
+        }
+
+        if (!BE_USER_LOGGED_IN)
+        {
+            $time = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+        }
+
+        $arrColumns[] = QueryHelper::createWhereForSerializedBlob('memberAuthor', [$intMemberAuthor]);
+
+        return static::countBy($arrColumns, null, $arrOptions);
+    }
+
+    /**
+     * Find published news items by their parent ID
+     *
+     * @param array   $arrPids     An array of news archive IDs
+     * @param array   $intMemberAuthor A member ID
+     * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
+     * @param integer $intLimit    An optional limit
+     * @param integer $intOffset   An optional offset
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return \Model\Collection|\NewsModel[]|\NewsModel|null A collection of models or null if there are no news
+     */
+    public static function findPublishedByPidsAndMemberAuthor($arrPids, $intMemberAuthor, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+        if ($blnFeatured === true)
+        {
+            $arrColumns[] = "$t.featured='1'";
+        }
+        elseif ($blnFeatured === false)
+        {
+            $arrColumns[] = "$t.featured=''";
+        }
+
+        // Never return unpublished elements in the back end, so they don't end up in the RSS feed
+        if (!BE_USER_LOGGED_IN || TL_MODE == 'BE')
+        {
+            $time = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order']  = "$t.date DESC";
+        }
+
+        $arrOptions['limit']  = $intLimit;
+        $arrOptions['offset'] = $intOffset;
+
+        $arrColumns[] = QueryHelper::createWhereForSerializedBlob('memberAuthor', [$intMemberAuthor]);
+
+        return static::findBy($arrColumns, null, $arrOptions);
     }
 }

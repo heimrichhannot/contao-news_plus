@@ -109,6 +109,10 @@ class ModuleNewsListPlus extends ModuleNewsPlus
      */
     protected function compile()
     {
+        $this->Session->set('news_showtags', $this->news_showtags);
+        $this->Session->set('news_jumpto', $this->tag_jumpTo);
+        $this->Session->set('news_tag_named_class', $this->tag_named_class);
+
         $offset = intval($this->skipFirst);
         $limit = null;
 
@@ -131,7 +135,7 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         {
             $blnFeatured = null;
         }
-    
+
         $this->Template->articles = array();
         $this->Template->empty = $GLOBALS['TL_LANG']['MSC']['emptyList'];
 
@@ -235,6 +239,9 @@ class ModuleNewsListPlus extends ModuleNewsPlus
         $this->Template->archives = $this->news_archives;
         // add triggerText for infiniteScroll
 
+        $this->Session->set('news_showtags', '');
+        $this->Session->set('news_jumpto', '');
+        $this->Session->set('news_tag_named_class', '');
     }
 
     protected function findNewsInSearchIndex()

@@ -370,7 +370,9 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		// Link to the default page
 		if (self::$arrUrlCache[$strCacheKey] === null)
 		{
-            if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objPage = \PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+		    $intJumpTo = $this->jumpToDetails ?: $objItem->getRelated('pid')->jumpTo;
+
+            if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objPage = \PageModel::findByPk($intJumpTo);
 
 			if ($objPage === null)
 			{

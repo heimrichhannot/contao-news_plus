@@ -1,5 +1,12 @@
-# Change Log
+# Changelog
 All notable changes to this project will be documented in this file.
+
+## [1.0.50] - 2017-07-31
+
+### Added
+- support for showing tags in news list
+- support for differing jump to page in news list
+- ModuleMemberNewsList
 
 ## [1.0.49] - 2017-07-18
 

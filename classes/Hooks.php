@@ -11,15 +11,19 @@
 namespace HeimrichHannot\NewsPlus;
 
 
+use HeimrichHannot\Haste\Util\StringUtil;
+use HeimrichHannot\Request\Request;
+use Wa72\HtmlPageDom\HtmlPageCrawler;
+
 class Hooks extends \Controller
 {
-    public function parseArticlesHook(&$objTemplate, $arrArticle, $objModule)
+    public function parseArticlesHook($objTemplate, $arrArticle, $objModule)
     {
         $this->addDummyImage($objTemplate, $arrArticle, $objModule);
         $this->sortEnclosures($objTemplate, $arrArticle, $objModule);
     }
 
-    protected function addDummyImage(&$objTemplate, $arrArticle, $objModule)
+    protected function addDummyImage($objTemplate, $arrArticle, $objModule)
     {
         if($objTemplate->addImage) return;
 
@@ -72,7 +76,7 @@ class Hooks extends \Controller
      * @param $arrArticle
      * @param $objModule
      */
-    protected function sortEnclosures(&$objTemplate, $arrArticle, $objModule)
+    protected function sortEnclosures($objTemplate, $arrArticle, $objModule)
     {
         if (!is_array($objTemplate->enclosure) || empty($objTemplate->enclosure)) return;
 

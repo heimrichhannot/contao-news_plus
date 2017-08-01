@@ -22,7 +22,8 @@ $dc['palettes']['newsfilter'] = '
 
 $dc['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
-                                    {config_legend},news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
+                                    {config_legend},news_archives,jumpToDetails,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
+                                    {showtags_legend},news_showtags;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule,news_filterModule,addListGrid, news_useInfiniteScroll;
                                     {image_legend:hide},imgSize;
                                     {youtube_legend},youtube_template;
@@ -67,6 +68,8 @@ $dc['palettes']['newsmenu_plus'] = '
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
+
+$dc['palettes']['membernewslist'] = $dc['palettes']['newslist'];
 
 $dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
 $dc['palettes']['__selector__'][] = 'news_useInfiniteScroll';
@@ -235,6 +238,7 @@ $dc['fields'] = array_merge(
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
+        'jumpToDetails' => $GLOBALS['TL_DCA']['tl_module']['fields']['jumpTo']
     ],
     is_array($dc['fields']) ? $dc['fields'] : []
 );

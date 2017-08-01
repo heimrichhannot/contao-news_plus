@@ -8,6 +8,7 @@ array_insert(
     1,
     array(
         'newslist_plus' => 'HeimrichHannot\NewsPlus\ModuleNewsListPlus',
+        'membernewslist' => 'HeimrichHannot\NewsPlus\ModuleMemberNewsList',
     )
 );
 

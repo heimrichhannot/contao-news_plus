@@ -11,28 +11,28 @@
 
 \System::loadLanguageFile('tl_news');
 
-$dc = &$GLOBALS['TL_DCA']['tl_news_archive'];
+$arrDca = &$GLOBALS['TL_DCA']['tl_news_archive'];
 
 /**
  * Config
  */
-$dc['list']['sorting']['fields'] = ['root', 'title'];
+$arrDca['list']['sorting']['fields'] = ['root', 'title'];
 
 /**
  * Palettes
  */
-$dc['palettes']['__selector__'][] = 'addDummyImage';
-$dc['palettes']['__selector__'][] = 'limitInputCharacterLength';
-$dc['palettes']['default']        = str_replace('title', 'title,displayTitle', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $dc['palettes']['default']);
-$dc['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{input_legend},limitInputCharacterLength;', $dc['palettes']['default']);
+$arrDca['palettes']['__selector__'][] = 'addDummyImage';
+$arrDca['palettes']['__selector__'][] = 'limitInputCharacterLength';
+$arrDca['palettes']['default']        = str_replace('title', 'title,displayTitle', $arrDca['palettes']['default']);
+$arrDca['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $arrDca['palettes']['default']);
+$arrDca['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{image_legend},addDummyImage;', $arrDca['palettes']['default']);
+$arrDca['palettes']['default']        = str_replace('jumpTo;', 'jumpTo;{input_legend},limitInputCharacterLength;', $arrDca['palettes']['default']);
 
 /**
  * Subpalettes
  */
-$dc['subpalettes']['addDummyImage']             = 'dummyImageSingleSRC';
-$dc['subpalettes']['limitInputCharacterLength'] = 'inputCharacterLengths';
+$arrDca['subpalettes']['addDummyImage']             = 'dummyImageSingleSRC';
+$arrDca['subpalettes']['limitInputCharacterLength'] = 'inputCharacterLengths';
 
 $arrFields = [
     'displayTitle'              => [
@@ -99,11 +99,11 @@ $arrFields = [
     ],
 ];
 
-$dc['fields'] = array_merge($dc['fields'], $arrFields);
+$arrDca['fields'] = array_merge($arrDca['fields'], $arrFields);
 
 class tl_news_archive_plus extends \Backend
 {
-    public function getRootPages(\DataContainer $dc)
+    public function getRootPages(\DataContainer $arrDca)
     {
         $arrOptions = [];
 

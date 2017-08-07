@@ -370,7 +370,17 @@ abstract class ModuleNewsPlus extends \ModuleNews
 		// Link to the default page
 		if (self::$arrUrlCache[$strCacheKey] === null)
 		{
-		    $intJumpTo = $this->jumpToDetails ?: $objItem->getRelated('pid')->jumpTo;
+		    // priority 3 -> archive
+            $intJumpTo = $objItem->getRelated('pid')->jumpTo;
+
+            // priority 2 -> news category
+            if ($objItem->primaryCategory && ($objCategory = NewsCategoryModel::findPublishedByIdOrAlias($objItem->primaryCategory)) !== null)
+            {
+                $intJumpTo = $objCategory->jumpToDetails ?: $intJumpTo;
+            }
+
+            // priority 1 -> module
+            $intJumpTo = $this->jumpToDetails ?: $intJumpTo;
 
             if(!$GLOBALS['NEWS_LIST_EXCLUDE_RELATED']) $objPage = \PageModel::findByPk($intJumpTo);
 

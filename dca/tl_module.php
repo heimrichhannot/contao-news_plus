@@ -9,18 +9,18 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-$dc = &$GLOBALS['TL_DCA']['tl_module'];
+$arrDca = &$GLOBALS['TL_DCA']['tl_module'];
 
 /**
  * Palettes
  */
-$dc['palettes']['newsfilter'] = '
+$arrDca['palettes']['newsfilter'] = '
 									{title_legend},name,headline,type;
 									{template_legend},news_archives,news_filterTemplate,news_filterCategoryTemplate,news_filterShowSearch,news_filterShowCategories;
 									{filter_legend},news_filterUseSearchIndex,news_filterFuzzySearch,news_filterSearchQueryType,news_filterNewsCategoryArchives,news_categoriesRoot,news_customCategories;
 									{expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['newslist_plus'] = '
+$arrDca['palettes']['newslist_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,jumpToDetails,news_filterCategories,news_filterDefault,news_filterPreserve,news_archiveTitleAppendCategories,numberOfItems,news_featured,perPage,skipFirst;
                                     {showtags_legend},news_showtags;
@@ -31,7 +31,7 @@ $dc['palettes']['newslist_plus'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['newslist_highlight'] = '
+$arrDca['palettes']['newslist_highlight'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,numberOfItems,news_featured,perPage,skipFirst;
                                     {template_legend:hide},news_metaFields,news_template,customTpl,news_showInModal,news_readerModule;
@@ -41,7 +41,7 @@ $dc['palettes']['newslist_highlight'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['newsreader_plus'] = '
+$arrDca['palettes']['newsreader_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives;
                                     {showtags_legend},tag_filter,tag_ignore,news_showtags;
@@ -53,7 +53,7 @@ $dc['palettes']['newsreader_plus'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['newsarchive_plus'] = '
+$arrDca['palettes']['newsarchive_plus'] = '
                                     {title_legend},name,headline,type;
                                     {config_legend},news_archives,news_jumpToCurrent,news_readerModule,perPage,news_format,news_format_reference;
                                     {template_legend:hide},news_metaFields,news_template,customTpl;
@@ -61,7 +61,7 @@ $dc['palettes']['newsarchive_plus'] = '
                                     {protected_legend:hide},protected;
                                     {expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['newsmenu_plus'] = '
+$arrDca['palettes']['newsmenu_plus'] = '
 									{title_legend},name,headline,type;
 									{config_legend},news_archives,news_showQuantity,news_jumpToCurrent,news_format,news_format_reference,news_startDay,news_order;
 									{redirect_legend},jumpTo;
@@ -69,22 +69,22 @@ $dc['palettes']['newsmenu_plus'] = '
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
 
-$dc['palettes']['membernewslist'] = $dc['palettes']['newslist'];
+$arrDca['palettes']['membernewslist'] = $arrDca['palettes']['newslist'];
 
-$dc['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
-$dc['palettes']['__selector__'][] = 'news_useInfiniteScroll';
-$dc['palettes']['__selector__'][] = 'news_changeTriggerText';
+$arrDca['palettes']['__selector__'][] = 'news_archiveTitleAppendCategories';
+$arrDca['palettes']['__selector__'][] = 'news_useInfiniteScroll';
+$arrDca['palettes']['__selector__'][] = 'news_changeTriggerText';
 /**
  * SubPalettes
  */
 
-$dc['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
-$dc['subpalettes']['news_useInfiniteScroll']            = 'news_useAutoTrigger, news_changeTriggerText';
-$dc['subpalettes']['news_changeTriggerText']            = 'news_triggerText';
+$arrDca['subpalettes']['news_archiveTitleAppendCategories'] = 'news_archiveTitleCategories';
+$arrDca['subpalettes']['news_useInfiniteScroll']            = 'news_useAutoTrigger, news_changeTriggerText';
+$arrDca['subpalettes']['news_changeTriggerText']            = 'news_triggerText';
 /**
  * Fields
  */
-$dc['fields'] = array_merge(
+$arrDca['fields'] = array_merge(
     [
         'news_format_reference'             => [
             'exclude'   => true,
@@ -240,11 +240,11 @@ $dc['fields'] = array_merge(
         ],
         'jumpToDetails' => $GLOBALS['TL_DCA']['tl_module']['fields']['jumpTo']
     ],
-    is_array($dc['fields']) ? $dc['fields'] : []
+    is_array($arrDca['fields']) ? $arrDca['fields'] : []
 );
 
-$dc['fields']['news_archives']['options_callback']     = ['tl_module_news_plus', 'getNewsArchives'];
-$dc['fields']['news_readerModule']['options_callback'] = ['tl_module_news_plus', 'getReaderModules'];
+$arrDca['fields']['news_archives']['options_callback']     = ['tl_module_news_plus', 'getNewsArchives'];
+$arrDca['fields']['news_readerModule']['options_callback'] = ['tl_module_news_plus', 'getReaderModules'];
 
 /**
  * Class tl_module_news_plus

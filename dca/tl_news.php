@@ -1,26 +1,37 @@
 <?php
+
+$arrDca = &$GLOBALS['TL_DCA']['tl_news'];
+
 /**
- * Contao Open Source CMS
- * 
- * Copyright (c) 2015 Heimrich & Hannot GmbH
- * @package news_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * Callbacks
  */
+$arrDca['config']['onload_callback'][] = ['HeimrichHannot\NewsPlus\Backend\News', 'modifyDC'];
 
-$dc = &$GLOBALS['TL_DCA']['tl_news'];
+/**
+ * Palettes
+ */
+$arrDca['palettes']['default'] = str_replace('categories', 'categories,primaryCategory', $arrDca['palettes']['default']);
 
-$dc['config']['onload_callback'][] = ['HeimrichHannot\NewsPlus\Backend\News', 'modifyDC'];
+/**
+ * Fields
+ */
+$arrFields = [
+    'primaryCategory' => [
+        'label'                   => &$GLOBALS['TL_LANG']['tl_news']['primaryCategory'],
+        'exclude'                 => true,
+        'filter'                  => true,
+        'inputType'               => 'treePicker',
+        'foreignKey'              => 'tl_news_category.title',
+        'eval'                    => array('fieldType'=>'radio', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
+        'sql'                     => "blob NULL"
+    ],
+    'orderEnclosureSRC' => [
+        'label' => &$GLOBALS['TL_LANG']['tl_news']['orderEnclosureSRC'],
+        'sql'   => "blob NULL"
+    ],
 
-$dc['fields']['enclosure']['eval']['orderField']  = 'orderEnclosureSRC';
+];
 
-$arrFields = array
-(
-	'orderEnclosureSRC' => array
-	(
-		'label'                   => &$GLOBALS['TL_LANG']['tl_news']['orderEnclosureSRC'],
-		'sql'                     => "blob NULL"
-	),
-);
+$arrDca['fields'] = array_merge($arrDca['fields'], $arrFields);
 
-$dc['fields'] = array_merge($dc['fields'], $arrFields);
+$arrDca['fields']['enclosure']['eval']['orderField'] = 'orderEnclosureSRC';

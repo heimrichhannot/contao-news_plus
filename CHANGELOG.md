@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2017-08-07
+
+### Added
+- support for category based jump to urls -> a primary category has to be set in the concrete news
+
 ## [1.0.50] - 2017-07-31
 
 ### Added

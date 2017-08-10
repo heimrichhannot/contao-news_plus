@@ -369,9 +369,11 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
 		// Link to the default page
 		if (self::$arrUrlCache[$strCacheKey] === null)
-		{
-		    // priority 3 -> archive
-            $intJumpTo = $objItem->getRelated('pid')->jumpTo;
+        {
+            // priority 3 -> archive
+            if (($objArchive = $objItem->getRelated('pid')) !== null && ($objJumpTo = $objArchive->getRelated('jumpTo')) !== null) {
+                $intJumpTo = $objJumpTo->id;
+            }
 
             // priority 2 -> news category
             if ($objItem->primaryCategory && ($objCategory = NewsCategoryModel::findPublishedByIdOrAlias($objItem->primaryCategory)) !== null)

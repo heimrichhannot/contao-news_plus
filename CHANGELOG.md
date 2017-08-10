@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2017-08-07
+
+### Added
+- insert tags respecting the overriding of a news archive's jump to by category
+- fixed search index for the case of overriding of a news archive's jump to by category
+
 ## [1.1.0] - 2017-08-07
 
 ### Added

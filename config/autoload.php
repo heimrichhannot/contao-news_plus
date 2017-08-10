@@ -41,6 +41,7 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\NewsPlus\NewsPlusTagHelper'       => 'system/modules/news_plus/classes/NewsPlusTagHelper.php',
 	'HeimrichHannot\NewsPlus\NewsPlus'                => 'system/modules/news_plus/classes/NewsPlus.php',
 	'HeimrichHannot\NewsPlus\Hooks'                   => 'system/modules/news_plus/classes/Hooks.php',
+	'HeimrichHannot\NewsPlus\InsertTags\InsertTags'   => 'system/modules/news_plus/classes/InsertTags.php',
 	'HeimrichHannot\NewsPlus\Backend\News'            => 'system/modules/news_plus/classes/backend/News.php',
 ));
 

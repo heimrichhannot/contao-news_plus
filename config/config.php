@@ -89,3 +89,12 @@ if (TL_MODE == 'BE')
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('HeimrichHannot\NewsPlus\Hooks', 'parseArticlesHook');
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_plus'] =  ['HeimrichHannot\NewsPlus\InsertTags\InsertTags', 'replace'];
+
+foreach ($GLOBALS['TL_HOOKS']['getSearchablePages'] as &$arrCallback)
+{
+    if ($arrCallback[0] == 'News' && $arrCallback[1] == 'getSearchablePages')
+    {
+        $arrCallback = ['HeimrichHannot\NewsPlus\NewsPlus', 'getSearchablePages'];
+    }
+}

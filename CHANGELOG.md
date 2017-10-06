@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2017-10-06
+
+### Removed
+- check for frontendedit in member news list
+
 ## [1.1.1] - 2017-08-07
 
 ### Added

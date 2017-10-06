@@ -61,11 +61,6 @@ class ModuleMemberNewsList extends ModuleNewsList
     {
         global $objPage;
 
-        if (!in_array('frontendedit', \ModuleLoader::getActive()))
-        {
-            throw new \Exception('For usage of ModuleMemberNewsReader you need heimrichhannot/contao-frontendedit installed.');
-        }
-
         // Get the news item
         if (($objMember = \MemberModel::findBy(['disable!=1', 'alias=?'], [\Input::get('items')])) === null)
         {
@@ -80,11 +75,6 @@ class ModuleMemberNewsList extends ModuleNewsList
     protected function fetchItems($newsArchives, $blnFeatured, $limit, $offset)
     {
         global $objPage;
-
-        if (!in_array('frontendedit', \ModuleLoader::getActive()))
-        {
-            throw new \Exception('For usage of ModuleMemberNewsReader you need heimrichhannot/contao-frontendedit installed.');
-        }
 
         // Get the news item
         if (($objMember = \MemberModel::findBy(['disable!=1', 'alias=?'], [\Input::get('items')])) === null)

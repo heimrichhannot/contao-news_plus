@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use Haste\Util\Url;
 
 class ModuleNewsMenuPlus extends \ModuleNewsMenu
 {
@@ -23,6 +24,60 @@ class ModuleNewsMenuPlus extends \ModuleNewsMenu
         parent::compile();
 
         $this->jumpToCurrent();
+    }
+
+    /**
+     * Generate the yearly menu
+     */
+    protected function compileYearlyMenu()
+    {
+        $time = time();
+        $arrData = array();
+        $arrNewsIds = $this->getFilteredNewsIds();
+        
+        // Configure template for yearly menu
+        if (version_compare(VERSION, '4.0', '<'))
+        {
+            $this->Template = new \FrontendTemplate('mod_newsmenu_year');
+        }
+        else
+        {
+            $this->Template->yearly = true;
+        }
+
+        // Get the dates
+        $objDates = $this->Database->query("SELECT FROM_UNIXTIME(date, '%Y') AS year, COUNT(*) AS count FROM tl_news WHERE pid IN(" . implode(',', array_map('intval', $this->news_archives)) . ")" . ((!BE_USER_LOGGED_IN || TL_MODE == 'BE') ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1" : "") . (!empty($arrNewsIds) ? (" AND id IN (" . implode(',', $arrNewsIds) . ")") : "") . " GROUP BY year ORDER BY year DESC");
+
+        while ($objDates->next())
+        {
+            $arrData[$objDates->year] = $objDates->count;
+        }
+
+        // Sort the data
+        ($this->news_order == 'ascending') ? ksort($arrData) : krsort($arrData);
+
+        $arrItems = array();
+        $count = 0;
+        $limit = count($arrData);
+        $strUrl = $this->generateCategoryUrl();
+
+        // Prepare the navigation
+        foreach ($arrData as $intYear=>$intCount)
+        {
+            $intDate = $intYear;
+            $quantity = sprintf((($intCount < 2) ? $GLOBALS['TL_LANG']['MSC']['entry'] : $GLOBALS['TL_LANG']['MSC']['entries']), $intCount);
+
+            $arrItems[$intYear]['date'] = $intDate;
+            $arrItems[$intYear]['link'] = $intYear;
+            $arrItems[$intYear]['href'] = Url::removeQueryString(['year'], \Environment::get('request')) . ($GLOBALS['TL_CONFIG']['disableAlias'] ? '&amp;' : '?') . 'year=' . $intDate;
+            $arrItems[$intYear]['title'] = specialchars($intYear . ' (' . $quantity . ')');
+            $arrItems[$intYear]['class'] = trim(((++$count == 1) ? 'first ' : '') . (($count == $limit) ? 'last' : ''));
+            $arrItems[$intYear]['isActive'] = (\Input::get('year') == $intDate);
+            $arrItems[$intYear]['quantity'] = $quantity;
+        }
+
+        $this->Template->items = $arrItems;
+        $this->Template->showQuantity = ($this->news_showQuantity != '');
     }
 
     protected function jumpToCurrent()

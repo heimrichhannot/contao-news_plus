@@ -41,16 +41,13 @@ class News extends \Backend
                 if ($intLength > 0 && isset($arrDca['fields'][$strField]))
                 {
                     $arrData = &$arrDca['fields'][$strField];
-                    // use custom html maxlength rgxp
-                    if ($arrData['eval']['allowHtml'] || strlen($arrData['eval']['rte']) || $arrData['eval']['preserveTags'])
-                    {
-                        $arrData['eval']['rgxp'] = 'maxlength::' . $intLength;
-                        $arrData['eval']['data-maxlength'] = $intLength;
+
+                    if(isset($arrData['eval']['maxlength'])){
+                        unset($arrData['eval']['maxlength']); // contao core does not count special characters as decoded entities
                     }
-                    else
-                    {
-                        $arrData['eval']['maxlength'] = $intLength;
-                    }
+
+                    $arrData['eval']['data-maxlength'] = $intLength;
+                    $arrData['eval']['rgxp'] = 'maxlength::' . $intLength;
                     $arrData['eval']['data-count-characters'] = true;
                     if ($arrData['eval']['rte'])
                     {

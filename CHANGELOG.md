@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.4.28] - 2018-05-23
+
+### Fixed
+- always use `maxlength::xxx` rgxp to limit maxlength, because contao core count special characters as encoded entities
+
 ## [2.4.27] - 2017-05-15
 
 ### Fixed

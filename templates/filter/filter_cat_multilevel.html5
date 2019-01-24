@@ -1,6 +1,6 @@
 
 <div class="dropdown">
-    <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary text-left" data-target="#" href="<?php echo $this->rootPageLink; ?>">
+    <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary text-left" data-target="dropdown" href="<?php echo $this->rootPageLink; ?>">
         <span class="pull-left"><?php echo $this->filterName; ?></span> <span class="caret pull-right"></span>
     </a>
     <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">

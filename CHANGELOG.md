@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.4.29] - 2019-01-24
+
+### Fixed
+- bootstrap 3.4 compatibility for dropdowns,  `data-target` must contain `dropdown` not #
+
 ## [2.4.28] - 2018-05-23
 
 ### Fixed

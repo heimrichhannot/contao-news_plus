@@ -1,0 +1,10 @@
+.idea
+Thumbs.db
+.DS_Store
+.sass-cache
+/vendor
+/node_modules
+composer.lock
+composer.json~
+composer.phar
+yarn.lock

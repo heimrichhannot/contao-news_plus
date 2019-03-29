@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2019-03-29
+
+### Changed
+- `heimrichhannot/contao-formhybrid` dependency changed from ^2.5.49 to ^3.0
+
+### Fixed
+- composer json version constraints
+
 ## [2.4.29] - 2019-01-24
 
 ### Fixed

@@ -12,6 +12,8 @@
 namespace HeimrichHannot\NewsPlus;
 
 
+use Contao\System;
+
 class NewsArticle extends \Controller
 {
 	protected $objConfig;
@@ -196,6 +198,7 @@ class NewsArticle extends \Controller
 
 		return $this->arrData;
 	}
+
 
 	/**
 	 * Return the meta fields of a news article as array

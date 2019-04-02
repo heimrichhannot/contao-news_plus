@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.6.0] - 2019-04-02
+
+### Added
+- Backport related news (selective) support from `heimrichhannot/contao-news-bundle` 
+
 ## [2.5.0] - 2019-03-29
 
 ### Changed

@@ -28,7 +28,8 @@
     "heimrichhannot/contao-haste_plus": "^1.6.52",
     "heimrichhannot/contao-fieldpalette": "^1.0",
     "heimrichhannot/contao-formhybrid": "^3.0",
-    "heimrichhannot/contao-modal": "^1.2.5"
+    "heimrichhannot/contao-modal": "^1.2.5",
+    "heimrichhannot/contao-tagsinput": "^2.2"
   },
   "autoload": {
     "classmap": [

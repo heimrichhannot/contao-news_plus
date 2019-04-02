@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.6.1] - 2019-04-02
+
+### Fixed
+- NewsFilterFormHelper::getValidTrailInfoOptions() now properly uses `findPublishedByPids` instead of `findPublishedByPid`
+
 ## [2.6.0] - 2019-04-02
 
 ### Added

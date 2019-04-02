@@ -300,7 +300,8 @@ class NewsFilterFormHelper extends \Controller
 	{
 		$arrNews = array();
 
-		$objNewsCollection = NewsPlusModel::findPublishedByPid($arrPids, 0, $arrOptions);
+		$objNewsCollection = NewsPlusModel::findPublishedByPids($arrPids, null, 0, 0, $arrOptions);
+
 		if ($objNewsCollection == null) return null;
 
 		foreach ($objNewsCollection as $objNews)

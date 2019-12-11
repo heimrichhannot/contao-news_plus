@@ -463,7 +463,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
         $session = \Session::getInstance()->getData();
         $arrIds = $session[NEWSPLUS_SESSION_NEWS_IDS];
 
-        if(count($arrIds) < 1) return '';
+        if(!$arrIds || !is_array($arrIds) || count($arrIds) < 1) return '';
 
         $prevID = null;
         $nextID = null;

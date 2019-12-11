@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.6] - 2019-12-11
+- fixed an warning in ModuleNewsPlus
+
 ## [1.1.5] - 2019-01-24
 
 ### Fixed

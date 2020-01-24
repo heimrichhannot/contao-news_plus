@@ -92,6 +92,9 @@ class NewsPlusModel extends \NewsModel
                     }
                 }
 
+                // prevent sql injection
+                $arrIds = array_map('intval', $arrIds);
+
                 $strKey = 'category';
 
                 // Preserve the default category
@@ -179,6 +182,8 @@ class NewsPlusModel extends \NewsModel
         $startDate = null,
         $endDate = null
     ) {
+        $arrValues = [];
+
         if (!is_array($arrPids) || empty($arrPids))
         {
             return null;
@@ -204,11 +209,13 @@ class NewsPlusModel extends \NewsModel
         // filter by date
         if ($startDate != null)
         {
-            $arrColumns[] = "$t.date>=$startDate";
+            $arrColumns[] = "$t.date>=?";
+            $arrValues[] = $startDate;
         }
         if ($endDate != null)
         {
-            $arrColumns[] = "$t.date<=$endDate";
+            $arrColumns[] = "$t.date<=?";
+            $arrValues[] = $endDate;
         }
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
@@ -229,7 +236,7 @@ class NewsPlusModel extends \NewsModel
         $arrOptions['limit']  = $intLimit;
         $arrOptions['offset'] = $intOffset;
 
-        return static::findBy($arrColumns, null, $arrOptions);
+        return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 
     /**
@@ -254,6 +261,8 @@ class NewsPlusModel extends \NewsModel
         $startDate = null,
         $endDate = null
     ) {
+        $arrValues = [];
+
         if (!is_array($arrPids) || empty($arrPids))
         {
             return 0;
@@ -279,11 +288,13 @@ class NewsPlusModel extends \NewsModel
         // filter by date
         if ($startDate != null)
         {
-            $arrColumns[] = "$t.date>=$startDate";
+            $arrColumns[] = "$t.date>=?";
+            $arrValues[] = $startDate;
         }
         if ($endDate != null)
         {
-            $arrColumns[] = "$t.date<=$endDate";
+            $arrColumns[] = "$t.date<=?";
+            $arrValues[] = $endDate;
         }
 
         if (!BE_USER_LOGGED_IN)
@@ -295,7 +306,7 @@ class NewsPlusModel extends \NewsModel
         // Filter by categories
         $arrColumns = static::filterByCategories($arrColumns);
 
-        return static::countBy($arrColumns, null, $arrOptions);
+        return static::countBy($arrColumns, $arrValues, $arrOptions);
     }
 
 
@@ -360,7 +371,7 @@ class NewsPlusModel extends \NewsModel
         }
 
         // Filter by search
-        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+        [$arrColumns, $arrValues] = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
         if (!isset($arrOptions['order']))
         {
@@ -370,7 +381,7 @@ class NewsPlusModel extends \NewsModel
         $arrOptions['limit']  = $intLimit;
         $arrOptions['offset'] = $intOffset;
 
-        return static::findBy($arrColumns, null, $arrOptions);
+        return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 
 
@@ -526,21 +537,22 @@ class NewsPlusModel extends \NewsModel
     protected static function findPublishedByHeadlineOrTeaser($arrColumns)
     {
         $t = static::$strTable;
+        $arrValues = [];
 
         // Try to find by given keywords
         if ($GLOBALS['NEWS_FILTER_SHOW_SEARCH'] && \Input::get('searchKeywords'))
         {
-
             $arrKeywords = explode(" ", trim(\Input::get('searchKeywords')));
             $arrClauses  = [];
             foreach ($arrKeywords as $keyword)
             {
-                $arrClauses[] = "($t.headline LIKE '%%" . $keyword . "%%' OR $t.teaser LIKE '%%" . $keyword . "%%')";
+                $arrClauses[] = "($t.headline LIKE ? OR $t.teaser LIKE ?)";
+                $arrValues[] = '%%' . $keyword . '%%';
             }
             $arrColumns[] = "(" . implode(' OR ', $arrClauses) . ")";
         }
 
-        return $arrColumns;
+        return [$arrColumns, $arrValues];
     }
 
 
@@ -595,7 +607,7 @@ class NewsPlusModel extends \NewsModel
         }
 
         // Filter by search
-        $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
+        [$arrColumns, $arrValues] = $arrColumns = static::findPublishedByHeadlineOrTeaser($arrColumns);
 
         if (!isset($arrOptions['order']))
         {
@@ -605,7 +617,7 @@ class NewsPlusModel extends \NewsModel
         $arrOptions['limit']  = $intLimit;
         $arrOptions['offset'] = $intOffset;
 
-        return static::findBy($arrColumns, null, $arrOptions);
+        return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 
     /**

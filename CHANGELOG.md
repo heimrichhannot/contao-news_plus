@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.9] - 2020-02-06
+- restored fix from 1.1.6
+
 ## [1.1.7] - 2020-01-24
 - model issues
 

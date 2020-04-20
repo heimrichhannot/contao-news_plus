@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2020-04-20
+- added be_tinyMCE template for contao 4 support
+- fixed contao 4 tinyMCE support
+
 ## [1.1.9] - 2020-02-06
 - restored fix from 1.1.6
 

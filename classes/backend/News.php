@@ -49,7 +49,8 @@ class News extends \Backend
                     $arrData['eval']['rgxp'] = 'maxlength::' . $intLength;
                     $arrData['eval']['data-count-characters'] = true;
 
-                    if ($arrData['eval']['rte'])
+
+                    if (version_compare(VERSION, '4.0', '<') && $arrData['eval']['rte'])
                     {
                         $arrData['eval']['rte'] = '../modules/news_plus/config/tinyMCE';
                     }

@@ -514,4 +514,21 @@ abstract class ModuleNewsPlus extends \ModuleNews
 
         return $arrNews;
     }
+
+    protected function generateLink($strLink, $objArticle, $blnAddArchive = false, $blnIsReadMore = false)
+    {
+        if ($objArticle->source != 'external')
+        {
+            return sprintf(
+                '<a href="%s" title="%s" itemprop="url">%s%s</a>',
+                $this->generateNewsUrl($objArticle, $blnAddArchive),
+                \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true),
+                $strLink,
+                ($blnIsReadMore ? '<span class="invisible"> ' . $objArticle->headline . '</span>' : '')
+            );
+        }
+        return parent::generateLink($strLink, $objArticle, $blnAddArchive, $blnIsReadMore);
+    }
+
+
 }

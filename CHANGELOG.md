@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2020-04-22
+- fixed different news urls used in some cases in ModuleNewsPlus
+
 ## [1.2.0] - 2020-04-20
 - added be_tinyMCE template for contao 4 support
 - fixed contao 4 tinyMCE support

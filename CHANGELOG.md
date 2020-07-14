@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2020-07-14
+- fixed dependencies in NewsPlusModel class and News class
+
 ## [1.2.1] - 2020-04-22
 - fixed different news urls used in some cases in ModuleNewsPlus
 

@@ -20,7 +20,7 @@ use HeimrichHannot\Haste\Database\QueryHelper;
  *
  * @package HeimrichHannot\NewsPlus
  */
-class NewsPlusModel extends \NewsModel
+class NewsPlusModel extends \Contao\NewsModel
 {
 
     /**

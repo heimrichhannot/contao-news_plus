@@ -10,8 +10,9 @@
 
 namespace HeimrichHannot\NewsPlus\Backend;
 
+use Contao\Backend;
 
-class News extends \Backend
+class News extends Backend
 {
     public function modifyDC(\DataContainer $dc)
     {

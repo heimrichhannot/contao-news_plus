@@ -24,7 +24,7 @@ class News extends Backend
         }
 
         $intId   = strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
-        $objNews = \NewsModel::findByPk($intId);
+        $objNews = \Contao\NewsModel::findByPk($intId);
 
         if ($objNews === null || ($objArchive = $objNews->getRelated('pid')) === null)
         {

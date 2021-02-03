@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2021-02-03
+- fixed dependencies in Backend\News class
+
 ## [1.2.2] - 2020-07-14
 - fixed dependencies in NewsPlusModel class and News class
 

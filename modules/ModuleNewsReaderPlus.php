@@ -15,6 +15,7 @@ namespace HeimrichHannot\NewsPlus;
 use Contao\NewsArchiveModel;
 use HeimrichHannot\CalendarPlus\EventsPlusHelper;
 use HeimrichHannot\Share\Share;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
@@ -174,15 +175,7 @@ class ModuleNewsReaderPlus extends ModuleNewsPlus
 
         if ($objArticle === null)
         {
-            // Do not index or cache the page
-            $objPage->noSearch = 1;
-            $objPage->cache    = 0;
-
-            // Send a 404 header
-            header('HTTP/1.1 404 Not Found');
-            $this->Template->articles = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')) . '</p>';
-
-            return;
+            throw new NotFoundHttpException('News not found');
         }
 
         $arrArticle               = $this->parseArticle($objArticle);

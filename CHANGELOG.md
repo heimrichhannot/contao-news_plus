@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2021-03-08
+- throw a 404 if the event couldn't be found
+
 ## [1.2.3] - 2021-02-03
 - fixed dependencies in Backend\News class
 

@@ -11,7 +11,7 @@
 namespace HeimrichHannot\NewsPlus\InsertTags;
 
 
-use NewsCategories\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 
 class InsertTags extends \Controller
 {

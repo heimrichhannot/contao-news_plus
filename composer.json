@@ -17,12 +17,13 @@
         "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
     },
     "require": {
-        "php": "~5.4 || ~7.0",
-        "contao/core-bundle": "^3.5.1 || ~4.1",
-        "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
-        "codefog/contao-news_categories": ">=2.0.0,<3-dev",
+        "php": "^7.0",
+        "contao/core-bundle": "^4.4",
+        "contao-community-alliance/composer-plugin": "^3.0",
+        "codefog/contao-news_categories": "^3.0",
         "heimrichhannot/contao-haste_plus": "^1.6.52",
-        "heimrichhannot/contao-be_explanation": "~1.0"
+        "heimrichhannot/contao-be_explanation-bundle": "^2.4",
+        "hschottm/tags": "^4.0"
 
     },
     "autoload": {

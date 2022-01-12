@@ -10,6 +10,9 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\StringUtil;
+
 class ModuleNewsFilter extends ModuleNewsPlus
 {
 
@@ -70,7 +73,7 @@ class ModuleNewsFilter extends ModuleNewsPlus
         }
 
 		// news archive, with newscategories (news_categories module)
-		$this->news_filterNewsCategoryArchives = deserialize($this->news_filterNewsCategoryArchives, true);
+		$this->news_filterNewsCategoryArchives = StringUtil::deserialize($this->news_filterNewsCategoryArchives, true);
 
         $sql = "SELECT * FROM tl_news_archive WHERE tl_news_archive.id IN(" . implode(',', array_map('intval', $this->news_archives)) . ") ORDER BY title";
 
@@ -96,7 +99,7 @@ class ModuleNewsFilter extends ModuleNewsPlus
 				// overwrite title with news_category
 				if($filterName && $strNewsCategories)
 				{
-					$objNewsCategory = \NewsCategories\NewsCategoryModel::findPublishedByIdOrAlias($strNewsCategories);
+					$objNewsCategory = NewsCategoryModel::findPublishedByIdOrAlias($strNewsCategories);
 
 					if($objNewsCategory !== null)
 					{
@@ -172,7 +175,7 @@ class ModuleNewsFilter extends ModuleNewsPlus
 	{
 		$strCat = '';
 
-		$objCategories = \NewsCategories\NewsCategoryModel::findPublishedByParent($arrArchive);
+		$objCategories = NewsCategoryModel::findPublishedByParent($arrArchive);
 
 		if($objCategories === null)
 		{

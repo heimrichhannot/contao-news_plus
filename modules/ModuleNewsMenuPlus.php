@@ -11,9 +11,10 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule;
 use Haste\Util\Url;
 
-class ModuleNewsMenuPlus extends \ModuleNewsMenu
+class ModuleNewsMenuPlus extends NewsMenuModule
 {
 
     /**

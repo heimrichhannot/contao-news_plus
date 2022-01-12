@@ -12,8 +12,8 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\News;
-use NewsCategories\NewsCategoryModel;
 
 class NewsPlus extends News
 {

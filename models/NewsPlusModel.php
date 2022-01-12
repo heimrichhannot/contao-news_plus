@@ -12,6 +12,7 @@
 
 namespace HeimrichHannot\NewsPlus;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use HeimrichHannot\Haste\Database\QueryHelper;
 
 
@@ -110,8 +111,7 @@ class NewsPlusModel extends \Contao\NewsModel
         // Try to find by category
         if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
         {
-            $strClass    = \NewsCategories\NewsCategories::getModelClass();
-            $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
+            $objCategory = NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
 
 
             if ($objCategory === null)

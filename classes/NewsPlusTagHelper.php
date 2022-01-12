@@ -21,6 +21,7 @@
 namespace HeimrichHannot\NewsPlus;
 
 use Contao\TagHelper;
+use Contao\TagList;
 
 class NewsPlusTagHelper extends TagHelper
 {
@@ -49,7 +50,7 @@ class NewsPlusTagHelper extends TagHelper
             $taglist[$id] = array(
                 'url' => $tags[$id],
                 'tag' => $tag,
-                'class' => \TagList::_getTagNameClass($tag)
+                'class' => TagList::_getTagNameClass($tag)
             );
         }
         return array(

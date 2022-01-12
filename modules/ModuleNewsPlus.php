@@ -2,7 +2,9 @@
 
 namespace HeimrichHannot\NewsPlus;
 
-use NewsCategories\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\FrontendTemplate;
+use Contao\StringUtil;
 
 abstract class ModuleNewsPlus extends \ModuleNews
 {
@@ -46,7 +48,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
 						continue;
 					}
 
-					$groups = deserialize($objArchive->groups);
+					$groups = StringUtil::deserialize($objArchive->groups);
 
 					if (!is_array($groups) || empty($groups) || !count(array_intersect($groups, $this->User->groups)))
 					{
@@ -73,9 +75,9 @@ abstract class ModuleNewsPlus extends \ModuleNews
 	{
 		global $objPage;
 
-		$arrCategories = deserialize($objArticle->categories, true);
+		$arrCategories = StringUtil::deserialize($objArticle->categories, true);
 
-        $objTemplate = new \FrontendTemplate($this->news_template);
+        $objTemplate = new FrontendTemplate($this->news_template);
 		$objTemplate->setData($objArticle->row());
 		$objTemplate->class = (($objArticle->cssClass != '') ? ' ' . $objArticle->cssClass : '') . $strClass;
 		$objTemplate->newsHeadline = $objArticle->headline;
@@ -97,7 +99,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
             $pdfPage = \PageModel::findByPk($this->news_pdfJumpTo);
             $pdfArticle = \ArticleModel::findPublishedByPidAndColumn($this->news_pdfJumpTo, 'main');
 
-            $options = deserialize($pdfArticle->printable);
+            $options = StringUtil::deserialize($pdfArticle->printable);
             if(in_array('pdf', $options))
                 $objTemplate->pdfArticleId = $pdfArticle->id;
 
@@ -508,7 +510,7 @@ abstract class ModuleNewsPlus extends \ModuleNews
         //$session = \Session::getInstance()->getData();
         //if($session[NEWSPLUS_SESSION_URL_PARAM]) $strUrlParam = '&'.$session[NEWSPLUS_SESSION_URL_PARAM];
 
-        $arrNews['href'] = ampersand(sprintf($strUrl, ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id))) . $strUrlParam;
+        $arrNews['href'] = ampersand(sprintf($strUrl, ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id)));
         $arrEvent['link'] = $objNews->title;
         $arrEvent['target'] = '';
 

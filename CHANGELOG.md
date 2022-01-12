@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased - 1.3.0] - 2022-01-12
+## [1.3.0] - 2022-01-12
 - Changed: removed contao 3 support
 - Changed: migrated to codefog/contao-news_categories v3
 - Changed: migrated to heimrichhannot/contao-be_explanation-bundle

@@ -17,8 +17,8 @@
         "issues":"https://github.com/heimrichhannot/contao-news_plus/issues"
     },
     "require": {
-        "php": "^7.0",
-        "contao/core-bundle": "^4.4",
+        "php": "^7.0 || ^8.0",
+        "contao/core-bundle": "^4.13",
         "contao-community-alliance/composer-plugin": "^3.0",
         "codefog/contao-news_categories": "^3.0",
         "heimrichhannot/contao-haste_plus": "^1.6.52",

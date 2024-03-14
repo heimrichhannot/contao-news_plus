@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2024-03-14
+- Changed: require contao 4.13
+- Changed: allow php 8
+- Removed: tiny mce template
+
 ## [1.3.0] - 2022-01-12
 - Changed: removed contao 3 support
 - Changed: migrated to codefog/contao-news_categories v3

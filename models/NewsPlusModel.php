@@ -76,8 +76,7 @@ class NewsPlusModel extends \Contao\NewsModel
         $t = static::$strTable;
 
         // Use the default filter
-        if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
-        {
+        if (isset($GLOBALS['NEWS_FILTER_DEFAULT']) && is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT'])) {
             $arrCategories = static::getCategoriesCache();
 
             if (!empty($arrCategories))
@@ -109,8 +108,7 @@ class NewsPlusModel extends \Contao\NewsModel
         }
 
         // Try to find by category
-        if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
-        {
+        if (isset($GLOBALS['NEWS_FILTER_CATEGORIES']) && $GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category')) {
             $objCategory = NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
 
 

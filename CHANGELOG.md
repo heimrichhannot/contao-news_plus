@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2024-12-11
+- Fixed: php8 warning
+
 ## [1.4.0] - 2024-03-14
 - Changed: require contao 4.13
 - Changed: allow php 8
